@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Modules\Analytics\Http\Controllers\DashboardController;
 use App\Modules\Diagnostics\Http\Controllers\TeacherDiagnosticController;
 use App\Modules\Equipment\Http\Controllers\EquipmentController;
 use App\Modules\Identity\Http\Controllers\LoginController;
@@ -115,7 +116,13 @@ Route::post('/salir', [LoginController::class, 'destroy'])
 | investigacion va a analizar (plan RoleSeeder).
 */
 Route::middleware('auth')->prefix('panel')->name('support.')->group(function () {
-    Route::view('/', 'support.dashboard')->middleware('can:dashboard.view')->name('dashboard');
+    Route::get('/', [DashboardController::class, 'index'])
+        ->middleware('can:dashboard.view')->name('dashboard');
+
+    // La exportacion es un acceso masivo a datos del piloto: permiso propio
+    // y queda auditada.
+    Route::get('/exportar', [DashboardController::class, 'export'])
+        ->middleware('can:reports.export')->name('dashboard.export');
 
     Route::middleware('can:incidents.view')->group(function () {
         Route::get('/incidencias', [SupportIncidentController::class, 'index'])->name('incidents.index');

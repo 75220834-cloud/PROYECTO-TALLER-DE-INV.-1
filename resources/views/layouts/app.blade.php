@@ -30,9 +30,14 @@
         </div>
 
         <nav class="flex-1 space-y-0.5 px-3 py-2 text-sm">
-            <x-nav-link :href="route('support.dashboard')" :active="request()->routeIs('support.dashboard')">
-                Tablero
-            </x-nav-link>
+            {{-- El enlace se condiciona al mismo permiso que exige la ruta.
+                 Mostrar un enlace que lleva a un 403 no es un detalle
+                 estético: hace pensar al técnico que algo se rompió. --}}
+            @can('dashboard.view')
+                <x-nav-link :href="route('support.dashboard')" :active="request()->routeIs('support.dashboard')">
+                    Tablero
+                </x-nav-link>
+            @endcan
 
             @can('incidents.view')
                 <x-nav-link :href="route('support.incidents.index')" :active="request()->routeIs('support.incidents.*')">
