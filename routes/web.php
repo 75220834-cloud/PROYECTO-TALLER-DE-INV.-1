@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\HealthController;
 use App\Modules\Analytics\Http\Controllers\DashboardController;
 use App\Modules\Diagnostics\Http\Controllers\TeacherDiagnosticController;
 use App\Modules\Equipment\Http\Controllers\EquipmentController;
@@ -93,6 +94,13 @@ Route::middleware('throttle:120,1')->group(function () {
 });
 
 Route::redirect('/', '/reportar');
+
+/*
+ * Estado del sistema para monitoreo (plan 20.4). Sin autenticacion, porque
+ * quien vigila el servidor no tiene por que tener cuenta en el sistema, y
+ * sin revelar nada de la instalacion por el mismo motivo.
+ */
+Route::get('/salud', HealthController::class)->name('health');
 
 /*
 |--------------------------------------------------------------------------

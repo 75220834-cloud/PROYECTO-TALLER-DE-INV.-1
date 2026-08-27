@@ -115,8 +115,17 @@ docs/decisions/       bitácora de decisiones técnicas (ADR)
 | 2 · Ubicaciones y equipos | ✅ completa |
 | 3 · Incidencias, tickets y antiabuso | ✅ completa |
 | 4 · Asistente, diagnóstico guiado e imágenes | ✅ completa |
-| 5-6 · Base de conocimiento y RAG | ⬜ pendiente |
-| 7-8 · Tablero y predicción | ⬜ pendiente |
+| 5 · Base de conocimiento | ✅ completa |
+| 6 · RAG y recuperación híbrida | ✅ completa |
+| 7 · Tablero y analítica | ✅ completa |
+| 8 · Riesgo y predicción | ✅ completa |
+| 9 · Endurecimiento | ✅ completa |
+| 10 · Testing integral | ✅ completa · salvo pruebas con docentes reales |
+| 11 · Despliegue institucional | ⬜ depende de la Universidad |
+| 12 · Piloto y medición | ⬜ depende de la Universidad |
+
+**Todo el código del plan está escrito.** Lo que queda no es programación:
+son autorizaciones, datos reales y trabajo de campo.
 
 **Fase 2 incluye:** catálogo administrable (sedes, pabellones, pisos, aulas, equipos) con validación
 en cascada en servidor, guarda de dependencias al eliminar, búsqueda por código, autenticación con
@@ -142,6 +151,45 @@ resolución en cascada y degradación limpia a solo texto, abstracción de IA in
 (Ollama / fake / sin modelo) y clasificación de texto libre con validación estricta contra el
 catálogo. **El sistema funciona completo sin modelo de lenguaje**: hay pruebas que lo verifican.
 
+**Fases 5 y 6 incluyen:** ingesta versionada de PDF/DOCX/MD/TXT con estado de procesamiento,
+fragmentación que no parte procedimientos numerados, y recuperación híbrida (léxica + vectorial
+fusionadas por RRF) con cita de documento, sección y página. El asistente **escala en lugar de
+inventar** cuando no hay fuente: hay una suite de sondas que lo verifica con la base vacía.
+
+> **Limitación honesta y documentada:** sin un modelo de embeddings real, la búsqueda por paráfrasis
+> no funciona. No está disimulado: hay una prueba llamada *LIMITACIÓN CONOCIDA* que lo deja escrito
+> en la propia suite.
+
+**Fases 7 y 8 incluyen:** tablero con los indicadores del plan —incluidos los incómodos: abandono
+de docentes y rechazos del antiabuso—, exportación del conjunto de datos para el análisis, agregados
+diarios, y señales de riesgo explicables por aula y por aula+categoría.
+
+> **Cómo leer las señales de riesgo:** ordenan por dónde conviene empezar una revisión. **No son
+> probabilidades de avería** y no están calibradas, porque el piloto no tendrá volumen para
+> calibrarlas. Presentarlas como probabilidades en el informe sería inventar precisión que no se
+> tiene.
+
+**Fases 9 y 10 incluyen:** cabeceras de seguridad con CSP que **no permite JavaScript incrustado**
+(hay una prueba que recorre las vistas y falla si alguien vuelve a meter un `onclick`), IP siempre
+hasheada, detección de riesgo físico que salta el diagnóstico y escala con prioridad máxima, y el
+flujo de extremo a extremo verificando consistencia de datos en toda la cadena.
+
+### Tareas programadas
+
+Requieren `php artisan schedule:work` en desarrollo, o cron / Programador de tareas en el servidor.
+
+| Comando | Cuándo | Para qué |
+|---|---|---|
+| `incidents:purge-drafts` | cada hora | marca borradores abandonados |
+| `metrics:snapshot` | 02:30 | agregados diarios del tablero |
+| `risk:compute` | 03:00 | señales de riesgo |
+
+### Estado del sistema
+
+`GET /salud` responde el estado de base de datos, colas, modelo y disco, sin autenticación y sin
+revelar nada de la instalación. **La falta del modelo de lenguaje no cuenta como caída**: el sistema
+funciona completo sin él.
+
 ### 📋 Qué hay que cargar
 
 Ver **[docs/carga-de-datos.md](docs/carga-de-datos.md)**: aulas, equipos, procedimientos e imágenes.
@@ -163,5 +211,11 @@ Nada de esto es opcional:
 
 - Verificar **en un aula real** que un celular alcanza el servidor (riesgo R2 del plan — puede invalidar el piloto entero).
 - Obtener autorización institucional para el piloto y para fotografiar los equipos.
-- Endurecer XAMPP: contraseña de `root`, phpMyAdmin restringido, `DocumentRoot` apuntando a `public/`.
+- Seguir la lista completa de **[docs/endurecimiento-y-operacion.md](docs/endurecimiento-y-operacion.md)**:
+  `APP_DEBUG=false`, `DocumentRoot` en `public/` (verificado con `curl /.env` → 404), phpMyAdmin
+  restringido, y respaldo **y restauración** probados al menos una vez.
+- Revisar los umbrales antiabuso tras la primera semana mirando `incident_abuse_rejections`: los
+  valores actuales son **provisionales** y nadie los ha calibrado todavía.
+- Ejecutar las pruebas con docentes reales (§17.9): son las únicas del plan que no se pueden
+  automatizar, y son las que dirán si el QR genérico cuesta demasiados pasos.
 - Purgar los datos DEMO y cargar el catálogo real.
