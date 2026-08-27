@@ -16,7 +16,7 @@ Al llevar el plan maestro a código aparecieron cinco diferencias respecto de lo
 
 **Qué se hizo:** fijar **Laravel 12.68.0**, la última rama que soporta PHP 8.2.
 
-**Por qué no se actualizó PHP:** actualizar el PHP del XAMPP habría cambiado el entorno de todos los proyectos del equipo y roto la paridad con la máquina de Dickmar — que es justamente lo que la decisión D-5 buscaba proteger. Fijar la versión del framework es reversible y local; cambiar el runtime del sistema no lo es.
+**Por qué no se actualizó PHP:** actualizar el PHP del XAMPP habría cambiado el entorno de todos los proyectos del equipo y roto la paridad con la máquina de Brayan — que es justamente lo que la decisión D-5 buscaba proteger. Fijar la versión del framework es reversible y local; cambiar el runtime del sistema no lo es.
 
 ---
 

@@ -1,5 +1,7 @@
 <?php
 
+use App\Console\Commands\PurgeDemoData;
+use App\Console\Commands\SeedPilotStructure;
 use App\Http\Middleware\SecurityHeaders;
 use App\Modules\Analytics\Console\BuildSnapshotsCommand;
 use App\Modules\Incidents\Console\PurgeAbandonedDrafts;
@@ -18,6 +20,8 @@ return Application::configure(basePath: dirname(__DIR__))
         PurgeAbandonedDrafts::class,
         ComputeRiskCommand::class,
         BuildSnapshotsCommand::class,
+        PurgeDemoData::class,
+        SeedPilotStructure::class,
     ])
     ->withMiddleware(function (Middleware $middleware): void {
         // En TODAS las respuestas, no solo en el panel: la parte publica es la

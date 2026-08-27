@@ -3,7 +3,7 @@
 Universidad Continental — sede Huancayo
 Taller de Investigación 1 · Ingeniería de Sistemas e Informática
 
-**Equipo:** Ítalo (arquitectura e investigación) · Dickmar (soporte TI y conocimiento operativo) · Brayan (desarrollo, pruebas y documentación)
+**Equipo:** Ítalo (arquitectura e investigación) · Brayan (soporte TI y conocimiento operativo) · Dickmar (desarrollo, pruebas y documentación)
 
 > ⚠️ El sistema opera actualmente con **datos DEMO**. Nada de lo que contiene describe aulas, equipos ni procedimientos reales de la Universidad.
 
@@ -189,6 +189,32 @@ Requieren `php artisan schedule:work` en desarrollo, o cron / Programador de tar
 `GET /salud` responde el estado de base de datos, colas, modelo y disco, sin autenticación y sin
 revelar nada de la instalación. **La falta del modelo de lenguaje no cuenta como caída**: el sistema
 funciona completo sin él.
+
+### Probar a escala del piloto
+
+```bash
+php artisan piloto:sembrar
+```
+
+Deja la base con la estructura **aproximada** de la sede Huancayo: pabellones **C, D, E, G, H, I, J, K**,
+5 pisos cada uno y 3–4 aulas por piso (~138 aulas), más su equipamiento. Purga primero los datos demo
+anteriores, para que quede **una sola sede** y el docente no vea una pantalla de selección que en el
+aula real no existirá.
+
+> **Qué es real y qué no.** Los pabellones, los pisos y la cantidad aproximada de aulas los indicó
+> Ítalo. Los **códigos concretos de cada aula** (`C301`, `D105`…) los genera el seeder siguiendo una
+> convención verosímil que **nadie ha confirmado** contra el catálogo oficial. Por eso todo queda con
+> `is_demo = true` y el aviso de DATOS DE DEMOSTRACIÓN sigue visible. Cuando Brayan entregue el
+> catálogo real, esto se purga y se reemplaza entero — no se corrige a mano.
+
+```bash
+php artisan demo:purge
+```
+
+Borra **de verdad** todos los datos de demostración: aulas, equipos, incidencias e historial asociado.
+No es borrado suave — una purga que dejara filas ocultas seguiría contaminando las consultas de la
+investigación. El banco de imágenes y los documentos se conservan: un diagrama de un conector HDMI
+sigue siendo correcto con el catálogo real.
 
 ### 📋 Qué hay que cargar
 
