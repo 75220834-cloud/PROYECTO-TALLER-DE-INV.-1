@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\SecurityHeaders;
 use App\Modules\Analytics\Console\BuildSnapshotsCommand;
 use App\Modules\Incidents\Console\PurgeAbandonedDrafts;
 use App\Modules\Risk\Console\ComputeRiskCommand;
@@ -19,7 +20,9 @@ return Application::configure(basePath: dirname(__DIR__))
         BuildSnapshotsCommand::class,
     ])
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // En TODAS las respuestas, no solo en el panel: la parte publica es la
+        // que recibe entrada de un usuario sin autenticar (plan 16.2).
+        $middleware->append(SecurityHeaders::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

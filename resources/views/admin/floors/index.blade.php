@@ -5,7 +5,7 @@
 @section('content')
 <div class="mb-4 flex items-center justify-between gap-3">
     <form method="GET">
-        <select name="building_id" onchange="this.form.submit()" class="rounded-md border-slate-300 px-3 py-2 text-sm">
+        <select name="building_id" data-auto-submit class="rounded-md border-slate-300 px-3 py-2 text-sm">
             <option value="">Todos los pabellones</option>
             @foreach ($buildings as $b)
                 <option value="{{ $b->id }}" @selected(request('building_id') == $b->id)>{{ $b->site?->name }} · {{ $b->name }}</option>

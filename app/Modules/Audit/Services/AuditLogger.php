@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Audit\Services;
 
+use App\Shared\Support\IpHasher;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -26,6 +27,8 @@ use Illuminate\Support\Facades\Request;
  */
 final class AuditLogger
 {
+    public function __construct(private readonly IpHasher $hasher) {}
+
     /**
      * @param  array<string, mixed>  $changes
      */
@@ -37,7 +40,10 @@ final class AuditLogger
             'auditable_type' => $subject !== null ? $subject::class : null,
             'auditable_id' => $subject?->getKey(),
             'changes' => $changes === [] ? null : json_encode($changes, JSON_UNESCAPED_UNICODE),
-            'ip_address' => Request::ip(),
+            // Hasheada, nunca en claro (plan 27.1). El actor ya queda
+            // identificado por user_id; la IP solo sirve para agrupar
+            // acciones del mismo origen si hay que investigar una cuenta.
+            'ip_hash' => $this->hasher->hash(Request::ip()),
 
             // Acotado al ancho de la columna: un User-Agent largo truncado
             // por el motor provocaria un error en modo estricto.

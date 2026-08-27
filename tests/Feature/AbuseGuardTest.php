@@ -9,13 +9,13 @@ use App\Modules\Incidents\Models\IncidentStatus as StatusModel;
 use App\Modules\Incidents\Services\AbuseContext;
 use App\Modules\Incidents\Services\AbuseGuard;
 use App\Modules\Incidents\Services\IncidentService;
-use App\Modules\Incidents\Services\IpHasher;
 use App\Modules\Locations\Models\Building;
 use App\Modules\Locations\Models\Floor;
 use App\Modules\Locations\Models\Room;
 use App\Modules\Locations\Models\Site;
 use App\Shared\Enums\AbuseReason;
 use App\Shared\Enums\IncidentStatus as S;
+use App\Shared\Support\IpHasher;
 use Database\Seeders\CatalogSeeder;
 
 /**

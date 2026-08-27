@@ -208,7 +208,7 @@
             @unless ($incident->statusCode()->isTerminal())
                 <div class="rounded-lg border border-slate-200 bg-white p-5">
                     <form method="POST" action="{{ route('support.incidents.cancel', $incident) }}" class="space-y-2"
-                          onsubmit="return confirm('¿Cancelar esta incidencia?')">
+                          data-confirm="¿Cancelar esta incidencia?">
                         @csrf
                         <input name="reason" required placeholder="Motivo de la cancelación"
                                class="block w-full rounded-md border-slate-300 px-3 py-2 text-sm">

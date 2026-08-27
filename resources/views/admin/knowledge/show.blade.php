@@ -115,7 +115,7 @@
 
                 @if ($document->status !== 'archived')
                     <form method="POST" action="{{ route('admin.knowledge.archive', $document) }}"
-                          onsubmit="return confirm('¿Archivar? Dejará de alimentar al asistente, pero se conserva.')">
+                          data-confirm="¿Archivar? Dejará de alimentar al asistente, pero se conserva.">
                         @csrf
                         <button class="w-full rounded-md border border-slate-300 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50">
                             Archivar

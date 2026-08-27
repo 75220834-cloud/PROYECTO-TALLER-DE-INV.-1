@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\Incidents\Services;
+namespace App\Shared\Support;
 
 use Illuminate\Support\Facades\Config;
 
@@ -17,6 +17,12 @@ use Illuminate\Support\Facades\Config;
  * pelado de una IP es trivial de revertir: el espacio de direcciones IPv4
  * completo cabe en una tabla precalculada de unas horas de computo. Con
  * HMAC, sin la clave no hay tabla que valga.
+ *
+ * Vive en Shared y no dentro de Incidents porque lo usan varios modulos:
+ * el antiabuso y la auditoria administrativa. Dejarlo en Incidents obligaria
+ * al modulo de auditoria a depender del de incidencias para hashear una IP,
+ * que es justo el tipo de dependencia cruzada que la estructura modular
+ * pretende evitar.
  *
  * Consecuencia a tener presente: si APP_KEY cambia, los hashes anteriores
  * dejan de coincidir y los contadores por IP se reinician. Es aceptable

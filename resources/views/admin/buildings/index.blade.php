@@ -5,7 +5,7 @@
 @section('content')
 <div class="mb-4 flex items-center justify-between gap-3">
     <form method="GET" class="flex items-center gap-2">
-        <select name="site_id" onchange="this.form.submit()" class="rounded-md border-slate-300 px-3 py-2 text-sm">
+        <select name="site_id" data-auto-submit class="rounded-md border-slate-300 px-3 py-2 text-sm">
             <option value="">Todas las sedes</option>
             @foreach ($sites as $s)
                 <option value="{{ $s->id }}" @selected(request('site_id') == $s->id)>{{ $s->name }}</option>

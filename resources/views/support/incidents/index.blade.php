@@ -60,7 +60,7 @@
         </thead>
         <tbody class="divide-y divide-slate-100">
         @forelse ($incidents as $i)
-            <tr class="cursor-pointer hover:bg-slate-50" onclick="window.location='{{ route('support.incidents.show', $i) }}'">
+            <tr class="cursor-pointer hover:bg-slate-50" data-row-href="{{ route('support.incidents.show', $i) }}">
                 <td class="px-4 py-3 font-mono text-xs">
                     <a href="{{ route('support.incidents.show', $i) }}" class="font-semibold text-slate-900 hover:underline">
                         #{{ $i->ticket_number ?? '—' }}

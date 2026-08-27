@@ -17,7 +17,7 @@
         <span class="cursor-help text-slate-300" title="{{ $blocked }}">Eliminar</span>
     @else
         <form method="POST" action="{{ $destroyRoute }}"
-              onsubmit="return confirm('¿Eliminar definitivamente? Esta acción no se puede deshacer.')">
+              data-confirm="¿Eliminar definitivamente? Esta acción no se puede deshacer.">
             @csrf @method('DELETE')
             <button type="submit" class="text-rose-600 underline-offset-2 hover:text-rose-800 hover:underline">Eliminar</button>
         </form>

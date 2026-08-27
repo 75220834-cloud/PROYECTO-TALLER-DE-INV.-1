@@ -7,7 +7,7 @@
 
 <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
     <form method="GET" class="flex items-center gap-2">
-        <select name="days" onchange="this.form.submit()" class="rounded-md border-slate-300 px-3 py-2 text-sm">
+        <select name="days" data-auto-submit class="rounded-md border-slate-300 px-3 py-2 text-sm">
             @foreach ([7 => '7 días', 30 => '30 días', 90 => '90 días', 180 => '6 meses'] as $v => $l)
                 <option value="{{ $v }}" @selected($days == $v)>{{ $l }}</option>
             @endforeach

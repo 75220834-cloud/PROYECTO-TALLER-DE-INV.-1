@@ -46,7 +46,7 @@
 <body>
 
 <div class="no-print">
-    <button onclick="window.print()"
+    <button data-print
             style="padding:10px 18px;font-size:14px;border-radius:6px;border:0;background:#0f172a;color:#fff;cursor:pointer">
         Imprimir
     </button>
