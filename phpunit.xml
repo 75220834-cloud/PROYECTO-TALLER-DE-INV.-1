@@ -11,6 +11,24 @@
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
         </testsuite>
+        <!--
+            Estas suites hay que declararlas EXPRESAMENTE. Laravel solo trae
+            Unit y Feature, así que un directorio nuevo se queda fuera de la
+            ejecución completa sin que nada avise: los archivos existen, pasan
+            al invocarlos a mano, y la suite general los ignora en silencio.
+        -->
+        <testsuite name="Ai">
+            <directory>tests/Ai</directory>
+        </testsuite>
+        <testsuite name="Retrieval">
+            <directory>tests/Retrieval</directory>
+        </testsuite>
+        <testsuite name="Integration">
+            <directory>tests/Integration</directory>
+        </testsuite>
+        <testsuite name="Risk">
+            <directory>tests/Risk</directory>
+        </testsuite>
     </testsuites>
     <source>
         <include>

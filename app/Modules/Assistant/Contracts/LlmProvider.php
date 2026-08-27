@@ -37,6 +37,24 @@ interface LlmProvider
      */
     public function rephrase(string $text, string $context = ''): ?string;
 
+    /**
+     * Responde una pregunta USANDO SOLO los pasajes entregados.
+     *
+     * Es la funcion F3 del plan (13.2) y la mas delicada de las tres. Tres
+     * reglas que no son sugerencias:
+     *
+     *  - Si los pasajes no contienen la respuesta, devuelve null. No
+     *    "intentarlo", no "aproximarse": null. Inventar un procedimiento
+     *    institucional es la alucinacion mas grave que puede cometer este
+     *    sistema (plan 44 y 55).
+     *  - Nunca puede anadir informacion que no este en los pasajes.
+     *  - Quien llama VERIFICA la respuesta contra los pasajes y la descarta
+     *    si no esta anclada. La defensa no se confia al prompt.
+     *
+     * @param  list<string>  $passages
+     */
+    public function answerGrounded(string $question, array $passages): ?string;
+
     /** Si el proveedor esta operativo ahora mismo. */
     public function isAvailable(): bool;
 

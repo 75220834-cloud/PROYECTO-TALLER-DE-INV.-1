@@ -34,6 +34,14 @@ final class NullLlmProvider implements LlmProvider
         return null;
     }
 
+    public function answerGrounded(string $question, array $passages): ?string
+    {
+        // Sin modelo no hay generacion: quien llama muestra los pasajes
+        // recuperados tal cual, con su cita. Es menos comodo de leer y
+        // exactamente igual de fiable.
+        return null;
+    }
+
     public function isAvailable(): bool
     {
         return false;

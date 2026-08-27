@@ -143,6 +143,61 @@ final class OllamaProvider implements LlmProvider
         }
     }
 
+    public function answerGrounded(string $question, array $passages): ?string
+    {
+        if ($passages === []) {
+            return null;
+        }
+
+        $context = '';
+
+        foreach ($passages as $i => $passage) {
+            $n = $i + 1;
+            $context .= "--- FUENTE {$n} ---\n{$passage}\n\n";
+        }
+
+        $prompt = <<<PROMPT
+        Eres un asistente de soporte técnico de aulas.
+
+        Responde la pregunta usando ÚNICAMENTE la información de las fuentes.
+
+        Reglas estrictas:
+        - Si las fuentes NO contienen la respuesta, responde exactamente: NO_SE
+        - No añadas datos, pasos ni recomendaciones que no estén en las fuentes.
+        - No inventes procedimientos, políticas, teléfonos ni nombres.
+        - No sugieras abrir equipos ni manipular cableado eléctrico.
+        - Responde en español, tuteando, en 3 frases como máximo.
+        - No digas que algo "definitivamente funcionará".
+
+        {$context}
+        PREGUNTA: {$question}
+        PROMPT;
+
+        try {
+            $response = Http::timeout((int) config('incidencias.llm.timeout'))
+                ->post(rtrim((string) config('incidencias.llm.base_url'), '/').'/api/generate', [
+                    'model' => config('incidencias.llm.model'),
+                    'prompt' => $prompt,
+                    'stream' => false,
+                    'options' => ['temperature' => 0],
+                ]);
+
+            $answer = trim((string) $response->json('response', ''));
+
+            // El modelo reconoce que no sabe. Es el desenlace CORRECTO, no
+            // un fallo: escalar es preferible a improvisar (plan 44).
+            if ($answer === '' || str_contains(mb_strtoupper($answer), 'NO_SE')) {
+                return null;
+            }
+
+            return $answer;
+        } catch (Throwable $e) {
+            Log::warning('Ollama no disponible al responder', ['error' => $e->getMessage()]);
+
+            return null;
+        }
+    }
+
     public function isAvailable(): bool
     {
         try {

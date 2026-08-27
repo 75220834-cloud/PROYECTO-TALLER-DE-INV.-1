@@ -54,6 +54,11 @@ function lyingProvider(?string $label, float $confidence = 0.99): LlmProvider
             return null;
         }
 
+        public function answerGrounded(string $question, array $passages): ?string
+        {
+            return null;
+        }
+
         public function isAvailable(): bool
         {
             return true;

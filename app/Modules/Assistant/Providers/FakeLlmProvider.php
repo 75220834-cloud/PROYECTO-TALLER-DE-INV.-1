@@ -83,6 +83,14 @@ final class FakeLlmProvider implements LlmProvider
         return null;
     }
 
+    public function answerGrounded(string $question, array $passages): ?string
+    {
+        // Determinista para pruebas: nunca genera. Asi las pruebas del
+        // asistente comprueban el camino de respaldo, que es el que de
+        // verdad tiene que ser correcto.
+        return null;
+    }
+
     public function isAvailable(): bool
     {
         return true;
