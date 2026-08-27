@@ -39,6 +39,12 @@
                 </x-nav-link>
             @endcan
 
+            @can('risk.view')
+                <x-nav-link :href="route('support.risk.index')" :active="request()->routeIs('support.risk.*')">
+                    Señales de riesgo
+                </x-nav-link>
+            @endcan
+
             @can('incidents.view')
                 <x-nav-link :href="route('support.incidents.index')" :active="request()->routeIs('support.incidents.*')">
                     Incidencias

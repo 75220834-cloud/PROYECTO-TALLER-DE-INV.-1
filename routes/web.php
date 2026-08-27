@@ -16,6 +16,7 @@ use App\Modules\Locations\Http\Controllers\RoomController;
 use App\Modules\Locations\Http\Controllers\SiteController;
 use App\Modules\Locations\Http\Controllers\TeacherLocationController;
 use App\Modules\Media\Http\Controllers\MediaController;
+use App\Modules\Risk\Http\Controllers\RiskController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -123,6 +124,9 @@ Route::middleware('auth')->prefix('panel')->name('support.')->group(function () 
     // y queda auditada.
     Route::get('/exportar', [DashboardController::class, 'export'])
         ->middleware('can:reports.export')->name('dashboard.export');
+
+    Route::get('/riesgo', [RiskController::class, 'index'])
+        ->middleware('can:risk.view')->name('risk.index');
 
     Route::middleware('can:incidents.view')->group(function () {
         Route::get('/incidencias', [SupportIncidentController::class, 'index'])->name('incidents.index');

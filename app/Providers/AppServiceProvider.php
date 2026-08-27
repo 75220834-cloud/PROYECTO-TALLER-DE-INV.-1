@@ -20,6 +20,8 @@ use App\Modules\Notifications\Services\NotificationDispatcher;
 use App\Modules\Retrieval\Contracts\EmbeddingProvider;
 use App\Modules\Retrieval\Providers\HashEmbeddingProvider;
 use App\Modules\Retrieval\Providers\OllamaEmbeddingProvider;
+use App\Modules\Risk\Contracts\RiskModel;
+use App\Modules\Risk\Services\BaselineRecencyModel;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
@@ -75,6 +77,15 @@ class AppServiceProvider extends ServiceProvider
          * de texto plano acepta 'application/octet-stream', asi que va al
          * final para no capturar archivos que otro extractor manejaria mejor.
          */
+        /*
+         * Metodo de estimacion de riesgo (plan 15.2).
+         *
+         * Hoy solo existe el baseline N0, y muy probablemente sea el unico
+         * que llegue a usarse: activar un modelo supervisado exige un volumen
+         * de datos que el piloto quiza no alcance. La interfaz existe igual
+         * para que ese cambio, si llega, sea sustituir esta linea.
+         */
+        $this->app->singleton(RiskModel::class, fn () => new BaselineRecencyModel);
         $this->app->singleton(DocumentIngestionPipeline::class, fn ($app) => new DocumentIngestionPipeline(
             $app->make(Chunker::class),
             $app->make(EmbeddingProvider::class),
