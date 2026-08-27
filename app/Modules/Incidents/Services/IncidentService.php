@@ -87,6 +87,24 @@ final class IncidentService
     }
 
     /**
+     * El docente describio una situacion de riesgo fisico (plan 17.5).
+     *
+     * Queda registrado en el historial ademas de en la columna: soporte tiene
+     * que poder ver DESDE CUANDO se sabia, no solo que se sabe. Si un ticket
+     * asi tarda en atenderse, la pregunta sera exactamente esa.
+     */
+    public function flagHazard(Incident $incident, string $term): Incident
+    {
+        $incident->update(['hazard_reported' => true, 'hazard_term' => $term]);
+
+        $this->record($incident, 'hazard_detected', 'system', metadata: [
+            'term' => $term,
+        ]);
+
+        return $incident->refresh();
+    }
+
+    /**
      * El docente confirma que el problema quedo resuelto sin intervencion
      * presencial. Es el desenlace que el proyecto busca maximizar.
      */
@@ -118,6 +136,7 @@ final class IncidentService
             $incident->category,
             $incident->room,
             $blocksClass,
+            (bool) $incident->hazard_reported,
         );
 
         $this->transitionTo($incident, S::New, 'teacher');
@@ -133,6 +152,7 @@ final class IncidentService
         $this->record($incident, 'escalated_to_support', 'teacher', metadata: [
             'blocks_class' => $blocksClass,
             'priority' => $priority->priority->value,
+            'hazard_reported' => (bool) $incident->hazard_reported,
 
             // Los factores se guardan para que el tecnico pueda ver por que
             // este ticket esta por encima de otro en su bandeja.

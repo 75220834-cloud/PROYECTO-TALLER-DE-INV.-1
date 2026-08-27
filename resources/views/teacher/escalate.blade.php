@@ -5,6 +5,25 @@
 @section('content')
     <h1 class="mb-5 text-2xl font-bold">Solicitar soporte técnico</h1>
 
+    {{-- Riesgo físico (plan §17.5). Va lo primero y con la instrucción de no
+         tocar nada por delante de cualquier otra cosa: el docente está de pie
+         frente a un equipo que puede estar quemándose y puede no leer más
+         abajo. Aquí no se le ofrece ningún paso de diagnóstico: pedirle que
+         revise un cable sería mandarlo a acercarse al equipo. --}}
+    @if ($incident->hazard_reported)
+        <div class="mb-6 rounded-xl border-2 border-rose-600 bg-rose-50 px-5 py-4">
+            <p class="text-lg font-bold text-rose-800">No manipules el equipo</p>
+            <p class="mt-2 text-rose-900">
+                No lo toques, no lo desconectes y no intentes apagarlo tú. Si puedes hacerlo
+                sin acercarte, corta la energía desde el interruptor de la pared y aleja a
+                los estudiantes del equipo.
+            </p>
+            <p class="mt-2 font-medium text-rose-900">
+                Vamos a avisar a soporte con la máxima prioridad.
+            </p>
+        </div>
+    @endif
+
     <div class="mb-6 rounded-xl border-2 border-slate-900 bg-slate-50 px-5 py-4">
         <p class="text-sm text-slate-600">Se avisará a soporte sobre</p>
         <p class="mt-1 font-mono text-2xl font-bold">{{ $incident->room?->code }}</p>

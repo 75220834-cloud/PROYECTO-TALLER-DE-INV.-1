@@ -37,6 +37,8 @@ use Illuminate\Support\Str;
  * @property int|null $priority_id
  * @property string|null $reported_description
  * @property bool $blocks_class
+ * @property bool $hazard_reported
+ * @property string|null $hazard_term
  * @property bool $is_draft
  * @property int|null $assigned_to
  * @property string|null $resolution_type
@@ -61,7 +63,8 @@ class Incident extends Model
     protected $fillable = [
         'uuid', 'ticket_number', 'room_id', 'equipment_id', 'category_id',
         'status_id', 'priority_id', 'reported_description', 'classified_by',
-        'classification_confidence', 'blocks_class', 'assigned_to',
+        'classification_confidence', 'blocks_class', 'hazard_reported',
+        'hazard_term', 'assigned_to',
         'resolution_type', 'resolution_notes', 'technical_diagnosis',
         'reporter_hint', 'device_key', 'ip_hash', 'is_draft', 'merged_into_id',
         'reopened_count', 'confirmed_at', 'reported_at', 'first_response_at',
@@ -72,6 +75,7 @@ class Incident extends Model
     {
         return [
             'blocks_class' => 'boolean',
+            'hazard_reported' => 'boolean',
             'is_draft' => 'boolean',
             'classification_confidence' => 'float',
             'reopened_count' => 'integer',

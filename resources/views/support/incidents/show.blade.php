@@ -13,6 +13,23 @@
     ---------------------------------------------------------------- --}}
     <div class="space-y-4 lg:col-span-2">
 
+        {{-- Va por encima de "no puede dictar clase": el técnico tiene que
+             saber ANTES de salir que va a un equipo posiblemente en riesgo,
+             porque cambia qué lleva y con quién coordina. --}}
+        @if ($incident->hazard_reported)
+            <div class="rounded-lg border-2 border-rose-600 bg-rose-100 px-4 py-3">
+                <p class="font-bold text-rose-900">Riesgo físico reportado</p>
+                <p class="mt-1 text-sm text-rose-900">
+                    El docente describió una situación de riesgo
+                    @if ($incident->hazard_term)
+                        («{{ $incident->hazard_term }}»)
+                    @endif
+                    y se le indicó que no manipule el equipo. El diagnóstico guiado se omitió
+                    a propósito y la prioridad la fijó el sistema al máximo.
+                </p>
+            </div>
+        @endif
+
         @if ($incident->blocks_class)
             <div class="rounded-lg border-2 border-rose-300 bg-rose-50 px-4 py-3">
                 <p class="font-semibold text-rose-900">El docente no puede dictar la clase</p>

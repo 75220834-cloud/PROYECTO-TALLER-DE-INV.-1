@@ -11,6 +11,7 @@ use App\Modules\Incidents\Models\IncidentCategory;
 use App\Modules\Incidents\Services\AbuseContext;
 use App\Modules\Incidents\Services\AbuseGuard;
 use App\Modules\Incidents\Services\IncidentService;
+use App\Modules\Incidents\Services\SafetySignalDetector;
 use App\Shared\Enums\IncidentStatus as S;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -36,6 +37,7 @@ class TeacherIncidentController extends Controller
     public function __construct(
         private readonly IncidentService $incidents,
         private readonly AbuseGuard $guard,
+        private readonly SafetySignalDetector $safety,
     ) {}
 
     /**
@@ -72,11 +74,25 @@ class TeacherIncidentController extends Controller
 
         $category = IncidentCategory::findOrFail($data['category_id']);
 
-        $this->incidents->startDiagnosis(
-            $incident,
-            $category,
-            $data['description'] ?? null,
-        );
+        $description = $data['description'] ?? null;
+
+        $this->incidents->startDiagnosis($incident, $category, $description);
+
+        /*
+         * RIESGO FISICO: se salta el diagnostico entero (plan 17.5).
+         *
+         * Ante "sale humo del proyector", abrir el arbol de proyector y
+         * pedirle al docente que revise el cable seria mandarlo a acercarse a
+         * un equipo que puede estar quemandose. Se va directo a solicitar
+         * soporte, y la pantalla le dice que no toque nada.
+         */
+        $hazardTerm = $this->safety->detect($description);
+
+        if ($hazardTerm !== null) {
+            $this->incidents->flagHazard($incident, $hazardTerm);
+
+            return redirect()->route('teacher.escalate');
+        }
 
         // Al diagnostico guiado. Si la categoria no tiene procedimiento
         // publicado, ese controlador reenvia solo a la confirmacion: el

@@ -34,8 +34,21 @@ final class PriorityCalculator
         ?IncidentCategory $category,
         Room $room,
         bool $blocksClass,
+        bool $hazardReported = false,
     ): PriorityResult {
         $factors = [];
+
+        /*
+         * El riesgo fisico corta por lo sano: prioridad maxima y se acabo el
+         * calculo. No se suma a los demas factores porque no compite con
+         * ellos — que el aula sea poco critica o que sea la primera vez no
+         * hace menos urgente un equipo que echa humo.
+         */
+        if ($hazardReported) {
+            return new PriorityResult(IncidentPriority::Critical, [
+                'El docente describió una situación de riesgo físico (prioridad máxima)',
+            ]);
+        }
 
         // 1. Base: la prioridad por defecto de la categoria.
         $level = $this->baseLevel($category);
