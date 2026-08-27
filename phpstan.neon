@@ -1,0 +1,16 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    # Nivel 5 como punto de partida. Se sube a 6 cuando el codigo propio
+    # este completo: empezar en 8 con un proyecto vacio solo genera ruido.
+    level: 5
+
+    paths:
+        - app
+        - database/seeders
+        - config/incidencias.php
+
+    # Larastan necesita arrancar la aplicacion para resolver los modelos.
+    bootstrapFiles:
+        - vendor/autoload.php

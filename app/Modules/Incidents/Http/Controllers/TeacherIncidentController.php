@@ -1,0 +1,275 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Modules\Incidents\Http\Controllers;
+
+use App\Http\Controllers\Controller;
+use App\Modules\Diagnostics\Engine\DiagnosticEngine;
+use App\Modules\Incidents\Models\Incident;
+use App\Modules\Incidents\Models\IncidentCategory;
+use App\Modules\Incidents\Services\AbuseContext;
+use App\Modules\Incidents\Services\AbuseGuard;
+use App\Modules\Incidents\Services\IncidentService;
+use App\Shared\Enums\IncidentStatus as S;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
+
+/**
+ * Reporte de la incidencia por parte del docente.
+ *
+ * Publico y sin autenticacion. El borrador ya existe (se creo al confirmar
+ * la ubicacion); aqui el docente dice QUE le pasa y, si hace falta, pide
+ * apoyo presencial.
+ *
+ * El borrador viaja por sesion mediante su uuid, no por la URL. Es lo
+ * contrario que en la seleccion de ubicacion, y a proposito: la ubicacion
+ * es informacion publica del catalogo y conviene que el boton "atras"
+ * funcione, pero el identificador de una incidencia no debe quedar en el
+ * historial del navegador de un aula compartida.
+ */
+class TeacherIncidentController extends Controller
+{
+    private const SESSION_KEY = 'teacher.incident_uuid';
+
+    public function __construct(
+        private readonly IncidentService $incidents,
+        private readonly AbuseGuard $guard,
+    ) {}
+
+    /**
+     * "¿Qué problema tienes?" — categorias en botones grandes.
+     */
+    public function chooseCategory(Request $request): View|RedirectResponse
+    {
+        $incident = $this->currentIncident($request);
+
+        if ($incident === null) {
+            return redirect()->route('teacher.start');
+        }
+
+        return view('teacher.category', [
+            'incident' => $incident,
+            'categories' => IncidentCategory::active()->orderBy('sort_order')->get(),
+        ]);
+    }
+
+    public function storeCategory(Request $request): RedirectResponse
+    {
+        $incident = $this->currentIncident($request);
+
+        if ($incident === null) {
+            return redirect()->route('teacher.start');
+        }
+
+        $data = $request->validate([
+            'category_id' => ['required', 'integer', 'exists:incident_categories,id'],
+            'description' => ['nullable', 'string', 'max:1000'],
+        ], [
+            'category_id.required' => 'Elige el tipo de problema.',
+        ]);
+
+        $category = IncidentCategory::findOrFail($data['category_id']);
+
+        $this->incidents->startDiagnosis(
+            $incident,
+            $category,
+            $data['description'] ?? null,
+        );
+
+        // Al diagnostico guiado. Si la categoria no tiene procedimiento
+        // publicado, ese controlador reenvia solo a la confirmacion: el
+        // sistema no inventa pasos cuando no los tiene.
+        return redirect()->route('teacher.diagnostic');
+    }
+
+    /**
+     * Confirmacion de solucion. Las tres opciones son OBLIGATORIAS y estan
+     * fijadas por el plan (12): resuelto, sigue el problema, necesito
+     * soporte.
+     *
+     * En la Fase 4 el diagnostico guiado se intercala antes de esta
+     * pantalla; el desenlace seguira siendo este.
+     */
+    public function outcome(Request $request, DiagnosticEngine $engine): View|RedirectResponse
+    {
+        $incident = $this->currentIncident($request);
+
+        if ($incident === null || $incident->category === null) {
+            return redirect()->route('teacher.start');
+        }
+
+        $version = $engine->flowFor($incident->category_id);
+
+        // "Todavía tengo el problema" solo se ofrece si de verdad quedan
+        // pasos por delante. Un botón que recarga la misma pantalla haría
+        // creer al docente que el sistema se colgó.
+        $canContinue = $version !== null
+            && $engine->currentStep($incident, $version) !== null;
+
+        return view('teacher.outcome', [
+            'incident' => $incident,
+            'canContinue' => $canContinue,
+            'stepsDone' => $engine->progressOf($incident)->count(),
+        ]);
+    }
+
+    /** "Sí, funciona correctamente." */
+    public function markResolved(Request $request): RedirectResponse
+    {
+        $incident = $this->currentIncident($request);
+
+        if ($incident === null) {
+            return redirect()->route('teacher.start');
+        }
+
+        $this->incidents->resolveByAssistant($incident);
+        $request->session()->forget(self::SESSION_KEY);
+
+        return redirect()->route('teacher.done', ['uuid' => $incident->uuid]);
+    }
+
+    /** "Necesito soporte técnico." */
+    public function escalateForm(Request $request): View|RedirectResponse
+    {
+        $incident = $this->currentIncident($request);
+
+        if ($incident === null) {
+            return redirect()->route('teacher.start');
+        }
+
+        return view('teacher.escalate', [
+            'incident' => $incident,
+
+            // Marca de tiempo de apertura del formulario: alimenta la senal
+            // de "no humano" (envio instantaneo). No es un secreto, solo
+            // una medida.
+            'formOpenedAt' => now()->timestamp,
+        ]);
+    }
+
+    public function escalateStore(Request $request): RedirectResponse
+    {
+        $incident = $this->currentIncident($request);
+
+        if ($incident === null) {
+            return redirect()->route('teacher.start');
+        }
+
+        $data = $request->validate([
+            'blocks_class' => ['required', 'boolean'],
+            'confirmed' => ['accepted'],
+            'form_opened_at' => ['nullable', 'integer'],
+
+            // Campo trampa: oculto por CSS, solo lo rellenan los bots.
+            'website' => ['nullable', 'string', 'max:255'],
+        ], [
+            'blocks_class.required' => 'Indícanos si el problema impide continuar la clase.',
+            'confirmed.accepted' => 'Confirma la solicitud antes de enviarla.',
+        ]);
+
+        $elapsed = $data['form_opened_at'] !== null
+            ? max(0, now()->timestamp - (int) $data['form_opened_at'])
+            : null;
+
+        $verdict = $this->guard->check(new AbuseContext(
+            room: $incident->room,
+            category: $incident->category,
+            deviceKey: $incident->device_key,
+            ipHash: $incident->ip_hash,
+            description: $incident->reported_description,
+            confirmed: true,
+            formElapsedSeconds: $elapsed,
+            honeypot: $data['website'] ?? null,
+        ));
+
+        if (! $verdict->allowed) {
+            // Nunca se deja al docente sin salida: si hay un ticket abierto
+            // para lo mismo, se le ofrece sumarse a el (plan 16.4).
+            if ($verdict->canJoinExisting()) {
+                return redirect()
+                    ->route('teacher.join', ['uuid' => $verdict->relatedIncident->uuid])
+                    ->with('error', $verdict->teacherMessage());
+            }
+
+            return back()->with('error', $verdict->teacherMessage());
+        }
+
+        $ticket = $this->incidents->escalate($incident, (bool) $data['blocks_class']);
+        $request->session()->forget(self::SESSION_KEY);
+
+        return redirect()->route('teacher.done', ['uuid' => $ticket->uuid]);
+    }
+
+    /** Pantalla para sumarse a un ticket ya abierto. */
+    public function joinForm(Request $request, string $uuid): View|RedirectResponse
+    {
+        $target = Incident::where('uuid', $uuid)->firstOrFail();
+        $draft = $this->currentIncident($request);
+
+        if ($draft === null) {
+            return redirect()->route('teacher.start');
+        }
+
+        return view('teacher.join', compact('target', 'draft'));
+    }
+
+    public function joinStore(Request $request, string $uuid): RedirectResponse
+    {
+        $target = Incident::where('uuid', $uuid)->firstOrFail();
+        $draft = $this->currentIncident($request);
+
+        if ($draft === null) {
+            return redirect()->route('teacher.start');
+        }
+
+        $this->incidents->joinExisting($draft, $target);
+        $request->session()->forget(self::SESSION_KEY);
+
+        return redirect()->route('teacher.done', ['uuid' => $target->uuid]);
+    }
+
+    /** Pantalla final: que va a pasar ahora. */
+    public function done(string $uuid): View
+    {
+        $incident = Incident::with(['room.floor.building', 'category', 'priority', 'status'])
+            ->where('uuid', $uuid)
+            ->firstOrFail();
+
+        return view('teacher.done', compact('incident'));
+    }
+
+    /**
+     * Recupera el borrador en curso desde la sesion.
+     *
+     * Devuelve null si no hay ninguno, si ya se cerro o si quedo en un
+     * estado que no admite continuar: en todos esos casos el docente vuelve
+     * al inicio en lugar de encontrarse una pantalla rota.
+     */
+    private function currentIncident(Request $request): ?Incident
+    {
+        $uuid = $request->session()->get(self::SESSION_KEY);
+
+        if (! is_string($uuid)) {
+            return null;
+        }
+
+        $incident = Incident::with(['room.floor.building', 'category', 'status'])
+            ->where('uuid', $uuid)
+            ->first();
+
+        if ($incident === null) {
+            return null;
+        }
+
+        return in_array($incident->statusCode(), [S::Draft, S::Diagnosing], true)
+            ? $incident
+            : null;
+    }
+
+    public static function sessionKey(): string
+    {
+        return self::SESSION_KEY;
+    }
+}
