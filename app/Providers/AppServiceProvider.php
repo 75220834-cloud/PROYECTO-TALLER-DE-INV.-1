@@ -10,8 +10,16 @@ use App\Modules\Assistant\Providers\NullLlmProvider;
 use App\Modules\Assistant\Providers\OllamaProvider;
 use App\Modules\Incidents\Events\IncidentEscalated;
 use App\Modules\Incidents\Listeners\NotifySupportOfEscalation;
+use App\Modules\Knowledge\Extractors\PdfExtractor;
+use App\Modules\Knowledge\Extractors\PlainTextExtractor;
+use App\Modules\Knowledge\Extractors\WordExtractor;
+use App\Modules\Knowledge\Pipeline\Chunker;
+use App\Modules\Knowledge\Pipeline\DocumentIngestionPipeline;
 use App\Modules\Notifications\Channels\DatabaseChannel;
 use App\Modules\Notifications\Services\NotificationDispatcher;
+use App\Modules\Retrieval\Contracts\EmbeddingProvider;
+use App\Modules\Retrieval\Providers\HashEmbeddingProvider;
+use App\Modules\Retrieval\Providers\OllamaEmbeddingProvider;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
@@ -45,6 +53,35 @@ class AppServiceProvider extends ServiceProvider
             'fake' => new FakeLlmProvider,
             default => new NullLlmProvider,
         });
+
+        /*
+         * Proveedor de vectores.
+         *
+         * Solo con 'ollama' se usa un modelo real. En cualquier otro caso se
+         * cae al proveedor por hashing: es determinista, no necesita nada
+         * instalado y permite que la base de conocimiento se indexe y se
+         * busque igual. Su calidad semantica es muy inferior —no reconoce
+         * parafrasis— y por eso el sistema apoya la busqueda en el filtro
+         * lexico cuando no hay modelo (plan 14.3).
+         */
+        $this->app->singleton(EmbeddingProvider::class, fn () => match (config('incidencias.llm.provider')) {
+            'ollama' => new OllamaEmbeddingProvider,
+            default => new HashEmbeddingProvider,
+        });
+
+        /*
+         * Tuberia de ingesta con sus extractores. El orden importa: se
+         * consulta uno a uno hasta encontrar el que acepta el formato, y el
+         * de texto plano acepta 'application/octet-stream', asi que va al
+         * final para no capturar archivos que otro extractor manejaria mejor.
+         */
+        $this->app->singleton(DocumentIngestionPipeline::class, fn ($app) => new DocumentIngestionPipeline(
+            $app->make(Chunker::class),
+            $app->make(EmbeddingProvider::class),
+            new PdfExtractor,
+            new WordExtractor,
+            new PlainTextExtractor,
+        ));
     }
 
     public function boot(): void

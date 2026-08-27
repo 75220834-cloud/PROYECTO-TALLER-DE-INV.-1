@@ -7,6 +7,7 @@ use App\Modules\Equipment\Http\Controllers\EquipmentController;
 use App\Modules\Identity\Http\Controllers\LoginController;
 use App\Modules\Incidents\Http\Controllers\SupportIncidentController;
 use App\Modules\Incidents\Http\Controllers\TeacherIncidentController;
+use App\Modules\Knowledge\Http\Controllers\KnowledgeController;
 use App\Modules\Locations\Http\Controllers\BuildingController;
 use App\Modules\Locations\Http\Controllers\FloorController;
 use App\Modules\Locations\Http\Controllers\QrCodeController;
@@ -177,6 +178,39 @@ Route::middleware('auth')->prefix('panel')->name('admin.')->group(function () {
 
     Route::middleware('can:equipment.view')->group(function () {
         Route::get('/equipos', [EquipmentController::class, 'index'])->name('equipment.index');
+    });
+
+    /*
+     * Base de conocimiento. Ver esta separado de gestionar: el tecnico
+     * consulta los procedimientos, pero solo el gestor de conocimiento los
+     * carga y publica. Un documento mal publicado cambia lo que el
+     * asistente le dice a TODOS los docentes.
+     */
+    Route::middleware('can:knowledge.view')->group(function () {
+        Route::get('/conocimiento', [KnowledgeController::class, 'index'])->name('knowledge.index');
+        Route::get('/conocimiento/{document}', [KnowledgeController::class, 'show'])
+            ->whereNumber('document')->name('knowledge.show');
+        Route::get('/conocimiento/version/{version}/descargar', [KnowledgeController::class, 'download'])
+            ->whereNumber('version')->name('knowledge.download');
+    });
+
+    Route::middleware('can:knowledge.manage')->group(function () {
+        Route::get('/conocimiento/nuevo', [KnowledgeController::class, 'create'])->name('knowledge.create');
+        Route::post('/conocimiento', [KnowledgeController::class, 'store'])->name('knowledge.store');
+        Route::get('/conocimiento/{document}/editar', [KnowledgeController::class, 'edit'])
+            ->whereNumber('document')->name('knowledge.edit');
+        Route::put('/conocimiento/{document}', [KnowledgeController::class, 'update'])
+            ->whereNumber('document')->name('knowledge.update');
+        Route::post('/conocimiento/{document}/version', [KnowledgeController::class, 'addVersion'])
+            ->whereNumber('document')->name('knowledge.version');
+        Route::post('/conocimiento/{document}/publicar', [KnowledgeController::class, 'publish'])
+            ->whereNumber('document')->name('knowledge.publish');
+        Route::post('/conocimiento/{document}/despublicar', [KnowledgeController::class, 'unpublish'])
+            ->whereNumber('document')->name('knowledge.unpublish');
+        Route::post('/conocimiento/{document}/archivar', [KnowledgeController::class, 'archive'])
+            ->whereNumber('document')->name('knowledge.archive');
+        Route::post('/conocimiento/version/{version}/reindexar', [KnowledgeController::class, 'reindex'])
+            ->whereNumber('version')->name('knowledge.reindex');
     });
 
     Route::middleware('can:equipment.manage')->group(function () {

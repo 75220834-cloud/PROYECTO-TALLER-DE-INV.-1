@@ -61,6 +61,13 @@
                 </x-nav-link>
             @endcan
 
+            @can('knowledge.view')
+                <p class="px-3 pb-1 pt-4 text-[11px] font-semibold uppercase tracking-wider text-slate-500">Asistente</p>
+                <x-nav-link :href="route('admin.knowledge.index')" :active="request()->routeIs('admin.knowledge.*')">
+                    Conocimiento
+                </x-nav-link>
+            @endcan
+
             @can('locations.manage')
                 <p class="px-3 pb-1 pt-4 text-[11px] font-semibold uppercase tracking-wider text-slate-500">Acceso</p>
                 <x-nav-link :href="route('admin.qr.show')" :active="request()->routeIs('admin.qr.*')">
