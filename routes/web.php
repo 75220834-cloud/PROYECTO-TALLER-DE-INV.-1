@@ -19,6 +19,7 @@ use App\Modules\Locations\Http\Controllers\RoomController;
 use App\Modules\Locations\Http\Controllers\SiteController;
 use App\Modules\Locations\Http\Controllers\TeacherLocationController;
 use App\Modules\Media\Http\Controllers\MediaController;
+use App\Modules\Media\Http\Controllers\MediaLibraryController;
 use App\Modules\Risk\Http\Controllers\RiskController;
 use Illuminate\Support\Facades\Route;
 
@@ -224,6 +225,26 @@ Route::middleware('auth')->prefix('panel')->name('admin.')->group(function () {
      * antiabuso lo necesita tambien quien calibra los umbrales durante el
      * piloto.
      */
+    /*
+     * Banco de imagenes (CU-A-13, A-14 y A-15).
+     *
+     * Va bajo media.manage, que tiene el gestor de conocimiento: quien
+     * fotografia los equipos y valida los procedimientos es la misma
+     * persona, y separar ambos permisos la obligaria a pedir accesos.
+     */
+    Route::middleware('can:media.manage')->group(function () {
+        Route::get('/imagenes', [MediaLibraryController::class, 'index'])->name('media.index');
+        Route::get('/imagenes/cobertura', [MediaLibraryController::class, 'coverageReport'])->name('media.coverage');
+        Route::get('/imagenes/nueva', [MediaLibraryController::class, 'create'])->name('media.create');
+        Route::post('/imagenes', [MediaLibraryController::class, 'store'])->name('media.store');
+        Route::get('/imagenes/{asset}/editar', [MediaLibraryController::class, 'edit'])
+            ->whereNumber('asset')->name('media.edit');
+        Route::put('/imagenes/{asset}', [MediaLibraryController::class, 'update'])
+            ->whereNumber('asset')->name('media.update');
+        Route::patch('/imagenes/{asset}/visibilidad', [MediaLibraryController::class, 'toggle'])
+            ->whereNumber('asset')->name('media.toggle');
+    });
+
     Route::get('/auditoria', [AuditController::class, 'index'])
         ->middleware('can:audit.view')->name('audit.index');
 

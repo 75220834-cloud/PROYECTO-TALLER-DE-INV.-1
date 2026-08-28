@@ -85,6 +85,12 @@
                 </x-nav-link>
             @endcan
 
+            @can('media.manage')
+                <x-nav-link :href="route('admin.media.index')" :active="request()->routeIs('admin.media.*')">
+                    Banco de imágenes
+                </x-nav-link>
+            @endcan
+
             @can('locations.manage')
                 <p class="px-3 pb-1 pt-4 text-[11px] font-semibold uppercase tracking-wider text-slate-500">Acceso</p>
                 <x-nav-link :href="route('admin.qr.show')" :active="request()->routeIs('admin.qr.*')">
