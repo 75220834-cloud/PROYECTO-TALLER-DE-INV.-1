@@ -123,3 +123,29 @@ it('guarda hasheada también la IP de la auditoría administrativa', function ()
         ->and($log->ip_hash)->not->toContain('.')
         ->and($log->ip_hash)->not->toBe(request()->ip());
 });
+
+it('en desarrollo permite a Vite también por IPv6', function () {
+    // En Windows «localhost» suele resolver primero a IPv6, así que Vite
+    // sirve desde http://[::1]:5173. Sin ese origen la aplicación se ve sin
+    // estilos en desarrollo — un fallo que las pruebas no veían porque no
+    // cargan assets, y que solo apareció con un navegador de verdad.
+    //
+    // Se fuerza el entorno «local» en lugar de saltar la prueba fuera de él:
+    // una prueba que nunca corre no protege de nada.
+    app()->detectEnvironment(fn () => 'local');
+
+    $csp = (string) $this->followingRedirects()->get(route('teacher.start'))
+        ->headers->get('Content-Security-Policy');
+
+    expect($csp)->toContain('http://[::1]:5173')
+        ->and($csp)->toContain('ws://[::1]:5173');
+});
+
+it('en producción NO abre la política para el servidor de desarrollo', function () {
+    app()->detectEnvironment(fn () => 'production');
+
+    $csp = (string) $this->followingRedirects()->get(route('teacher.start'))
+        ->headers->get('Content-Security-Policy');
+
+    expect($csp)->not->toContain('5173');
+});

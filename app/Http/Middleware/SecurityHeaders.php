@@ -87,10 +87,18 @@ class SecurityHeaders
          * resultado posible. La excepcion se limita a `local`.
          */
         if (app()->environment('local')) {
-            $vite = 'http://localhost:5173 http://127.0.0.1:5173';
+            /*
+             * Los TRES orígenes hacen falta. Vite anuncia su servidor por el
+             * nombre que resuelva el sistema, y en Windows `localhost` suele
+             * resolver primero a IPv6: sin `[::1]` la aplicación se ve sin
+             * estilos en desarrollo y la consola se llena de violaciones de
+             * CSP. Lo encontró el navegador, no las pruebas — que no cargan
+             * assets.
+             */
+            $vite = 'http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173';
             $scriptSrc .= " {$vite}";
             $styleSrc .= " {$vite}";
-            $connectSrc .= " {$vite} ws://localhost:5173 ws://127.0.0.1:5173";
+            $connectSrc .= " {$vite} ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173";
         }
 
         return implode('; ', [
