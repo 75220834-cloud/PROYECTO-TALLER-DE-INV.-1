@@ -6,10 +6,13 @@ use App\Http\Controllers\HealthController;
 use App\Modules\Analytics\Http\Controllers\DashboardController;
 use App\Modules\Assistant\Http\Controllers\TeacherAssistantController;
 use App\Modules\Audit\Http\Controllers\AuditController;
+use App\Modules\Diagnostics\Http\Controllers\FlowController;
+use App\Modules\Diagnostics\Http\Controllers\StepController;
 use App\Modules\Diagnostics\Http\Controllers\TeacherDiagnosticController;
 use App\Modules\Equipment\Http\Controllers\EquipmentController;
 use App\Modules\Identity\Http\Controllers\LoginController;
 use App\Modules\Identity\Http\Controllers\UserController;
+use App\Modules\Incidents\Http\Controllers\CategoryController;
 use App\Modules\Incidents\Http\Controllers\SupportIncidentController;
 use App\Modules\Incidents\Http\Controllers\TeacherIncidentController;
 use App\Modules\Knowledge\Http\Controllers\KnowledgeController;
@@ -250,6 +253,51 @@ Route::middleware('auth')->prefix('panel')->name('admin.')->group(function () {
      * Usuarios del panel (CU-A-05). Solo personal interno: el docente no
      * tiene cuenta ni la va a tener (decision D-2 del plan).
      */
+    /*
+     * Catalogo de categorias (CU-A-04). Va con locations.manage: cambiar una
+     * categoria afecta a TODOS los tickets igual que cambiar un aula, y no
+     * es algo que un tecnico deba poder hacer entre atenciones.
+     */
+    Route::middleware('can:locations.manage')->group(function () {
+        Route::get('/categorias', [CategoryController::class, 'index'])->name('categories.index');
+        Route::get('/categorias/nueva', [CategoryController::class, 'create'])->name('categories.create');
+        Route::post('/categorias', [CategoryController::class, 'store'])->name('categories.store');
+        Route::get('/categorias/{category}/editar', [CategoryController::class, 'edit'])
+            ->whereNumber('category')->name('categories.edit');
+        Route::put('/categorias/{category}', [CategoryController::class, 'update'])
+            ->whereNumber('category')->name('categories.update');
+        Route::patch('/categorias/{category}/visibilidad', [CategoryController::class, 'toggle'])
+            ->whereNumber('category')->name('categories.toggle');
+    });
+
+    /*
+     * Arboles de diagnostico (CU-A-10). Va con diagnostics.manage, que tiene
+     * el gestor de conocimiento: quien sabe como se arregla un proyector es
+     * quien debe escribir el procedimiento, no el programador.
+     */
+    Route::middleware('can:diagnostics.manage')->group(function () {
+        Route::get('/procedimientos', [FlowController::class, 'index'])->name('flows.index');
+        Route::post('/procedimientos', [FlowController::class, 'store'])->name('flows.store');
+
+        Route::get('/procedimientos/{version}', [FlowController::class, 'show'])
+            ->whereNumber('version')->name('flows.show');
+        Route::post('/procedimientos/{version}/duplicar', [FlowController::class, 'duplicate'])
+            ->whereNumber('version')->name('flows.duplicate');
+        Route::post('/procedimientos/{version}/publicar', [FlowController::class, 'publish'])
+            ->whereNumber('version')->name('flows.publish');
+
+        Route::get('/procedimientos/{version}/paso', [StepController::class, 'create'])
+            ->whereNumber('version')->name('flows.steps.create');
+        Route::post('/procedimientos/{version}/paso', [StepController::class, 'store'])
+            ->whereNumber('version')->name('flows.steps.store');
+        Route::get('/pasos/{step}/editar', [StepController::class, 'edit'])
+            ->whereNumber('step')->name('flows.steps.edit');
+        Route::put('/pasos/{step}', [StepController::class, 'update'])
+            ->whereNumber('step')->name('flows.steps.update');
+        Route::delete('/pasos/{step}', [StepController::class, 'destroy'])
+            ->whereNumber('step')->name('flows.steps.destroy');
+    });
+
     Route::middleware('can:users.manage')->group(function () {
         Route::get('/usuarios', [UserController::class, 'index'])->name('users.index');
         Route::get('/usuarios/nuevo', [UserController::class, 'create'])->name('users.create');

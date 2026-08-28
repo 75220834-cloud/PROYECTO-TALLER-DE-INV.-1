@@ -80,6 +80,12 @@
                 </x-nav-link>
             @endcan
 
+            @can('locations.manage')
+                <x-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">
+                    Tipos de problema
+                </x-nav-link>
+            @endcan
+
             @can('equipment.view')
                 <x-nav-link :href="route('admin.equipment.index')" :active="request()->routeIs('admin.equipment.*')">
                     Equipos
@@ -96,6 +102,12 @@
             @can('media.manage')
                 <x-nav-link :href="route('admin.media.index')" :active="request()->routeIs('admin.media.*')">
                     Banco de imágenes
+                </x-nav-link>
+            @endcan
+
+            @can('diagnostics.manage')
+                <x-nav-link :href="route('admin.flows.index')" :active="request()->routeIs('admin.flows.*')">
+                    Procedimientos
                 </x-nav-link>
             @endcan
 
