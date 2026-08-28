@@ -124,21 +124,23 @@ it('guarda hasheada también la IP de la auditoría administrativa', function ()
         ->and($log->ip_hash)->not->toBe(request()->ip());
 });
 
-it('en desarrollo permite a Vite también por IPv6', function () {
-    // En Windows «localhost» suele resolver primero a IPv6, así que Vite
-    // sirve desde http://[::1]:5173. Sin ese origen la aplicación se ve sin
-    // estilos en desarrollo — un fallo que las pruebas no veían porque no
-    // cargan assets, y que solo apareció con un navegador de verdad.
-    //
-    // Se fuerza el entorno «local» en lugar de saltar la prueba fuera de él:
-    // una prueba que nunca corre no protege de nada.
+it('en desarrollo permite a Vite, y NUNCA con un literal IPv6', function () {
+    // Un literal IPv6 entre corchetes no es una fuente válida en CSP: el
+    // navegador descarta la directiva ENTERA por inválida y la aplicación se
+    // queda sin estilos. Se arregla fijando Vite a IPv4 (vite.config.js), no
+    // metiendo [::1] aquí.
     app()->detectEnvironment(fn () => 'local');
 
     $csp = (string) $this->followingRedirects()->get(route('teacher.start'))
         ->headers->get('Content-Security-Policy');
 
-    expect($csp)->toContain('http://[::1]:5173')
-        ->and($csp)->toContain('ws://[::1]:5173');
+    expect($csp)->toContain('http://127.0.0.1:5173')
+        ->and($csp)->not->toContain('[::1]');
+});
+
+it('vite está fijado a IPv4 para que ese origen no vuelva a aparecer', function () {
+    // Sin esto, en Windows Vite anuncia sus assets por IPv6 y vuelve el bug.
+    expect(file_get_contents(base_path('vite.config.js')))->toContain("host: '127.0.0.1'");
 });
 
 it('en producción NO abre la política para el servidor de desarrollo', function () {

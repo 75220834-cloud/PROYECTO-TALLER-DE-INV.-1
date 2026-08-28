@@ -10,12 +10,12 @@
 
     <h1 class="mb-5 text-2xl font-bold">Confirma dónde estás</h1>
 
-    <div class="rounded-xl border-2 border-slate-900 bg-slate-50 px-5 py-6 text-center">
-        <p class="text-sm text-slate-600">Estás solicitando asistencia desde</p>
+    <div class="rounded-xl border-2 border-primary bg-surface-low px-5 py-6 text-center">
+        <p class="text-sm text-on-surface-variant">Estás solicitando asistencia desde</p>
 
         <p class="mt-2 font-mono text-3xl font-bold tracking-tight">{{ $room->code }}</p>
 
-        <p class="mt-2 text-lg text-slate-700">
+        <p class="mt-2 text-lg text-on-surface-variant">
             {{ $room->floor?->building?->name }}<br>
             {{ $room->floor?->label }}
         </p>
@@ -29,13 +29,13 @@
         <input type="hidden" name="room_id" value="{{ $room->id }}">
 
         <button type="submit"
-                class="flex min-h-[64px] w-full items-center justify-center rounded-xl bg-slate-900 px-5 py-4 text-lg font-semibold text-white transition active:scale-[.99] hover:bg-slate-800">
+                class="flex min-h-[64px] w-full items-center justify-center rounded-xl bg-primary px-5 py-4 text-lg font-semibold text-on-primary transition active:scale-[.99] hover:opacity-90">
             Sí, es correcto
         </button>
     </form>
 
     <a href="{{ route('teacher.start') }}"
-       class="mt-3 flex min-h-[56px] w-full items-center justify-center rounded-xl border-2 border-slate-300 px-5 py-3 text-lg font-medium text-slate-700 hover:bg-slate-50">
+       class="mt-3 flex min-h-[56px] w-full items-center justify-center rounded-xl border-2 border-outline-variant px-5 py-3 text-lg font-medium text-on-surface-variant hover:bg-surface-high">
         Cambiar aula
     </a>
 @endsection

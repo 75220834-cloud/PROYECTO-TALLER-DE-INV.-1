@@ -6,7 +6,7 @@
     <h1 class="mb-5 text-2xl font-bold">¿En qué aula estás?</h1>
 
     @if ($rooms->isEmpty())
-        <p class="rounded-lg border-2 border-amber-300 bg-amber-50 px-4 py-3 text-base text-amber-900">
+        <p class="rounded-lg border-2 border-warn bg-warn-container px-4 py-3 text-base text-on-warn-container">
             No hay aulas disponibles en este piso.
         </p>
     @else
@@ -22,7 +22,7 @@
 
 @section('back')
     <a href="{{ route('teacher.floors', ['site' => $site, 'building' => $building]) }}"
-       class="block text-center text-base text-slate-600 underline underline-offset-4">
+       class="block text-center text-base text-on-surface-variant underline underline-offset-4">
         Volver
     </a>
 @endsection

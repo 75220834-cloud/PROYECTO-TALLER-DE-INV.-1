@@ -7,14 +7,14 @@
 
 <div class="mb-5 grid gap-3 sm:grid-cols-4">
     @foreach ([
-        ['Abiertas', $counts['open'], null, 'text-slate-900'],
-        ['Sin asignar', $counts['unassigned'], 'unassigned', 'text-amber-700'],
-        ['Mías', $counts['mine'], 'mine', 'text-sky-700'],
-        ['Clase detenida', $counts['blocking'], null, 'text-rose-700'],
+        ['Abiertas', $counts['open'], null, 'text-primary'],
+        ['Sin asignar', $counts['unassigned'], 'unassigned', 'text-warn'],
+        ['Mías', $counts['mine'], 'mine', 'text-primary'],
+        ['Clase detenida', $counts['blocking'], null, 'text-danger'],
     ] as [$label, $value, $scope, $color])
         <a href="{{ route('support.incidents.index', $scope ? ['scope' => $scope] : []) }}"
-           class="rounded-lg border border-slate-200 bg-white px-4 py-3 transition hover:border-slate-400">
-            <p class="text-xs uppercase tracking-wide text-slate-500">{{ $label }}</p>
+           class="rounded-lg border border-outline-variant bg-surface-lowest px-4 py-3 transition hover:border-outline">
+            <p class="text-xs uppercase tracking-wide text-on-surface-variant">{{ $label }}</p>
             <p class="mt-1 text-2xl font-semibold {{ $color }}">{{ $value }}</p>
         </a>
     @endforeach
@@ -22,32 +22,32 @@
 
 <form method="GET" class="mb-4 flex flex-wrap items-center gap-2">
     <input name="q" value="{{ $search }}" placeholder="Ticket o aula…"
-           class="rounded-md border-slate-300 px-3 py-2 text-sm">
+           class="rounded-md border-outline-variant px-3 py-2 text-sm">
 
-    <select name="status" class="rounded-md border-slate-300 px-3 py-2 text-sm">
+    <select name="status" class="rounded-md border-outline-variant px-3 py-2 text-sm">
         <option value="">Solo abiertas</option>
         @foreach ($statuses as $s)
             <option value="{{ $s->code }}" @selected(request('status') === $s->code)>{{ $s->name }}</option>
         @endforeach
     </select>
 
-    <select name="category_id" class="rounded-md border-slate-300 px-3 py-2 text-sm">
+    <select name="category_id" class="rounded-md border-outline-variant px-3 py-2 text-sm">
         <option value="">Todas las categorías</option>
         @foreach ($categories as $c)
             <option value="{{ $c->id }}" @selected(request('category_id') == $c->id)>{{ $c->name }}</option>
         @endforeach
     </select>
 
-    <button class="rounded-md border border-slate-300 px-3 py-2 text-sm hover:bg-slate-50">Filtrar</button>
+    <button class="rounded-md border border-outline-variant px-3 py-2 text-sm hover:bg-surface-low">Filtrar</button>
 
     @if (request()->hasAny(['q', 'status', 'category_id', 'scope']))
-        <a href="{{ route('support.incidents.index') }}" class="text-sm text-slate-500 underline underline-offset-2">Limpiar</a>
+        <a href="{{ route('support.incidents.index') }}" class="text-sm text-on-surface-variant underline underline-offset-2">Limpiar</a>
     @endif
 </form>
 
-<div class="overflow-hidden rounded-lg border border-slate-200 bg-white">
-    <table class="min-w-full divide-y divide-slate-200 text-sm">
-        <thead class="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
+<div class="overflow-hidden rounded-lg border border-outline-variant bg-surface-lowest">
+    <table class="min-w-full divide-y divide-outline-variant text-sm">
+        <thead class="bg-surface-low text-left text-xs uppercase tracking-wide text-on-surface-variant">
             <tr>
                 <th class="px-4 py-3">Ticket</th>
                 <th class="px-4 py-3">Aula</th>
@@ -58,17 +58,17 @@
                 <th class="px-4 py-3">Hace</th>
             </tr>
         </thead>
-        <tbody class="divide-y divide-slate-100">
+        <tbody class="divide-y divide-surface-mid">
         @forelse ($incidents as $i)
-            <tr class="cursor-pointer hover:bg-slate-50" data-row-href="{{ route('support.incidents.show', $i) }}">
+            <tr class="cursor-pointer hover:bg-surface-low" data-row-href="{{ route('support.incidents.show', $i) }}">
                 <td class="px-4 py-3 font-mono text-xs">
-                    <a href="{{ route('support.incidents.show', $i) }}" class="font-semibold text-slate-900 hover:underline">
+                    <a href="{{ route('support.incidents.show', $i) }}" class="font-semibold text-primary hover:underline">
                         #{{ $i->ticket_number ?? '—' }}
                     </a>
                     @if ($i->blocks_class)
                         {{-- Señal más importante de la bandeja: hay una clase
                              detenida ahora mismo. --}}
-                        <span class="ml-1 inline-flex rounded bg-rose-100 px-1.5 py-0.5 text-[10px] font-bold text-rose-800">CLASE</span>
+                        <span class="ml-1 inline-flex rounded bg-danger-container px-1.5 py-0.5 text-[10px] font-bold text-on-danger-container">CLASE</span>
                     @endif
                 </td>
                 <td class="px-4 py-3 font-mono text-xs font-semibold">{{ $i->room?->code }}</td>
@@ -85,11 +85,11 @@
                         {{ $i->status?->name }}
                     </span>
                 </td>
-                <td class="px-4 py-3 text-slate-500">{{ $i->assignee?->name ?? 'Sin asignar' }}</td>
-                <td class="px-4 py-3 text-slate-500">{{ $i->created_at->diffForHumans(null, true) }}</td>
+                <td class="px-4 py-3 text-on-surface-variant">{{ $i->assignee?->name ?? 'Sin asignar' }}</td>
+                <td class="px-4 py-3 text-on-surface-variant">{{ $i->created_at->diffForHumans(null, true) }}</td>
             </tr>
         @empty
-            <tr><td colspan="7" class="px-4 py-10 text-center text-slate-500">No hay incidencias que coincidan.</td></tr>
+            <tr><td colspan="7" class="px-4 py-10 text-center text-on-surface-variant">No hay incidencias que coincidan.</td></tr>
         @endforelse
         </tbody>
     </table>

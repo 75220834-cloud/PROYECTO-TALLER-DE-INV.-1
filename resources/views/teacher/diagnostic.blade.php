@@ -10,7 +10,7 @@
          lo que hace el paso utilizable, no un adorno (plan §13.6). --}}
     @if ($primary)
         <figure class="mb-5">
-            <div class="overflow-hidden rounded-xl border-2 border-slate-300 bg-white">
+            <div class="overflow-hidden rounded-xl border-2 border-outline-variant bg-surface-lowest">
                 @if ($primary->isInlineSvg())
                     <div class="w-full">{!! file_get_contents(Storage::disk(config('incidencias.media.disk'))->path($primary->file_path)) !!}</div>
                 @else
@@ -20,7 +20,7 @@
             </div>
 
             @if ($primary->caption)
-                <figcaption class="mt-2 text-center text-base text-slate-600">{{ $primary->caption }}</figcaption>
+                <figcaption class="mt-2 text-center text-base text-on-surface-variant">{{ $primary->caption }}</figcaption>
             @endif
         </figure>
     @endif
@@ -28,7 +28,7 @@
     <h1 class="mb-2 text-2xl font-bold leading-snug">{{ $step->prompt_text }}</h1>
 
     @if ($step->help_text)
-        <p class="mb-5 text-lg leading-relaxed text-slate-600">{{ $step->help_text }}</p>
+        <p class="mb-5 text-lg leading-relaxed text-on-surface-variant">{{ $step->help_text }}</p>
     @endif
 
     <form method="POST" action="{{ route('teacher.diagnostic.answer') }}" class="space-y-3">
@@ -41,9 +41,9 @@
             {{-- Cada respuesta es un botón de envío directo: sin marcar y
                  luego confirmar. Un toque menos por paso, y son muchos pasos. --}}
             <button type="submit" name="answer" value="{{ $option['value'] }}"
-                    class="flex min-h-[64px] w-full items-center justify-between gap-3 rounded-xl border-2 border-slate-300 bg-white px-5 py-4 text-left text-lg font-medium text-slate-900 transition active:scale-[.99] hover:border-slate-900 hover:bg-slate-50">
+                    class="flex min-h-[64px] w-full items-center justify-between gap-3 rounded-xl border-2 border-outline-variant bg-surface-lowest px-5 py-4 text-left text-lg font-medium text-on-surface transition active:scale-[.99] hover:border-primary hover:bg-surface-high">
                 <span>{{ $option['label'] }}</span>
-                <span aria-hidden="true" class="text-2xl leading-none text-slate-400">&rsaquo;</span>
+                <span aria-hidden="true" class="text-2xl leading-none text-outline">&rsaquo;</span>
             </button>
         @endforeach
     </form>
@@ -53,21 +53,21 @@
             {{-- Resuelve el problema de vocabulario sin obligar al docente a
                  admitir que no conoce el nombre: no pregunta nada, muestra. --}}
             <a href="{{ route('teacher.diagnostic.reference', ['componentKey' => $step->component_key]) }}"
-               class="block text-center text-base text-slate-600 underline underline-offset-4">
+               class="block text-center text-base text-on-surface-variant underline underline-offset-4">
                 ¿Cuál es esa pieza?
             </a>
         @endif
 
         @if ($alternates->isNotEmpty())
             <details class="text-center">
-                <summary class="cursor-pointer text-base text-slate-600 underline underline-offset-4">Ver otra vista</summary>
+                <summary class="cursor-pointer text-base text-on-surface-variant underline underline-offset-4">Ver otra vista</summary>
                 <div class="mt-3 space-y-3">
                     @foreach ($alternates as $alt)
                         <figure>
                             <img src="{{ $alt->url() }}" alt="{{ $alt->alt_text }}"
-                                 class="w-full rounded-xl border-2 border-slate-200" loading="lazy">
+                                 class="w-full rounded-xl border-2 border-outline-variant" loading="lazy">
                             @if ($alt->caption)
-                                <figcaption class="mt-1 text-sm text-slate-500">{{ $alt->caption }}</figcaption>
+                                <figcaption class="mt-1 text-sm text-on-surface-variant">{{ $alt->caption }}</figcaption>
                             @endif
                         </figure>
                     @endforeach
@@ -81,7 +81,7 @@
     {{-- Salida siempre disponible. Un docente con una clase esperando no
          puede quedar obligado a terminar un cuestionario. --}}
     <a href="{{ route('teacher.escalate') }}"
-       class="block text-center text-base text-slate-600 underline underline-offset-4">
+       class="block text-center text-base text-on-surface-variant underline underline-offset-4">
         Prefiero pedir soporte ahora
     </a>
 @endsection

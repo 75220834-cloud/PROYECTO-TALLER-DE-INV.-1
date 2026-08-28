@@ -8,10 +8,10 @@
     <form method="GET" action="{{ route('teacher.search') }}" class="space-y-3">
         <input name="q" value="{{ $term }}" autofocus autocomplete="off"
                inputmode="text" autocapitalize="characters" placeholder="Por ejemplo: C305"
-               class="block w-full rounded-xl border-2 border-slate-300 px-5 py-4 text-center font-mono text-2xl uppercase tracking-wide focus:border-slate-900 focus:ring-0">
+               class="block w-full rounded-xl border-2 border-outline-variant px-5 py-4 text-center font-mono text-2xl uppercase tracking-wide focus:border-primary focus:ring-0">
 
         <button type="submit"
-                class="flex min-h-[60px] w-full items-center justify-center rounded-xl bg-slate-900 px-5 py-4 text-lg font-semibold text-white hover:bg-slate-800">
+                class="flex min-h-[60px] w-full items-center justify-center rounded-xl bg-primary px-5 py-4 text-lg font-semibold text-on-primary hover:opacity-90">
             Buscar
         </button>
     </form>
@@ -26,10 +26,10 @@
                     'room' => $room->id,
                 ])">
                     <span class="font-mono font-semibold">{{ $room->code }}</span>
-                    <span class="block text-sm font-normal text-slate-500">{{ $room->floor?->building?->name }}</span>
+                    <span class="block text-sm font-normal text-on-surface-variant">{{ $room->floor?->building?->name }}</span>
                 </x-big-option>
             @empty
-                <p class="rounded-lg border-2 border-amber-300 bg-amber-50 px-4 py-3 text-base text-amber-900">
+                <p class="rounded-lg border-2 border-warn bg-warn-container px-4 py-3 text-base text-on-warn-container">
                     No encontramos ningún aula con ese código. Revisa que esté bien escrito
                     o elige tu aula paso a paso.
                 </p>
@@ -39,7 +39,7 @@
 @endsection
 
 @section('back')
-    <a href="{{ route('teacher.start') }}" class="block text-center text-base text-slate-600 underline underline-offset-4">
+    <a href="{{ route('teacher.start') }}" class="block text-center text-base text-on-surface-variant underline underline-offset-4">
         Elegir paso a paso
     </a>
 @endsection

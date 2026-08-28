@@ -6,47 +6,47 @@
     <title>Iniciar sesión · {{ config('app.name') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="flex h-full items-center justify-center bg-slate-100 px-4 antialiased">
+<body class="flex h-full items-center justify-center bg-surface-mid px-4 antialiased">
 
 <div class="w-full max-w-sm">
     <div class="mb-6 text-center">
-        <h1 class="text-xl font-semibold text-slate-900">Incidencias en aulas</h1>
-        <p class="mt-1 text-sm text-slate-500">Acceso para personal de soporte</p>
+        <h1 class="text-xl font-semibold text-primary">Incidencias en aulas</h1>
+        <p class="mt-1 text-sm text-on-surface-variant">Acceso para personal de soporte</p>
     </div>
 
     <form method="POST" action="{{ route('login.store') }}"
-          class="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+          class="space-y-4 rounded-lg border border-outline-variant bg-surface-lowest p-6 shadow-sm">
         @csrf
 
         <div>
-            <label for="email" class="block text-sm font-medium text-slate-700">Correo</label>
+            <label for="email" class="block text-sm font-medium text-on-surface-variant">Correo</label>
             <input id="email" name="email" type="email" required autofocus autocomplete="username"
                    value="{{ old('email') }}"
-                   class="mt-1 block w-full rounded-md border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-slate-500 focus:ring-slate-500">
+                   class="mt-1 block w-full rounded-md border-outline-variant px-3 py-2 text-sm shadow-sm focus:border-on-surface-variant focus:ring-on-surface-variant">
         </div>
 
         <div>
-            <label for="password" class="block text-sm font-medium text-slate-700">Contraseña</label>
+            <label for="password" class="block text-sm font-medium text-on-surface-variant">Contraseña</label>
             <input id="password" name="password" type="password" required autocomplete="current-password"
-                   class="mt-1 block w-full rounded-md border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-slate-500 focus:ring-slate-500">
+                   class="mt-1 block w-full rounded-md border-outline-variant px-3 py-2 text-sm shadow-sm focus:border-on-surface-variant focus:ring-on-surface-variant">
         </div>
 
         @error('email')
-            <p class="rounded-md bg-rose-50 px-3 py-2 text-sm text-rose-700">{{ $message }}</p>
+            <p class="rounded-md bg-danger-container px-3 py-2 text-sm text-danger">{{ $message }}</p>
         @enderror
 
-        <label class="flex items-center gap-2 text-sm text-slate-600">
-            <input type="checkbox" name="remember" class="rounded border-slate-300 text-slate-800 focus:ring-slate-500">
+        <label class="flex items-center gap-2 text-sm text-on-surface-variant">
+            <input type="checkbox" name="remember" class="rounded border-outline-variant text-on-surface focus:ring-on-surface-variant">
             Mantener la sesión iniciada
         </label>
 
         <button type="submit"
-                class="w-full rounded-md bg-slate-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800">
+                class="w-full rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-on-primary transition hover:bg-on-surface">
             Entrar
         </button>
     </form>
 
-    <p class="mt-6 text-center text-xs text-slate-400">
+    <p class="mt-6 text-center text-xs text-outline">
         Si eres docente y quieres reportar un problema, escanea el código QR del aula.
     </p>
 </div>

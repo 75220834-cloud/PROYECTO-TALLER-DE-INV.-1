@@ -17,9 +17,9 @@
              saber ANTES de salir que va a un equipo posiblemente en riesgo,
              porque cambia qué lleva y con quién coordina. --}}
         @if ($incident->hazard_reported)
-            <div class="rounded-lg border-2 border-rose-600 bg-rose-100 px-4 py-3">
-                <p class="font-bold text-rose-900">Riesgo físico reportado</p>
-                <p class="mt-1 text-sm text-rose-900">
+            <div class="rounded-lg border-2 border-danger bg-danger-container px-4 py-3">
+                <p class="font-bold text-on-danger-container">Riesgo físico reportado</p>
+                <p class="mt-1 text-sm text-on-danger-container">
                     El docente describió una situación de riesgo
                     @if ($incident->hazard_term)
                         («{{ $incident->hazard_term }}»)
@@ -31,44 +31,44 @@
         @endif
 
         @if ($incident->blocks_class)
-            <div class="rounded-lg border-2 border-rose-300 bg-rose-50 px-4 py-3">
-                <p class="font-semibold text-rose-900">El docente no puede dictar la clase</p>
+            <div class="rounded-lg border-2 border-danger bg-danger-container px-4 py-3">
+                <p class="font-semibold text-on-danger-container">El docente no puede dictar la clase</p>
             </div>
         @endif
 
-        <div class="rounded-lg border border-slate-200 bg-white p-5">
+        <div class="rounded-lg border border-outline-variant bg-surface-lowest p-5">
             <dl class="grid gap-4 sm:grid-cols-2">
                 <div>
-                    <dt class="text-xs uppercase tracking-wide text-slate-500">Aula</dt>
+                    <dt class="text-xs uppercase tracking-wide text-on-surface-variant">Aula</dt>
                     <dd class="mt-0.5 font-mono text-lg font-semibold">{{ $incident->room?->code }}</dd>
-                    <dd class="text-sm text-slate-600">
+                    <dd class="text-sm text-on-surface-variant">
                         {{ $incident->room?->floor?->building?->name }} · {{ $incident->room?->floor?->label }}
                     </dd>
                 </div>
                 <div>
-                    <dt class="text-xs uppercase tracking-wide text-slate-500">Problema</dt>
+                    <dt class="text-xs uppercase tracking-wide text-on-surface-variant">Problema</dt>
                     <dd class="mt-0.5 text-lg">{{ $incident->category?->name ?? 'Sin clasificar' }}</dd>
                 </div>
                 <div>
-                    <dt class="text-xs uppercase tracking-wide text-slate-500">Reportado</dt>
+                    <dt class="text-xs uppercase tracking-wide text-on-surface-variant">Reportado</dt>
                     <dd class="mt-0.5">{{ $incident->reported_at?->timezone(config('incidencias.display_timezone'))->format('d/m/Y H:i') ?? '—' }}</dd>
                 </div>
                 <div>
-                    <dt class="text-xs uppercase tracking-wide text-slate-500">Estado / prioridad</dt>
+                    <dt class="text-xs uppercase tracking-wide text-on-surface-variant">Estado / prioridad</dt>
                     <dd class="mt-0.5">{{ $incident->status?->name }} · {{ $incident->priority?->name ?? '—' }}</dd>
                 </div>
 
                 @if ($incident->reporter_hint)
                     <div>
-                        <dt class="text-xs uppercase tracking-wide text-slate-500">Contacto que dejó el docente</dt>
+                        <dt class="text-xs uppercase tracking-wide text-on-surface-variant">Contacto que dejó el docente</dt>
                         <dd class="mt-0.5">{{ $incident->reporter_hint }}</dd>
                     </div>
                 @endif
 
                 @if ($additionalReports > 0)
                     <div>
-                        <dt class="text-xs uppercase tracking-wide text-slate-500">Reportes adicionales</dt>
-                        <dd class="mt-0.5 font-semibold text-amber-700">
+                        <dt class="text-xs uppercase tracking-wide text-on-surface-variant">Reportes adicionales</dt>
+                        <dd class="mt-0.5 font-semibold text-warn">
                             {{ $additionalReports }} persona(s) más reportaron lo mismo
                         </dd>
                     </div>
@@ -76,29 +76,29 @@
             </dl>
 
             @if ($incident->reported_description)
-                <div class="mt-4 rounded-md bg-slate-50 px-4 py-3">
-                    <p class="text-xs uppercase tracking-wide text-slate-500">En palabras del docente</p>
-                    <p class="mt-1 text-slate-800">{{ $incident->reported_description }}</p>
+                <div class="mt-4 rounded-md bg-surface-low px-4 py-3">
+                    <p class="text-xs uppercase tracking-wide text-on-surface-variant">En palabras del docente</p>
+                    <p class="mt-1 text-on-surface">{{ $incident->reported_description }}</p>
                 </div>
             @endif
         </div>
 
         {{-- Historial completo: es lo que permite responder "por qué este
              ticket terminó aquí" sin preguntarle a nadie (plan §57). --}}
-        <div class="rounded-lg border border-slate-200 bg-white p-5">
-            <h2 class="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">Historial</h2>
+        <div class="rounded-lg border border-outline-variant bg-surface-lowest p-5">
+            <h2 class="mb-3 text-sm font-semibold uppercase tracking-wide text-on-surface-variant">Historial</h2>
 
             <ol class="space-y-3">
                 @foreach ($incident->events as $event)
                     <li class="flex gap-3 text-sm">
-                        <span class="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-slate-300"></span>
+                        <span class="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-outline-variant"></span>
                         <div class="min-w-0">
-                            <p class="font-medium text-slate-800">
+                            <p class="font-medium text-on-surface">
                                 {{ __('incident-events.' . $event->event_type) }}
                             </p>
 
                             @if ($event->event_type === 'status_changed')
-                                <p class="text-slate-500">
+                                <p class="text-on-surface-variant">
                                     {{ $event->from_value['status'] ?? '?' }} → {{ $event->to_value['status'] ?? '?' }}
                                 </p>
                             @endif
@@ -107,7 +107,7 @@
                                 {{-- Por qué este ticket tiene esta prioridad. Sin
                                      explicación, una prioridad se percibe como
                                      arbitraria y acaba ignorándose. --}}
-                                <ul class="mt-1 list-disc pl-4 text-xs text-slate-500">
+                                <ul class="mt-1 list-disc pl-4 text-xs text-on-surface-variant">
                                     @foreach ($event->metadata['priority_factors'] as $factor)
                                         <li>{{ $factor }}</li>
                                     @endforeach
@@ -115,10 +115,10 @@
                             @endif
 
                             @if (! empty($event->metadata['reason']))
-                                <p class="text-slate-500">{{ $event->metadata['reason'] }}</p>
+                                <p class="text-on-surface-variant">{{ $event->metadata['reason'] }}</p>
                             @endif
 
-                            <p class="mt-0.5 text-xs text-slate-400">
+                            <p class="mt-0.5 text-xs text-outline">
                                 {{ $event->occurred_at->timezone(config('incidencias.display_timezone'))->format('d/m/Y H:i') }}
                                 @if ($event->actor) · {{ $event->actor->name }} @endif
                             </p>
@@ -133,17 +133,17 @@
     <div class="space-y-4">
 
         @can('incidents.assign')
-            <div class="rounded-lg border border-slate-200 bg-white p-5">
-                <h2 class="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">Asignación</h2>
+            <div class="rounded-lg border border-outline-variant bg-surface-lowest p-5">
+                <h2 class="mb-3 text-sm font-semibold uppercase tracking-wide text-on-surface-variant">Asignación</h2>
 
-                <p class="mb-3 text-sm text-slate-600">
+                <p class="mb-3 text-sm text-on-surface-variant">
                     {{ $incident->assignee?->name ?? 'Sin asignar' }}
                 </p>
 
                 @if ($incident->assigned_to !== auth()->id())
                     <form method="POST" action="{{ route('support.incidents.take', $incident) }}" class="mb-3">
                         @csrf
-                        <button class="w-full rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800">
+                        <button class="w-full rounded-md bg-primary px-4 py-2 text-sm font-medium text-on-primary hover:bg-on-surface">
                             Tomar este ticket
                         </button>
                     </form>
@@ -151,26 +151,26 @@
 
                 <form method="POST" action="{{ route('support.incidents.assign', $incident) }}" class="flex gap-2">
                     @csrf
-                    <select name="technician_id" required class="min-w-0 flex-1 rounded-md border-slate-300 px-3 py-2 text-sm">
+                    <select name="technician_id" required class="min-w-0 flex-1 rounded-md border-outline-variant px-3 py-2 text-sm">
                         <option value="">Asignar a…</option>
                         @foreach ($technicians as $t)
                             <option value="{{ $t->id }}" @selected($incident->assigned_to === $t->id)>{{ $t->name }}</option>
                         @endforeach
                     </select>
-                    <button class="rounded-md border border-slate-300 px-3 py-2 text-sm hover:bg-slate-50">Asignar</button>
+                    <button class="rounded-md border border-outline-variant px-3 py-2 text-sm hover:bg-surface-low">Asignar</button>
                 </form>
             </div>
         @endcan
 
         @can('incidents.update')
             @unless ($incident->statusCode()->isResolved() || $incident->statusCode()->isTerminal())
-                <div class="rounded-lg border border-slate-200 bg-white p-5">
-                    <h2 class="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">Resolver</h2>
+                <div class="rounded-lg border border-outline-variant bg-surface-lowest p-5">
+                    <h2 class="mb-3 text-sm font-semibold uppercase tracking-wide text-on-surface-variant">Resolver</h2>
 
                     <form method="POST" action="{{ route('support.incidents.resolve', $incident) }}" class="space-y-3">
                         @csrf
 
-                        <select name="resolution_type" required class="block w-full rounded-md border-slate-300 px-3 py-2 text-sm">
+                        <select name="resolution_type" required class="block w-full rounded-md border-outline-variant px-3 py-2 text-sm">
                             @foreach ($resolutionTypes as $type)
                                 @continue($type === \App\Shared\Enums\ResolutionType::None)
                                 <option value="{{ $type->value }}">{{ $type->label() }}</option>
@@ -178,18 +178,18 @@
                         </select>
 
                         <textarea name="technical_diagnosis" rows="2" placeholder="Diagnóstico técnico (opcional)"
-                                  class="block w-full rounded-md border-slate-300 px-3 py-2 text-sm"></textarea>
+                                  class="block w-full rounded-md border-outline-variant px-3 py-2 text-sm"></textarea>
 
                         <textarea name="resolution_notes" rows="3" required
                                   placeholder="¿Qué se hizo para resolverlo? (obligatorio)"
-                                  class="block w-full rounded-md border-slate-300 px-3 py-2 text-sm"></textarea>
+                                  class="block w-full rounded-md border-outline-variant px-3 py-2 text-sm"></textarea>
 
-                        <p class="text-xs text-slate-500">
+                        <p class="text-xs text-on-surface-variant">
                             La solución registrada alimenta la base de conocimiento y el análisis de
                             recurrencia. Un ticket cerrado sin explicación no enseña nada.
                         </p>
 
-                        <button class="w-full rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700">
+                        <button class="w-full rounded-md bg-ok px-4 py-2 text-sm font-medium text-surface-lowest hover:bg-ok">
                             Marcar como resuelta
                         </button>
                     </form>
@@ -198,13 +198,13 @@
         @endcan
 
         @can('incidents.close')
-            <div class="rounded-lg border border-slate-200 bg-white p-5 text-sm">
-                <h2 class="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">Cierre</h2>
+            <div class="rounded-lg border border-outline-variant bg-surface-lowest p-5 text-sm">
+                <h2 class="mb-3 text-sm font-semibold uppercase tracking-wide text-on-surface-variant">Cierre</h2>
 
                 @if ($incident->statusCode() === \App\Shared\Enums\IncidentStatus::Resolved)
                     <form method="POST" action="{{ route('support.incidents.close', $incident) }}" class="mb-3">
                         @csrf
-                        <button class="w-full rounded-md border border-slate-300 px-4 py-2 hover:bg-slate-50">Cerrar ticket</button>
+                        <button class="w-full rounded-md border border-outline-variant px-4 py-2 hover:bg-surface-low">Cerrar ticket</button>
                     </form>
                 @endif
 
@@ -212,8 +212,8 @@
                     <form method="POST" action="{{ route('support.incidents.reopen', $incident) }}" class="space-y-2">
                         @csrf
                         <input name="reason" required placeholder="Motivo de la reapertura"
-                               class="block w-full rounded-md border-slate-300 px-3 py-2 text-sm">
-                        <button class="w-full rounded-md border border-amber-300 bg-amber-50 px-4 py-2 text-amber-900 hover:bg-amber-100">
+                               class="block w-full rounded-md border-outline-variant px-3 py-2 text-sm">
+                        <button class="w-full rounded-md border border-warn bg-warn-container px-4 py-2 text-on-warn-container hover:bg-warn-container">
                             Reabrir
                         </button>
                     </form>
@@ -223,13 +223,13 @@
 
         @can('incidents.cancel')
             @unless ($incident->statusCode()->isTerminal())
-                <div class="rounded-lg border border-slate-200 bg-white p-5">
+                <div class="rounded-lg border border-outline-variant bg-surface-lowest p-5">
                     <form method="POST" action="{{ route('support.incidents.cancel', $incident) }}" class="space-y-2"
                           data-confirm="¿Cancelar esta incidencia?">
                         @csrf
                         <input name="reason" required placeholder="Motivo de la cancelación"
-                               class="block w-full rounded-md border-slate-300 px-3 py-2 text-sm">
-                        <button class="w-full rounded-md border border-rose-300 px-4 py-2 text-sm text-rose-700 hover:bg-rose-50">
+                               class="block w-full rounded-md border-outline-variant px-3 py-2 text-sm">
+                        <button class="w-full rounded-md border border-danger px-4 py-2 text-sm text-danger hover:bg-danger-container">
                             Cancelar incidencia
                         </button>
                     </form>
@@ -238,7 +238,7 @@
         @endcan
 
         <a href="{{ route('support.incidents.index') }}"
-           class="block text-center text-sm text-slate-500 underline underline-offset-2">
+           class="block text-center text-sm text-on-surface-variant underline underline-offset-2">
             Volver a la bandeja
         </a>
     </div>

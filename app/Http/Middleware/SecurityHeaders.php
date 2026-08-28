@@ -88,17 +88,17 @@ class SecurityHeaders
          */
         if (app()->environment('local')) {
             /*
-             * Los TRES orígenes hacen falta. Vite anuncia su servidor por el
-             * nombre que resuelva el sistema, y en Windows `localhost` suele
-             * resolver primero a IPv6: sin `[::1]` la aplicación se ve sin
-             * estilos en desarrollo y la consola se llena de violaciones de
-             * CSP. Lo encontró el navegador, no las pruebas — que no cargan
-             * assets.
+             * Solo IPv4, y a propósito. Un literal IPv6 entre corchetes
+             * (`http://[::1]:5173`) NO es una fuente válida en CSP: el
+             * navegador descarta la directiva ENTERA por inválida, con lo
+             * que el remedio sale peor que la enfermedad. El problema real
+             * era que Vite anunciaba sus assets por IPv6 en Windows, y se
+             * arregla donde nace: `server.host` en vite.config.js.
              */
-            $vite = 'http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173';
+            $vite = 'http://localhost:5173 http://127.0.0.1:5173';
             $scriptSrc .= " {$vite}";
             $styleSrc .= " {$vite}";
-            $connectSrc .= " {$vite} ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173";
+            $connectSrc .= " {$vite} ws://localhost:5173 ws://127.0.0.1:5173";
         }
 
         return implode('; ', [

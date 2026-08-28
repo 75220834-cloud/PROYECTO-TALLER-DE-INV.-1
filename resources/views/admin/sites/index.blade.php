@@ -4,12 +4,12 @@
 
 @section('content')
 <div class="mb-4 flex justify-end">
-    <a href="{{ route('admin.sites.create') }}" class="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800">Nueva sede</a>
+    <a href="{{ route('admin.sites.create') }}" class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-on-primary hover:bg-on-surface">Nueva sede</a>
 </div>
 
-<div class="overflow-hidden rounded-lg border border-slate-200 bg-white">
-    <table class="min-w-full divide-y divide-slate-200 text-sm">
-        <thead class="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
+<div class="overflow-hidden rounded-lg border border-outline-variant bg-surface-lowest">
+    <table class="min-w-full divide-y divide-outline-variant text-sm">
+        <thead class="bg-surface-low text-left text-xs uppercase tracking-wide text-on-surface-variant">
             <tr>
                 <th class="px-4 py-3">Código</th>
                 <th class="px-4 py-3">Nombre</th>
@@ -18,12 +18,12 @@
                 <th class="px-4 py-3 text-right">Acciones</th>
             </tr>
         </thead>
-        <tbody class="divide-y divide-slate-100">
+        <tbody class="divide-y divide-surface-mid">
         @forelse ($sites as $site)
             <tr>
                 <td class="px-4 py-3 font-mono text-xs">{{ $site->code }}</td>
                 <td class="px-4 py-3">{{ $site->name }}</td>
-                <td class="px-4 py-3 text-slate-500">{{ $site->buildings_count }}</td>
+                <td class="px-4 py-3 text-on-surface-variant">{{ $site->buildings_count }}</td>
                 <td class="px-4 py-3"><x-badge :active="$site->is_active" :demo="$site->is_demo" /></td>
                 <td class="px-4 py-3">
                     <x-actions
@@ -35,7 +35,7 @@
                 </td>
             </tr>
         @empty
-            <tr><td colspan="5" class="px-4 py-8 text-center text-slate-500">No hay sedes registradas.</td></tr>
+            <tr><td colspan="5" class="px-4 py-8 text-center text-on-surface-variant">No hay sedes registradas.</td></tr>
         @endforelse
         </tbody>
     </table>

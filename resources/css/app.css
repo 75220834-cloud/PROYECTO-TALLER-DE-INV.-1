@@ -5,7 +5,178 @@
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
+/* El modo oscuro se activa por clase, no por preferencia del sistema: el
+   docente puede forzarlo desde la propia pantalla y esa elección debe ganar
+   sobre lo que diga su teléfono. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Hanken Grotesk', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /*
+     * Los colores se registran AQUI, y no se usan sueltos como
+     * `bg-[var(--surface)]`. Es la diferencia entre que el tema funcione y
+     * que no: Tailwind 4 solo genera la utilidad de un color si lo conoce, y
+     * una clase arbitraria con `var()` dentro no siempre la reconoce el
+     * escaner. El resultado era una interfaz que en oscuro dejaba tarjetas
+     * casi negras con texto casi negro — ilegible.
+     *
+     * Cada uno apunta a la variable de la paleta, definida mas abajo en
+     * `:root` y redefinida en `.dark`. Asi `bg-surface` sirve en los dos
+     * temas sin escribir una sola clase `dark:`.
+     */
+    --color-surface: var(--surface);
+    --color-surface-lowest: var(--surface-container-lowest);
+    --color-surface-low: var(--surface-container-low);
+    --color-surface-mid: var(--surface-container);
+    --color-surface-high: var(--surface-container-high);
+    --color-surface-highest: var(--surface-container-highest);
+
+    --color-on-surface: var(--on-surface);
+    --color-on-surface-variant: var(--on-surface-variant);
+    --color-outline: var(--outline);
+    --color-outline-variant: var(--outline-variant);
+
+    --color-primary: var(--primary);
+    --color-on-primary: var(--on-primary);
+    --color-primary-container: var(--primary-container);
+    --color-on-primary-container: var(--on-primary-container);
+
+    --color-danger: var(--error);
+    --color-on-danger: var(--on-error);
+    --color-danger-container: var(--error-container);
+    --color-on-danger-container: var(--on-error-container);
+
+    --color-ok: var(--success);
+    --color-ok-container: var(--success-container);
+    --color-on-ok-container: var(--on-success-container);
+
+    --color-warn: var(--warning);
+    --color-warn-container: var(--warning-container);
+    --color-on-warn-container: var(--on-warning-container);
+}
+
+/*
+ * SISTEMA DE COLOR — Material 3, tomado del diseño «Continental Purple»
+ * que el equipo hizo en Stitch.
+ *
+ * Se define como VARIABLES y no como clases sueltas de Tailwind por un
+ * motivo concreto: el tema claro y el oscuro tienen que poder convivir sin
+ * duplicar cada componente. Una tarjeta escribe `bg-[var(--surface)]` una
+ * sola vez y funciona en los dos.
+ *
+ * La nomenclatura es la de Material 3 —`primary` / `on-primary`— y conviene
+ * respetarla: `on-X` es SIEMPRE el color del texto que va encima de `X`, y
+ * cada par está calculado para cumplir el contraste mínimo AA que el plan
+ * exige (§17.9). Inventar combinaciones fuera de esos pares es lo que
+ * rompe la accesibilidad sin que se note en el monitor de quien programa.
+ *
+ * POR QUÉ HAY TEMA CLARO, si el diseño de Stitch era oscuro: un aula con el
+ * proyector encendido está a media luz y el oscuro va bien, pero un docente
+ * junto a la ventana con sol de frente necesita el claro. Se ofrecen los dos
+ * y decide quien mira la pantalla.
+ */
+:root {
+    /* Superficies, de la más hundida a la más elevada. */
+    --surface: #fdfbff;
+    --surface-container-lowest: #ffffff;
+    --surface-container-low: #f7f2fa;
+    --surface-container: #f2ecf4;
+    --surface-container-high: #ece6ee;
+    --surface-container-highest: #e6e0e9;
+
+    --on-surface: #1d1b20;
+    --on-surface-variant: #49454f;
+    --outline: #79747e;
+    --outline-variant: #cac4d0;
+
+    /* Morado Continental. En claro se invierte respecto al diseño oscuro:
+       el morado saturado pasa a ser el fondo del botón principal. */
+    --primary: #6750a4;
+    --on-primary: #ffffff;
+    --primary-container: #eaddff;
+    --on-primary-container: #21005d;
+
+    --secondary: #625b71;
+    --on-secondary: #ffffff;
+    --secondary-container: #e8def8;
+    --on-secondary-container: #1d192b;
+
+    /* Estados. El rojo se reserva para lo que de verdad es un error o un
+       riesgo: usarlo para avisos corrientes lo vuelve invisible cuando hace
+       falta de verdad. */
+    --error: #ba1a1a;
+    --on-error: #ffffff;
+    --error-container: #ffdad6;
+    --on-error-container: #410002;
+
+    --success: #146c2e;
+    --success-container: #c4eed0;
+    --on-success-container: #002107;
+
+    --warning: #7a5900;
+    --warning-container: #ffdf9a;
+    --on-warning-container: #261a00;
+}
+
+.dark {
+    --surface: #141316;
+    --surface-container-lowest: #0f0e11;
+    --surface-container-low: #1d1b1f;
+    --surface-container: #211f23;
+    --surface-container-high: #2b292d;
+    --surface-container-highest: #363438;
+
+    --on-surface: #e6e1e5;
+    --on-surface-variant: #cac4d0;
+    --outline: #938f99;
+    --outline-variant: #49454f;
+
+    --primary: #d0bcff;
+    --on-primary: #381e72;
+    --primary-container: #4f378b;
+    --on-primary-container: #eaddff;
+
+    --secondary: #cbc2db;
+    --on-secondary: #332d41;
+    --secondary-container: #4a4458;
+    --on-secondary-container: #e8def8;
+
+    --error: #ffb4ab;
+    --on-error: #690005;
+    --error-container: #93000a;
+    --on-error-container: #ffdad6;
+
+    --success: #7ddb95;
+    --success-container: #00522a;
+    --on-success-container: #c4eed0;
+
+    --warning: #f2c14e;
+    --warning-container: #5c4300;
+    --on-warning-container: #ffdf9a;
+}
+
+/* El navegador pinta sus propios controles —barras de scroll, selectores de
+   fecha— según esto. Sin la declaración, en oscuro salen blancos. */
+:root { color-scheme: light; }
+.dark { color-scheme: dark; }
+
+/*
+ * Área táctil mínima de 44 px (plan 17.9). Se aplica de forma global y no
+ * botón por botón: en la interfaz del docente TODO se toca con el pulgar, a
+ * menudo de pie y con prisa, y un objetivo pequeño se falla.
+ */
+.touch-target {
+    min-height: 44px;
+    min-width: 44px;
+}
+
+/* Los iconos de Material vienen como ligaduras tipográficas. Sin esto se
+   verían como el texto literal «report_problem». */
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    font-family: 'Material Symbols Outlined', sans-serif;
+    line-height: 1;
+    user-select: none;
 }

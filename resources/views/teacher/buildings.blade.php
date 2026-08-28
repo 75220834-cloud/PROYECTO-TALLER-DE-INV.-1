@@ -14,7 +14,7 @@
     </div>
 
     <a href="{{ route('teacher.search') }}"
-       class="mt-6 block text-center text-base text-slate-600 underline underline-offset-4">
+       class="mt-6 block text-center text-base text-on-surface-variant underline underline-offset-4">
         Prefiero escribir el código del aula
     </a>
 @endsection

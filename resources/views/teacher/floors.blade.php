@@ -16,7 +16,7 @@
 
 @section('back')
     <a href="{{ route('teacher.buildings', ['site' => $site]) }}"
-       class="block text-center text-base text-slate-600 underline underline-offset-4">
+       class="block text-center text-base text-on-surface-variant underline underline-offset-4">
         Volver
     </a>
 @endsection
