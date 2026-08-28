@@ -28,3 +28,6 @@ Thumbs.db
 /storage/app/media/*
 !/storage/app/knowledge/.gitignore
 !/storage/app/media/.gitignore
+
+# Documentacion del curso: vive junto al proyecto pero no es codigo.
+/APLICACIÓN DEL FRAMEWORK A3 THINKING/

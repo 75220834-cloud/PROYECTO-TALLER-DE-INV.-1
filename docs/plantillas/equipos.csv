@@ -1,0 +1,5 @@
+aula;tipo;codigo_activo;marca;modelo;serie;estado
+C101;PROJECTOR;C101-PRY;;;;operativo
+C101;DESKTOP_PC;C101-PC;;;;operativo
+C101;SPEAKERS;C101-SPK;;;;operativo
+C305;PROJECTOR;C305-PRY;;;;malogrado

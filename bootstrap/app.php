@@ -1,5 +1,6 @@
 <?php
 
+use App\Console\Commands\ImportCatalog;
 use App\Console\Commands\PurgeDemoData;
 use App\Console\Commands\SeedPilotStructure;
 use App\Http\Middleware\SecurityHeaders;
@@ -22,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
         BuildSnapshotsCommand::class,
         PurgeDemoData::class,
         SeedPilotStructure::class,
+        ImportCatalog::class,
     ])
     ->withMiddleware(function (Middleware $middleware): void {
         // En TODAS las respuestas, no solo en el panel: la parte publica es la

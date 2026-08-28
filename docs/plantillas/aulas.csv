@@ -1,0 +1,5 @@
+sede;pabellon;piso;aula;nombre;capacidad;criticidad
+HYO;C;1;C101;Aula C101;40;1
+HYO;C;1;C102;Aula C102;40;1
+HYO;C;3;C305;Aula C305;35;2
+HYO;H;3;LAB-SIS-2;Laboratorio de Sistemas 2;24;3
