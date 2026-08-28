@@ -224,11 +224,26 @@ sigue siendo correcto con el catálogo real.
 Ver **[docs/carga-de-datos.md](docs/carga-de-datos.md)**: aulas, equipos, procedimientos e imágenes.
 El código está hecho; falta el contenido.
 
+### Instalar en otra computadora
+
+Guía paso a paso, pensada para seguir sin saber nada del proyecto:
+**[docs/instalar-en-otra-pc.md](docs/instalar-en-otra-pc.md)**
+
 ### Accesos de demostración
 
-Usuarios `admin@demo.local`, `coordinador@demo.local`, `tecnico@demo.local`, `conocimiento@demo.local`
-e `investigador@demo.local`. La contraseña es la que definas en `DEMO_USER_PASSWORD`; si la dejas
-vacía, el seeder genera una aleatoria y la muestra una sola vez en consola.
+**La contraseña es la misma para todos** y se define en `DEMO_USER_PASSWORD` dentro de `.env`.
+Por defecto: `demo_local_2026`. Si dejas esa variable vacía, el seeder genera una aleatoria y la
+muestra una sola vez en consola.
+
+| Usuario | Qué puede hacer |
+|---|---|
+| `admin@demo.local` | Todo |
+| `coordinador@demo.local` | Atender y reasignar incidencias, tablero, riesgo |
+| `tecnico@demo.local` | Atender incidencias. No toca el catálogo |
+| `conocimiento@demo.local` | Cargar procedimientos, imágenes y árboles de diagnóstico |
+| `investigador@demo.local` | Solo lectura y exportación de datos |
+
+El docente **no tiene cuenta**: entra por el QR sin identificarse.
 
 El plan maestro completo está fuera del repositorio, en el archivo de planificación del equipo.
 
