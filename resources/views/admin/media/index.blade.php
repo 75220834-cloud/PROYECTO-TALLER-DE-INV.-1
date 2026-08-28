@@ -50,18 +50,18 @@
             @endforeach
         </select>
 
-        <button type="submit" class="rounded-md border border-outline-variant bg-surface-lowest px-3 py-2 text-sm">Buscar</button>
+        <button type="submit" class="glass focus-ring px-3 py-2 text-sm">Buscar</button>
     </form>
 
     <a href="{{ route('admin.media.create') }}"
-       class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-on-primary">
+       class="btn-primary focus-ring px-4 py-2 text-sm font-medium">
         Subir imagen
     </a>
 </div>
 
 <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
     @forelse ($assets as $asset)
-        <div class="overflow-hidden rounded-lg border border-outline-variant bg-surface-lowest {{ $asset->is_active ? '' : 'opacity-60' }}">
+        <div class="overflow-hidden glass {{ $asset->is_active ? '' : 'opacity-60' }}">
             <div class="flex aspect-video items-center justify-center bg-surface-mid">
                 <img src="{{ route('media.show', $asset) }}" alt="{{ $asset->alt_text }}"
                      loading="lazy" class="max-h-full max-w-full object-contain">

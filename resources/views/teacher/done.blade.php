@@ -7,9 +7,9 @@
     @endphp
 
     @if ($resolvedByTeacher)
-        <div class="rounded-xl border-2 border-ok bg-ok-container px-5 py-6 text-center">
+        <div class="glass border-ok/60 bg-ok-container/60 px-5 py-6 text-center">
             <p class="text-3xl">✅</p>
-            <h1 class="mt-2 text-2xl font-bold text-on-ok-container">Problema resuelto</h1>
+            <h1 class="mt-2 text-[28px] font-semibold leading-9 tracking-[-0.02em] text-on-ok-container">Problema resuelto</h1>
             <p class="mt-2 text-lg text-on-ok-container">
                 Gracias por avisarnos. Quedó registrado.
             </p>
@@ -19,9 +19,9 @@
             Si el problema vuelve a aparecer, escanea el código otra vez.
         </p>
     @else
-        <div class="rounded-xl border-2 border-primary bg-surface-low px-5 py-6 text-center">
+        <div class="glass px-5 py-6 text-center">
             <p class="text-3xl">📩</p>
-            <h1 class="mt-2 text-2xl font-bold">Soporte ya fue avisado</h1>
+            <h1 class="mt-2 text-[28px] font-semibold leading-9 tracking-[-0.02em]">Soporte ya fue avisado</h1>
 
             @if ($incident->ticket_number)
                 <p class="mt-3 font-mono text-xl font-semibold">#{{ $incident->ticket_number }}</p>
@@ -34,7 +34,7 @@
 
         {{-- El punto del sistema: soporte YA tiene todo. El docente no
              tendrá que volver a explicar nada (plan §45). --}}
-        <div class="mt-5 rounded-xl bg-surface-mid px-5 py-4">
+        <div class="mt-5 glass px-5 py-4">
             <p class="text-base font-semibold text-on-surface">Soporte ya sabe:</p>
             <ul class="mt-2 space-y-1 text-base text-on-surface-variant">
                 <li>· En qué aula estás</li>

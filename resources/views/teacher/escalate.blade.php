@@ -3,7 +3,7 @@
 @section('step', 'Solicitar apoyo presencial')
 
 @section('content')
-    <h1 class="mb-5 text-2xl font-bold">Solicitar soporte técnico</h1>
+    <h1 class="mb-5 text-[28px] font-semibold leading-9 tracking-[-0.02em]">Solicitar soporte técnico</h1>
 
     {{-- Riesgo físico (plan §17.5). Va lo primero y con la instrucción de no
          tocar nada por delante de cualquier otra cosa: el docente está de pie
@@ -11,7 +11,7 @@
          abajo. Aquí no se le ofrece ningún paso de diagnóstico: pedirle que
          revise un cable sería mandarlo a acercarse al equipo. --}}
     @if ($incident->hazard_reported)
-        <div class="mb-6 rounded-xl border-2 border-danger bg-danger-container px-5 py-4">
+        <div class="mb-6 glass border-danger/70 bg-danger-container/70 px-5 py-4">
             <p class="text-lg font-bold text-on-danger-container">No manipules el equipo</p>
             <p class="mt-2 text-on-danger-container">
                 No lo toques, no lo desconectes y no intentes apagarlo tú. Si puedes hacerlo
@@ -24,7 +24,7 @@
         </div>
     @endif
 
-    <div class="mb-6 rounded-xl border-2 border-primary bg-surface-low px-5 py-4">
+    <div class="mb-6 glass px-5 py-4">
         <p class="text-sm text-on-surface-variant">Se avisará a soporte sobre</p>
         <p class="mt-1 font-mono text-2xl font-bold">{{ $incident->room?->code }}</p>
         <p class="mt-1 text-lg text-on-surface-variant">{{ $incident->category?->name }}</p>
@@ -67,7 +67,7 @@
         {{-- Confirmación explícita: primer control antiabuso y, sobre todo,
              lo que evita los envíos accidentales, que son la causa más
              frecuente de ruido (plan §16.4). --}}
-        <label class="mt-6 flex cursor-pointer items-start gap-3 rounded-xl bg-surface-mid px-4 py-3 text-base">
+        <label class="mt-6 flex cursor-pointer items-start gap-3 glass px-4 py-3 text-base">
             <input type="checkbox" name="confirmed" value="1" required class="mt-1 h-5 w-5">
             <span>Confirmo que necesito que un técnico venga al aula.</span>
         </label>
@@ -77,7 +77,7 @@
         @enderror
 
         <button type="submit"
-                class="mt-5 flex min-h-[64px] w-full items-center justify-center rounded-xl bg-primary px-5 py-4 text-lg font-semibold text-on-primary transition active:scale-[.99] hover:opacity-90">
+                class="mt-5 flex min-h-[64px] w-full items-center justify-center btn-primary focus-ring px-5 py-4 text-lg font-semibold transition active:scale-[.99] hover:opacity-90">
             Sí, solicitar soporte
         </button>
     </form>

@@ -4,7 +4,7 @@
 
 @section('content')
 <form method="POST" action="{{ $room->exists ? route('admin.rooms.update', $room) : route('admin.rooms.store') }}"
-      class="max-w-lg space-y-4 rounded-lg border border-outline-variant bg-surface-lowest p-6">
+      class="max-w-lg space-y-4 glass p-6">
     @csrf
     @if ($room->exists) @method('PUT') @endif
 
@@ -51,7 +51,7 @@
     </label>
 
     <div class="flex gap-3 pt-2">
-        <button type="submit" class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-on-primary hover:bg-on-surface">Guardar</button>
+        <button type="submit" class="btn-primary focus-ring px-4 py-2 text-sm font-medium hover:bg-on-surface">Guardar</button>
         <a href="{{ route('admin.rooms.index') }}" class="rounded-md border border-outline-variant px-4 py-2 text-sm text-on-surface-variant hover:bg-surface-low">Cancelar</a>
     </div>
 </form>

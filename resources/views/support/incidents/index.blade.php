@@ -13,8 +13,8 @@
         ['Clase detenida', $counts['blocking'], null, 'text-danger'],
     ] as [$label, $value, $scope, $color])
         <a href="{{ route('support.incidents.index', $scope ? ['scope' => $scope] : []) }}"
-           class="rounded-lg border border-outline-variant bg-surface-lowest px-4 py-3 transition hover:border-outline">
-            <p class="text-xs uppercase tracking-wide text-on-surface-variant">{{ $label }}</p>
+           class="glass px-4 py-3 transition hover:border-outline">
+            <p class="label-tech text-on-surface-variant">{{ $label }}</p>
             <p class="mt-1 text-2xl font-semibold {{ $color }}">{{ $value }}</p>
         </a>
     @endforeach
@@ -45,9 +45,9 @@
     @endif
 </form>
 
-<div class="overflow-hidden rounded-lg border border-outline-variant bg-surface-lowest">
+<div class="overflow-hidden glass">
     <table class="min-w-full divide-y divide-outline-variant text-sm">
-        <thead class="bg-surface-low text-left text-xs uppercase tracking-wide text-on-surface-variant">
+        <thead class="bg-surface-low text-left label-tech text-on-surface-variant">
             <tr>
                 <th class="px-4 py-3">Ticket</th>
                 <th class="px-4 py-3">Aula</th>

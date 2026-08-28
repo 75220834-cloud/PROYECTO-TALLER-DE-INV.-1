@@ -3,7 +3,7 @@
 @section('step', 'Paso 2 de 3')
 
 @section('content')
-    <h1 class="mb-5 text-2xl font-bold">¿En qué piso estás?</h1>
+    <h1 class="mb-5 text-[28px] font-semibold leading-9 tracking-[-0.02em]">¿En qué piso estás?</h1>
 
     <div class="space-y-3">
         @foreach ($floors as $floor)

@@ -8,7 +8,7 @@
 {{-- Va arriba porque es la razón de ser de esta pantalla: los umbrales no
      están calibrados y esto es lo que permite corregirlos con datos en lugar
      de por intuición (plan 16.4). --}}
-<div class="mb-5 rounded-lg border border-warn bg-warn-container px-4 py-3 text-sm text-on-warn-container">
+<div class="mb-5 glass border-warn/60 bg-warn-container/60 px-4 py-3 text-sm text-on-warn-container">
     <p class="font-medium">Para qué sirve esta pantalla</p>
     <p class="mt-1">
         Si aparecen muchos rechazos <strong>por red</strong>, lo más probable no es un ataque: es que
@@ -28,7 +28,7 @@
 <div class="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
     @forelse ($byReason as $reason => $total)
         <div class="rounded-lg border {{ $reason === 'ip_rate' ? 'border-warn bg-warn-container' : 'border-outline-variant bg-surface-lowest' }} px-4 py-3">
-            <p class="text-xs uppercase tracking-wide text-on-surface-variant">{{ __('abuse-reasons.' . $reason) }}</p>
+            <p class="label-tech text-on-surface-variant">{{ __('abuse-reasons.' . $reason) }}</p>
             <p class="mt-1 text-2xl font-semibold {{ $reason === 'ip_rate' ? 'text-warn' : 'text-primary' }}">{{ $total }}</p>
         </div>
     @empty
@@ -38,9 +38,9 @@
     @endforelse
 </div>
 
-<div class="overflow-x-auto rounded-lg border border-outline-variant bg-surface-lowest">
+<div class="overflow-x-auto glass">
     <table class="w-full text-sm">
-        <thead class="border-b border-outline-variant bg-surface-low text-left text-xs uppercase tracking-wide text-on-surface-variant">
+        <thead class="border-b border-outline-variant bg-surface-low text-left label-tech text-on-surface-variant">
             <tr>
                 <th class="px-4 py-3">Cuándo</th>
                 <th class="px-4 py-3">Aula</th>
@@ -58,7 +58,7 @@
                     <td class="px-4 py-3 font-mono">{{ $rejection->room?->code ?? '—' }}</td>
                     <td class="px-4 py-3">{{ $rejection->category?->name ?? '—' }}</td>
                     <td class="px-4 py-3">
-                        <span class="rounded px-2 py-0.5 text-xs {{ $rejection->reason === 'ip_rate' ? 'bg-warn-container text-on-warn-container' : 'bg-surface-mid text-on-surface-variant' }}">
+                        <span class="chip {{ $rejection->reason === 'ip_rate' ? 'bg-warn-container text-on-warn-container' : 'bg-surface-mid text-on-surface-variant' }}">
                             {{ __('abuse-reasons.' . $rejection->reason) }}
                         </span>
                     </td>
@@ -75,8 +75,8 @@
 
 {{-- Los umbrales vigentes, a la vista. Sin esto habría que abrir el .env
      para saber contra qué se está comparando. --}}
-<div class="mt-6 rounded-lg border border-outline-variant bg-surface-lowest p-5">
-    <h2 class="text-sm font-semibold uppercase tracking-wide text-on-surface-variant">Umbrales vigentes</h2>
+<div class="mt-6 glass p-5">
+    <h2 class="label-tech text-on-surface-variant">Umbrales vigentes</h2>
     <p class="mb-3 mt-1 text-xs text-outline">
         Provisionales: nadie los ha calibrado todavía. Se ajustan en <code>.env</code> y no requieren tocar código.
     </p>

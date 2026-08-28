@@ -5,14 +5,14 @@
 
 @section('content')
 
-<div class="mb-5 rounded-lg border border-outline-variant bg-surface-lowest px-5 py-4 text-sm text-on-surface-variant">
+<div class="mb-5 glass px-5 py-4 text-sm text-on-surface-variant">
     Cada fila es un paso donde el docente lee «revisa el cable HDMI» y no ve cuál es. Para quien ya
     sabe qué es un HDMI da igual; para quien no —que es el usuario que este sistema existe para
     atender— el paso no comunica nada y acaba pidiendo soporte sin haber intentado nada.
 </div>
 
 @forelse ($pending as $step)
-    <div class="mb-3 rounded-lg border border-warn bg-warn-container px-5 py-4">
+    <div class="mb-3 glass border-warn/60 bg-warn-container/60 px-5 py-4">
         <div class="flex flex-wrap items-start justify-between gap-3">
             <div>
                 <p class="font-medium text-on-warn-container">{{ $step->prompt_text }}</p>
@@ -33,7 +33,7 @@
         </a>
     </div>
 @empty
-    <div class="rounded-lg border border-ok bg-ok-container px-5 py-6 text-center">
+    <div class="glass border-ok/60 bg-ok-container/60 px-5 py-6 text-center">
         <p class="text-lg font-semibold text-on-ok-container">Cobertura completa</p>
         <p class="mt-1 text-sm text-on-ok-container">
             Todos los pasos que mencionan una pieza física la muestran.

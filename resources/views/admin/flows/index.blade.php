@@ -5,7 +5,7 @@
 
 @section('content')
 
-<div class="mb-5 rounded-lg border border-outline-variant bg-surface-lowest px-5 py-4 text-sm text-on-surface-variant">
+<div class="mb-5 glass px-5 py-4 text-sm text-on-surface-variant">
     <p>
         Cada categoría puede tener un procedimiento. Si no lo tiene, el docente pasa directo a
         «¿se solucionó?» y el sistema no le propone nada — <strong class="text-on-surface">no se
@@ -26,7 +26,7 @@
             $borradores = $flow?->versions->whereNull('published_at') ?? collect();
         @endphp
 
-        <div class="rounded-lg border border-outline-variant bg-surface-lowest p-5">
+        <div class="glass p-5">
             <div class="flex flex-wrap items-start justify-between gap-3">
                 <div>
                     <p class="font-medium text-on-surface">{{ $category->name }}</p>
@@ -42,7 +42,7 @@
 
                         <form method="POST" action="{{ route('admin.flows.duplicate', $publicada) }}">
                             @csrf
-                            <button type="submit" class="rounded-md border border-outline-variant px-3 py-1.5 text-sm">
+                            <button type="submit" class="glass focus-ring px-3 py-1.5 text-sm">
                                 Crear nueva versión
                             </button>
                         </form>
@@ -50,7 +50,7 @@
                         <form method="POST" action="{{ route('admin.flows.store') }}">
                             @csrf
                             <input type="hidden" name="category_id" value="{{ $category->id }}">
-                            <button type="submit" class="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-on-primary">
+                            <button type="submit" class="btn-primary focus-ring px-3 py-1.5 text-sm font-medium">
                                 Crear procedimiento
                             </button>
                         </form>
@@ -60,7 +60,7 @@
 
             @if ($borradores->isNotEmpty())
                 <div class="mt-3 border-t border-outline-variant pt-3">
-                    <p class="text-xs uppercase tracking-wide text-on-surface-variant">Borradores</p>
+                    <p class="label-tech text-on-surface-variant">Borradores</p>
                     <div class="mt-1 flex flex-wrap gap-2">
                         @foreach ($borradores as $borrador)
                             <a href="{{ route('admin.flows.show', $borrador) }}"

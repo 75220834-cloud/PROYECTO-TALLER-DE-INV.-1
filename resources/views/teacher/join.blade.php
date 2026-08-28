@@ -9,7 +9,7 @@
 
     <h1 class="mb-4 text-2xl font-bold">Ya avisamos de este problema</h1>
 
-    <div class="rounded-xl border-2 border-warn bg-warn-container px-5 py-4">
+    <div class="glass border-warn/60 bg-warn-container/60 px-5 py-4">
         <p class="text-base text-on-warn-container">
             Ya hay una solicitud abierta para
             <strong>{{ $target->category?->name }}</strong>
@@ -30,7 +30,7 @@
     <form method="POST" action="{{ route('teacher.join.store', ['uuid' => $target->uuid]) }}" class="mt-5">
         @csrf
         <button type="submit"
-                class="flex min-h-[64px] w-full items-center justify-center rounded-xl bg-primary px-5 py-4 text-lg font-semibold text-on-primary hover:opacity-90">
+                class="flex min-h-[64px] w-full items-center justify-center btn-primary focus-ring px-5 py-4 text-lg font-semibold hover:opacity-90">
             Sumarme a esta solicitud
         </button>
     </form>

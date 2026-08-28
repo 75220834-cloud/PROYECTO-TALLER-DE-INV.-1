@@ -3,7 +3,7 @@
 @section('step', 'Paso 3 de 3')
 
 @section('content')
-    <h1 class="mb-5 text-2xl font-bold">¿En qué aula estás?</h1>
+    <h1 class="mb-5 text-[28px] font-semibold leading-9 tracking-[-0.02em]">¿En qué aula estás?</h1>
 
     @if ($rooms->isEmpty())
         <p class="rounded-lg border-2 border-warn bg-warn-container px-4 py-3 text-base text-on-warn-container">

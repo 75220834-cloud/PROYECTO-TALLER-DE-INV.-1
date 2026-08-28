@@ -29,6 +29,22 @@ return Application::configure(basePath: dirname(__DIR__))
         // En TODAS las respuestas, no solo en el panel: la parte publica es la
         // que recibe entrada de un usuario sin autenticar (plan 16.2).
         $middleware->append(SecurityHeaders::class);
+
+        /*
+         * A donde va alguien YA autenticado que abre /entrar.
+         *
+         * Por defecto Laravel lo manda a `/`, que en este sistema es la
+         * puerta del DOCENTE: el tecnico pulsaba «Entrar» y acababa en
+         * «elige tu pabellon», sin entender por que. Aqui la raiz no es una
+         * pagina de inicio comun para todos — hay dos aplicaciones muy
+         * distintas en el mismo dominio, y quien tiene cuenta pertenece a la
+         * de dentro.
+         */
+        $middleware->redirectUsersTo('/panel');
+
+        // Y al reves: quien pierde la sesion vuelve al formulario de acceso,
+        // no a la pantalla del docente.
+        $middleware->redirectGuestsTo('/entrar');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

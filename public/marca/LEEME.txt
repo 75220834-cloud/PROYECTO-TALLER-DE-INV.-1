@@ -1,0 +1,18 @@
+LOGO INSTITUCIONAL
+==================
+
+Deja aquí el logotipo con el nombre "logo.png" (también vale .svg o .webp).
+
+    public/marca/logo.png
+
+No hay que tocar nada más: aparece solo en la cabecera del docente y en la
+barra del panel. Mientras no exista este archivo se muestra un distintivo
+propio del sistema.
+
+Por qué el logo no viene dentro del proyecto: es de la universidad, no
+nuestro. Ponerlo en el repositorio significaría distribuir su marca dentro
+del código, y que cualquier copia del sistema —incluida una mal
+configurada— pareciera oficial. Lo coloca quien sabe cuál es la versión
+buena y con qué permiso.
+
+Recomendado: PNG con fondo transparente, 200 px de alto o más.

@@ -15,12 +15,12 @@
         </select>
         <button class="rounded-md border border-outline-variant px-3 py-2 text-sm hover:bg-surface-low">Filtrar</button>
     </form>
-    <a href="{{ route('admin.rooms.create') }}" class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-on-primary hover:bg-on-surface">Nueva aula</a>
+    <a href="{{ route('admin.rooms.create') }}" class="btn-primary focus-ring px-4 py-2 text-sm font-medium hover:bg-on-surface">Nueva aula</a>
 </div>
 
-<div class="overflow-hidden rounded-lg border border-outline-variant bg-surface-lowest">
+<div class="overflow-hidden glass">
     <table class="min-w-full divide-y divide-outline-variant text-sm">
-        <thead class="bg-surface-low text-left text-xs uppercase tracking-wide text-on-surface-variant">
+        <thead class="bg-surface-low text-left label-tech text-on-surface-variant">
             <tr><th class="px-4 py-3">Código</th><th class="px-4 py-3">Ubicación</th><th class="px-4 py-3">Cap.</th>
                 <th class="px-4 py-3">Crit.</th><th class="px-4 py-3">Equipos</th><th class="px-4 py-3">Estado</th>
                 <th class="px-4 py-3 text-right">Acciones</th></tr>

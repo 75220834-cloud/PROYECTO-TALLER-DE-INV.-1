@@ -5,7 +5,7 @@
 @section('content')
     <h1 class="mb-4 text-2xl font-bold">{{ $asset->title }}</h1>
 
-    <div class="overflow-hidden rounded-xl border-2 border-outline-variant bg-surface-lowest">
+    <div class="overflow-hidden glass glass-hover focus-ring">
         @if ($asset->isInlineSvg())
             <div class="w-full">{!! file_get_contents(Storage::disk(config('incidencias.media.disk'))->path($asset->file_path)) !!}</div>
         @else

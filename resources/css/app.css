@@ -11,20 +11,19 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-    --font-sans: 'Hanken Grotesk', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
+    /* Hanken Grotesk para todo el texto; Inter solo para etiquetas técnicas
+       en mayúsculas, que es donde su mayor altura de x se lee mejor. */
+    --font-sans: 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif,
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-label: 'Inter', ui-sans-serif, system-ui, sans-serif;
 
     /*
-     * Los colores se registran AQUI, y no se usan sueltos como
+     * Los colores se registran AQUÍ, no se usan sueltos como
      * `bg-[var(--surface)]`. Es la diferencia entre que el tema funcione y
      * que no: Tailwind 4 solo genera la utilidad de un color si lo conoce, y
      * una clase arbitraria con `var()` dentro no siempre la reconoce el
-     * escaner. El resultado era una interfaz que en oscuro dejaba tarjetas
-     * casi negras con texto casi negro — ilegible.
-     *
-     * Cada uno apunta a la variable de la paleta, definida mas abajo en
-     * `:root` y redefinida en `.dark`. Asi `bg-surface` sirve en los dos
-     * temas sin escribir una sola clase `dark:`.
+     * escáner. Cuando se hizo al revés, el modo oscuro dejaba tarjetas casi
+     * negras con texto casi negro.
      */
     --color-surface: var(--surface);
     --color-surface-lowest: var(--surface-container-lowest);
@@ -43,6 +42,9 @@
     --color-primary-container: var(--primary-container);
     --color-on-primary-container: var(--on-primary-container);
 
+    --color-accent: var(--accent);
+    --color-on-accent: var(--on-accent);
+
     --color-danger: var(--error);
     --color-on-danger: var(--on-error);
     --color-danger-container: var(--error-container);
@@ -55,57 +57,52 @@
     --color-warn: var(--warning);
     --color-warn-container: var(--warning-container);
     --color-on-warn-container: var(--on-warning-container);
+
+    /* Curva "de hardware", no de burbuja: 12–16 px en tarjetas y controles. */
+    --radius-md: 0.75rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
 }
 
 /*
- * SISTEMA DE COLOR — Material 3, tomado del diseño «Continental Purple»
- * que el equipo hizo en Stitch.
- *
- * Se define como VARIABLES y no como clases sueltas de Tailwind por un
- * motivo concreto: el tema claro y el oscuro tienen que poder convivir sin
- * duplicar cada componente. Una tarjeta escribe `bg-[var(--surface)]` una
- * sola vez y funciona en los dos.
- *
- * La nomenclatura es la de Material 3 —`primary` / `on-primary`— y conviene
+ * SISTEMA DE COLOR «Continental Prestige»
+ * ----------------------------------------------------------------------
+ * Material 3 sobre morado profundo, con acento violeta para lo que exige
+ * acción. La nomenclatura `X` / `on-X` es la de Material y conviene
  * respetarla: `on-X` es SIEMPRE el color del texto que va encima de `X`, y
- * cada par está calculado para cumplir el contraste mínimo AA que el plan
- * exige (§17.9). Inventar combinaciones fuera de esos pares es lo que
- * rompe la accesibilidad sin que se note en el monitor de quien programa.
+ * cada par está calculado para cumplir el contraste AA que el plan exige
+ * (§17.9). Combinar fuera de esos pares es lo que rompe la accesibilidad
+ * sin que se note en el monitor de quien programa.
  *
- * POR QUÉ HAY TEMA CLARO, si el diseño de Stitch era oscuro: un aula con el
- * proyector encendido está a media luz y el oscuro va bien, pero un docente
- * junto a la ventana con sol de frente necesita el claro. Se ofrecen los dos
- * y decide quien mira la pantalla.
+ * HAY TEMA CLARO aunque el diseño nació oscuro, y no es un capricho: un aula
+ * con el proyector encendido está a media luz y el oscuro va perfecto, pero
+ * un docente junto a la ventana con sol de frente no lee nada. Se ofrecen
+ * los dos y decide quien mira la pantalla.
  */
 :root {
-    /* Superficies, de la más hundida a la más elevada. */
-    --surface: #fdfbff;
+    --surface: #faf7fd;
     --surface-container-lowest: #ffffff;
-    --surface-container-low: #f7f2fa;
-    --surface-container: #f2ecf4;
-    --surface-container-high: #ece6ee;
-    --surface-container-highest: #e6e0e9;
+    --surface-container-low: #f5f0f9;
+    --surface-container: #efe9f4;
+    --surface-container-high: #e8e2ee;
+    --surface-container-highest: #e1dbe8;
 
-    --on-surface: #1d1b20;
-    --on-surface-variant: #49454f;
-    --outline: #79747e;
-    --outline-variant: #cac4d0;
+    --on-surface: #1c1a20;
+    --on-surface-variant: #4a4550;
+    --outline: #7a7484;
+    --outline-variant: #cbc4d0;
 
-    /* Morado Continental. En claro se invierte respecto al diseño oscuro:
-       el morado saturado pasa a ser el fondo del botón principal. */
-    --primary: #6750a4;
+    /* En claro el morado saturado pasa a ser el fondo del botón principal. */
+    --primary: #5b3f96;
     --on-primary: #ffffff;
-    --primary-container: #eaddff;
-    --on-primary-container: #21005d;
+    --primary-container: #ebddff;
+    --on-primary-container: #22084f;
 
-    --secondary: #625b71;
-    --on-secondary: #ffffff;
-    --secondary-container: #e8def8;
-    --on-secondary-container: #1d192b;
+    /* Violeta vibrante: se reserva para foco y estados activos. Usarlo de
+       relleno lo vuelve invisible justo cuando hace falta. */
+    --accent: #7c4dff;
+    --on-accent: #ffffff;
 
-    /* Estados. El rojo se reserva para lo que de verdad es un error o un
-       riesgo: usarlo para avisos corrientes lo vuelve invisible cuando hace
-       falta de verdad. */
     --error: #ba1a1a;
     --on-error: #ffffff;
     --error-container: #ffdad6;
@@ -118,6 +115,14 @@
     --warning: #7a5900;
     --warning-container: #ffdf9a;
     --on-warning-container: #261a00;
+
+    /* Cristal. En claro el velo es blanco: sobre fondo claro un velo oscuro
+       ensucia en lugar de elevar. */
+    --glass-bg: rgb(255 255 255 / 0.72);
+    --glass-stroke: rgb(28 26 32 / 0.08);
+    --glass-glow: rgb(124 77 255 / 0.10);
+    --mesh-1: #ede7f6;
+    --mesh-2: #faf7fd;
 }
 
 .dark {
@@ -128,20 +133,18 @@
     --surface-container-high: #2b292d;
     --surface-container-highest: #363438;
 
-    --on-surface: #e6e1e5;
-    --on-surface-variant: #cac4d0;
-    --outline: #938f99;
-    --outline-variant: #49454f;
+    --on-surface: #e6e1e6;
+    --on-surface-variant: #cbc4d0;
+    --outline: #948e99;
+    --outline-variant: #49454e;
 
-    --primary: #d0bcff;
-    --on-primary: #381e72;
-    --primary-container: #4f378b;
-    --on-primary-container: #eaddff;
+    --primary: #d2bcfa;
+    --on-primary: #38265a;
+    --primary-container: #2d1b4e;
+    --on-primary-container: #d8c9f5;
 
-    --secondary: #cbc2db;
-    --on-secondary: #332d41;
-    --secondary-container: #4a4458;
-    --on-secondary-container: #e8def8;
+    --accent: #a78bfa;
+    --on-accent: #23104a;
 
     --error: #ffb4ab;
     --on-error: #690005;
@@ -155,6 +158,12 @@
     --warning: #f2c14e;
     --warning-container: #5c4300;
     --on-warning-container: #ffdf9a;
+
+    --glass-bg: rgb(45 27 78 / 0.42);
+    --glass-stroke: rgb(255 255 255 / 0.10);
+    --glass-glow: rgb(139 92 246 / 0.15);
+    --mesh-1: #2d1b4e;
+    --mesh-2: #141316;
 }
 
 /* El navegador pinta sus propios controles —barras de scroll, selectores de
@@ -163,9 +172,121 @@
 .dark { color-scheme: dark; }
 
 /*
- * Área táctil mínima de 44 px (plan 17.9). Se aplica de forma global y no
- * botón por botón: en la interfaz del docente TODO se toca con el pulgar, a
- * menudo de pie y con prisa, y un objetivo pequeño se falla.
+ * Fondo con degradado de malla. Va en ::before y fijo para que no se mueva
+ * al hacer scroll: un degradado que se desplaza con el contenido delata que
+ * es una imagen y rompe la sensación de profundidad.
+ */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+        radial-gradient(60rem 40rem at 15% -10%, var(--mesh-1) 0%, transparent 60%),
+        radial-gradient(50rem 35rem at 110% 10%, var(--mesh-1) 0%, transparent 55%),
+        var(--mesh-2);
+}
+
+/*
+ * Componentes del sistema, en CSS plano y NO dentro de `@layer components`.
+ *
+ * Tailwind 4 declara `backdrop-filter` con sus propias variables en la capa
+ * de utilidades, y esa capa gana a `components`: el resultado era una
+ * tarjeta con el color y la sombra correctos pero SIN desenfoque — el efecto
+ * de cristal a medias, que se ve peor que no tenerlo. Fuera de las capas, la
+ * declaración se aplica.
+ */
+/*
+ * TARJETA DE CRISTAL — el contenedor principal del sistema.
+ *
+ * `backdrop-filter` no está en todos los navegadores, así que el color de
+ * fondo ya es legible por sí solo: sin el desenfoque la tarjeta se ve
+ * plana, nunca transparente e ilegible.
+ */
+.glass {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-stroke);
+    border-radius: var(--radius-lg);
+    /* El PREFIJO va primero y la propiedad estándar después. Al revés, el
+       minificador considera la segunda una repetición de la primera y
+       descarta la estándar: el CSS compilado quedaba solo con -webkit- y el
+       desenfoque no se aplicaba en ningún navegador moderno. */
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    backdrop-filter: blur(20px) saturate(1.4);
+
+    /* Sombra violeta en vez de negra: ilumina desde dentro en lugar de
+       ensuciar el fondo. */
+    box-shadow:
+        0 1px 0 0 rgb(255 255 255 / 0.06) inset,
+        0 12px 32px -12px var(--glass-glow);
+}
+
+.glass-hover {
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.glass-hover:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+    box-shadow:
+        0 1px 0 0 rgb(255 255 255 / 0.08) inset,
+        0 18px 40px -14px var(--glass-glow);
+}
+
+/* Botón principal: degradado del acento al morado profundo y halo al
+   pasar por encima. */
+.btn-primary {
+    background-image: linear-gradient(135deg,
+        color-mix(in srgb, var(--accent) 92%, white 8%),
+        var(--primary));
+    color: var(--on-accent);
+    border-radius: var(--radius-md);
+    transition: box-shadow 180ms ease, transform 120ms ease;
+}
+
+.dark .btn-primary { color: var(--on-primary); }
+
+.btn-primary:hover {
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent),
+                0 10px 28px -10px var(--glass-glow);
+}
+
+.btn-primary:active { transform: scale(0.985); }
+
+/*
+ * Etiquetas técnicas: Inter en mayúsculas con más separación. Distingue
+ * de un vistazo lo que es dato del sistema —un código de aula, un
+ * estado— de lo que es texto para leer.
+ */
+.label-tech {
+    font-family: var(--font-label);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* Píldora para estados y etiquetas. Radio completo para diferenciarla de
+   los botones, que son rectangulares con esquinas de 12 px. */
+.chip {
+    font-family: var(--font-label);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    border-radius: 9999px;
+    padding: 0.15rem 0.6rem;
+}
+
+/* El foco se ve SIEMPRE, y en violeta. Quitarlo por estética deja sin
+   navegar a quien usa teclado (plan 17.9). */
+.focus-ring:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/*
+ * Área táctil mínima de 44 px (plan 17.9). Global y no botón por botón: en
+ * la interfaz del docente TODO se toca con el pulgar, de pie y con prisa.
  */
 .touch-target {
     min-height: 44px;
@@ -179,4 +300,17 @@
     font-family: 'Material Symbols Outlined', sans-serif;
     line-height: 1;
     user-select: none;
+}
+
+/* Entrada de página: fundido con deslizamiento corto. Se desactiva para
+   quien pidió menos animación — el mareo por movimiento es real. */
+@media (prefers-reduced-motion: no-preference) {
+    .page-enter {
+        animation: page-enter 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+}
+
+@keyframes page-enter {
+    from { opacity: 0; transform: translateY(8px); filter: saturate(0.85); }
+    to { opacity: 1; transform: none; filter: none; }
 }

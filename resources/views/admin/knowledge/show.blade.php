@@ -9,14 +9,14 @@
     <div class="space-y-4 lg:col-span-2">
 
         @if ($document->summary)
-            <div class="rounded-lg border border-outline-variant bg-surface-lowest p-5">
+            <div class="glass p-5">
                 <p class="text-sm text-on-surface-variant">{{ $document->summary }}</p>
             </div>
         @endif
 
-        <div class="rounded-lg border border-outline-variant bg-surface-lowest p-5">
+        <div class="glass p-5">
             <div class="mb-4 flex items-center justify-between">
-                <h2 class="text-sm font-semibold uppercase tracking-wide text-on-surface-variant">Versiones</h2>
+                <h2 class="label-tech text-on-surface-variant">Versiones</h2>
                 <p class="text-xs text-outline">La versión más reciente es la que usa el asistente</p>
             </div>
 
@@ -84,8 +84,8 @@
 
     <div class="space-y-4">
         @can('knowledge.manage')
-            <div class="rounded-lg border border-outline-variant bg-surface-lowest p-5">
-                <h2 class="mb-3 text-sm font-semibold uppercase tracking-wide text-on-surface-variant">Disponibilidad</h2>
+            <div class="glass p-5">
+                <h2 class="mb-3 label-tech text-on-surface-variant">Disponibilidad</h2>
 
                 @if ($document->isUsable())
                     <p class="mb-3 rounded bg-ok-container px-3 py-2 text-sm text-on-ok-container">
@@ -124,8 +124,8 @@
                 @endif
             </div>
 
-            <div class="rounded-lg border border-outline-variant bg-surface-lowest p-5">
-                <h2 class="mb-3 text-sm font-semibold uppercase tracking-wide text-on-surface-variant">Nueva versión</h2>
+            <div class="glass p-5">
+                <h2 class="mb-3 label-tech text-on-surface-variant">Nueva versión</h2>
 
                 <form method="POST" action="{{ route('admin.knowledge.version', $document) }}" enctype="multipart/form-data" class="space-y-3">
                     @csrf

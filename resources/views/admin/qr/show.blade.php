@@ -6,14 +6,14 @@
 @section('content')
 <div class="grid max-w-4xl gap-6 md:grid-cols-2">
 
-    <div class="rounded-lg border border-outline-variant bg-surface-lowest p-6 text-center">
+    <div class="glass p-6 text-center">
         <img src="{{ $pngDataUri }}" alt="Código QR de acceso al sistema" class="mx-auto h-64 w-64">
 
         <p class="mt-4 break-all font-mono text-xs text-on-surface-variant">{{ $targetUrl }}</p>
 
         <div class="mt-5 flex justify-center gap-3">
             <a href="{{ route('admin.qr.poster') }}" target="_blank"
-               class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-on-primary hover:bg-on-surface">
+               class="btn-primary focus-ring px-4 py-2 text-sm font-medium hover:bg-on-surface">
                 Ver cartel para imprimir
             </a>
             <a href="{{ route('admin.qr.download') }}"

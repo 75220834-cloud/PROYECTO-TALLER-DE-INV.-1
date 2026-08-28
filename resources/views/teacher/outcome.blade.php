@@ -9,14 +9,14 @@
          puede dar por bueno algo que en el aula no funcionó. --}}
 
     @if ($stepsDone > 0)
-        <div class="mb-6 rounded-xl bg-surface-mid px-5 py-4">
+        <div class="mb-6 glass px-5 py-4">
             <p class="text-base text-on-surface-variant">
                 Revisamos {{ $stepsDone }} {{ $stepsDone === 1 ? 'cosa' : 'cosas' }} juntos.
             </p>
         </div>
     @endif
 
-    <h1 class="mb-5 text-2xl font-bold">¿El problema ya se solucionó?</h1>
+    <h1 class="mb-5 text-[28px] font-semibold leading-9 tracking-[-0.02em]">¿El problema ya se solucionó?</h1>
 
     <form method="POST" action="{{ route('teacher.resolved') }}">
         @csrf

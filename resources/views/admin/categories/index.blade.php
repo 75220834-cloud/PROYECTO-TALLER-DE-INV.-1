@@ -12,14 +12,14 @@
     </p>
 
     <a href="{{ route('admin.categories.create') }}"
-       class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-on-primary">
+       class="btn-primary focus-ring px-4 py-2 text-sm font-medium">
         Nueva categoría
     </a>
 </div>
 
-<div class="overflow-x-auto rounded-lg border border-outline-variant bg-surface-lowest">
+<div class="overflow-x-auto glass">
     <table class="w-full text-sm">
-        <thead class="border-b border-outline-variant bg-surface-low text-left text-xs uppercase tracking-wide text-on-surface-variant">
+        <thead class="border-b border-outline-variant bg-surface-low text-left label-tech text-on-surface-variant">
             <tr>
                 <th class="px-4 py-3">Orden</th>
                 <th class="px-4 py-3">Código</th>
@@ -58,7 +58,7 @@
 
 {{-- Se explica la ausencia del botón de borrar en lugar de dejar al
      administrador buscándolo por la pantalla. --}}
-<p class="mt-5 rounded-lg border border-outline-variant bg-surface-lowest px-4 py-3 text-sm text-on-surface-variant">
+<p class="mt-5 glass px-4 py-3 text-sm text-on-surface-variant">
     <strong class="text-on-surface">Las categorías no se borran.</strong>
     Una categoría retirada sigue clasificando incidencias del pasado, y borrarla dejaría huecos en
     los datos que la investigación va a analizar. Ocultarla la quita de la pantalla del docente sin

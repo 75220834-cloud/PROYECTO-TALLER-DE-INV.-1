@@ -6,7 +6,7 @@
 <form method="POST"
       action="{{ $document->exists ? route('admin.knowledge.update', $document) : route('admin.knowledge.store') }}"
       enctype="multipart/form-data"
-      class="max-w-lg space-y-4 rounded-lg border border-outline-variant bg-surface-lowest p-6">
+      class="max-w-lg space-y-4 glass p-6">
     @csrf
     @if ($document->exists) @method('PUT') @endif
 
@@ -47,7 +47,7 @@
     @endunless
 
     <div class="flex gap-3 pt-2">
-        <button type="submit" class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-on-primary hover:bg-on-surface">
+        <button type="submit" class="btn-primary focus-ring px-4 py-2 text-sm font-medium hover:bg-on-surface">
             {{ $document->exists ? 'Guardar' : 'Cargar y procesar' }}
         </button>
         <a href="{{ route('admin.knowledge.index') }}" class="rounded-md border border-outline-variant px-4 py-2 text-sm text-on-surface-variant hover:bg-surface-low">Cancelar</a>

@@ -8,7 +8,7 @@
 @if ($version->published_at)
     {{-- Se explica la inmutabilidad donde el usuario iría a buscar el botón
          de editar, no en un manual aparte. --}}
-    <div class="mb-5 rounded-lg border border-ok bg-ok-container px-5 py-4 text-sm text-on-ok-container">
+    <div class="mb-5 glass border-ok/60 bg-ok-container/60 px-5 py-4 text-sm text-on-ok-container">
         <p class="font-medium">Esta versión está en uso y no se puede modificar.</p>
         <p class="mt-1">
             Hay incidencias cerradas que la ejecutaron: cambiarla haría que sus respuestas guardadas
@@ -17,7 +17,7 @@
         </p>
     </div>
 @else
-    <div class="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-warn bg-warn-container px-5 py-4">
+    <div class="mb-5 flex flex-wrap items-center justify-between gap-3 glass border-warn/60 bg-warn-container/60 px-5 py-4">
         <p class="text-sm text-on-warn-container">
             Borrador. Ningún docente lo ve todavía. Al publicarlo reemplaza a la versión en uso.
         </p>
@@ -31,7 +31,7 @@
             <form method="POST" action="{{ route('admin.flows.publish', $version) }}"
                   data-confirm="¿Publicar? Reemplazará a la versión que están usando los docentes.">
                 @csrf
-                <button type="submit" class="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-on-primary">
+                <button type="submit" class="btn-primary focus-ring px-3 py-1.5 text-sm font-medium">
                     Publicar
                 </button>
             </form>
@@ -40,7 +40,7 @@
 @endif
 
 @forelse ($steps as $step)
-    <div class="mb-3 rounded-lg border border-outline-variant bg-surface-lowest p-5">
+    <div class="mb-3 glass p-5">
         <div class="flex flex-wrap items-start justify-between gap-3">
             <div class="min-w-0 flex-1">
                 <p class="font-mono text-xs text-on-surface-variant">
@@ -57,7 +57,7 @@
                 @endif
 
                 @if ($step->is_terminal)
-                    <p class="mt-2 inline-block rounded bg-surface-mid px-2 py-0.5 text-xs text-on-surface-variant">
+                    <p class="mt-2 inline-block chip bg-surface-high text-on-surface-variant">
                         Cierra el procedimiento ·
                         {{ $step->terminal_outcome === 'resolved' ? 'da por resuelto' : 'avisa a soporte' }}
                     </p>
@@ -91,7 +91,7 @@
         </div>
     </div>
 @empty
-    <p class="rounded-lg border border-outline-variant bg-surface-lowest px-5 py-6 text-center text-sm text-on-surface-variant">
+    <p class="glass px-5 py-6 text-center text-sm text-on-surface-variant">
         Todavía no hay pasos. El primero de la lista es por donde empieza el docente.
     </p>
 @endforelse

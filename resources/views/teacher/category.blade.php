@@ -3,8 +3,8 @@
 @section('step', $incident->room?->code)
 
 @section('content')
-    <h1 class="mb-1 text-2xl font-bold">¿Qué problema tienes?</h1>
-    <p class="mb-5 text-base text-on-surface-variant">Toca la opción que más se parezca.</p>
+    <h1 class="mb-1 text-[28px] font-semibold leading-9 tracking-[-0.02em]">¿Qué problema tienes?</h1>
+    <p class="mb-6 text-[18px] leading-7 text-on-surface-variant">Toca la opción que más se parezca.</p>
 
     <form method="POST" action="{{ route('teacher.category.store') }}" id="reporte">
         @csrf
@@ -15,7 +15,7 @@
                      radios que haya que marcar y luego confirmar. Un paso
                      menos en la pantalla más usada del sistema. --}}
                 <button type="submit" name="category_id" value="{{ $category->id }}"
-                        class="flex min-h-[64px] w-full items-center justify-between gap-3 rounded-xl border-2 border-outline-variant bg-surface-lowest px-5 py-4 text-left text-lg font-medium text-on-surface transition active:scale-[.99] hover:border-primary hover:bg-surface-high">
+                        class="flex min-h-[64px] w-full items-center justify-between gap-3 glass glass-hover focus-ring px-5 py-4 text-left text-lg font-medium text-on-surface transition active:scale-[.99] hover:border-primary hover:bg-surface-high">
                     <span>{{ $category->teacherText() }}</span>
                     <span aria-hidden="true" class="text-2xl leading-none text-outline">&rsaquo;</span>
                 </button>
@@ -43,14 +43,14 @@
 
             <textarea name="description" rows="3" maxlength="1000" required
                       placeholder="Por ejemplo: la pantalla se ve azul y no pasa nada"
-                      class="block w-full rounded-xl border-2 border-outline-variant px-4 py-3 text-base focus:border-primary focus:ring-0">{{ old('description') }}</textarea>
+                      class="block w-full glass focus-ring w-full px-4 py-3 text-base focus:border-accent">{{ old('description') }}</textarea>
 
             @error('description')
                 <p class="mt-2 rounded-lg bg-danger-container px-4 py-3 text-base text-on-danger-container">{{ $message }}</p>
             @enderror
 
             <button type="submit"
-                    class="mt-3 min-h-[56px] w-full rounded-xl bg-primary px-5 py-4 text-lg font-semibold text-on-primary active:scale-[.99]">
+                    class="mt-3 min-h-[56px] w-full btn-primary focus-ring px-5 py-4 text-lg font-semibold active:scale-[.99]">
                 Continuar
             </button>
 

@@ -30,8 +30,8 @@
         ['Con clase detenida', $metrics['volume']['blocking'], 'text-danger'],
         ['Críticas', $metrics['volume']['critical'], 'text-danger'],
     ] as [$label, $value, $color])
-        <div class="rounded-lg border border-outline-variant bg-surface-lowest px-4 py-3">
-            <p class="text-xs uppercase tracking-wide text-on-surface-variant">{{ $label }}</p>
+        <div class="glass px-4 py-3">
+            <p class="label-tech text-on-surface-variant">{{ $label }}</p>
             <p class="mt-1 text-2xl font-semibold {{ $color }}">{{ $value }}</p>
         </div>
     @endforeach
@@ -40,8 +40,8 @@
 <div class="grid gap-6 lg:grid-cols-2">
 
     {{-- El indicador central de la investigación. --}}
-    <div class="rounded-lg border border-outline-variant bg-surface-lowest p-5">
-        <h2 class="mb-1 text-sm font-semibold uppercase tracking-wide text-on-surface-variant">Autonomía de resolución</h2>
+    <div class="glass p-5">
+        <h2 class="mb-1 label-tech text-on-surface-variant">Autonomía de resolución</h2>
         <p class="mb-4 text-xs text-outline">Qué proporción se resolvió sin que nadie se desplazara</p>
 
         <p class="text-4xl font-bold text-ok">{{ $metrics['resolution']['autonomyRate'] }}%</p>
@@ -59,8 +59,8 @@
 
     {{-- Medianas, no medias: una incidencia olvidada un fin de semana
          desplazaría la media varias horas y haría ilegible el dato. --}}
-    <div class="rounded-lg border border-outline-variant bg-surface-lowest p-5">
-        <h2 class="mb-1 text-sm font-semibold uppercase tracking-wide text-on-surface-variant">Tiempos</h2>
+    <div class="glass p-5">
+        <h2 class="mb-1 label-tech text-on-surface-variant">Tiempos</h2>
         <p class="mb-4 text-xs text-outline">Mediana en minutos, para describir el caso típico</p>
 
         <dl class="space-y-3">
@@ -83,8 +83,8 @@
     </div>
 
     {{-- Indicador incómodo: el coste del QR genérico. --}}
-    <div class="rounded-lg border border-outline-variant bg-surface-lowest p-5">
-        <h2 class="mb-1 text-sm font-semibold uppercase tracking-wide text-on-surface-variant">Fricción de acceso</h2>
+    <div class="glass p-5">
+        <h2 class="mb-1 label-tech text-on-surface-variant">Fricción de acceso</h2>
         <p class="mb-4 text-xs text-outline">Docentes que entraron y no llegaron a reportar</p>
 
         <p class="text-4xl font-bold {{ $metrics['friction']['abandonmentRate'] > 30 ? 'text-warn' : 'text-primary' }}">
@@ -100,8 +100,8 @@
     {{-- Los rechazos se muestran SIEMPRE, aunque sean cero: si aparecen
          muchos por IP, probablemente se esté bloqueando a docentes que
          comparten la WiFi institucional. --}}
-    <div class="rounded-lg border border-outline-variant bg-surface-lowest p-5">
-        <h2 class="mb-1 text-sm font-semibold uppercase tracking-wide text-on-surface-variant">Solicitudes rechazadas</h2>
+    <div class="glass p-5">
+        <h2 class="mb-1 label-tech text-on-surface-variant">Solicitudes rechazadas</h2>
         <p class="mb-4 text-xs text-outline">Controles antiabuso. Muchos rechazos por IP = revisar umbrales</p>
 
         @if (empty($metrics['channel']))
@@ -118,8 +118,8 @@
         @endif
     </div>
 
-    <div class="rounded-lg border border-outline-variant bg-surface-lowest p-5">
-        <h2 class="mb-3 text-sm font-semibold uppercase tracking-wide text-on-surface-variant">Aulas con más incidencias</h2>
+    <div class="glass p-5">
+        <h2 class="mb-3 label-tech text-on-surface-variant">Aulas con más incidencias</h2>
 
         @forelse ($metrics['topRooms'] as $room)
             <div class="flex items-center justify-between border-b border-surface-mid py-1.5 text-sm last:border-0">
@@ -131,8 +131,8 @@
         @endforelse
     </div>
 
-    <div class="rounded-lg border border-outline-variant bg-surface-lowest p-5">
-        <h2 class="mb-3 text-sm font-semibold uppercase tracking-wide text-on-surface-variant">Problemas más frecuentes</h2>
+    <div class="glass p-5">
+        <h2 class="mb-3 label-tech text-on-surface-variant">Problemas más frecuentes</h2>
 
         @forelse ($metrics['topCategories'] as $category)
             <div class="flex items-center justify-between border-b border-surface-mid py-1.5 text-sm last:border-0">
@@ -145,8 +145,8 @@
     </div>
 
     {{-- Convierte una decisión de diseño en una observación medible. --}}
-    <div class="rounded-lg border border-outline-variant bg-surface-lowest p-5">
-        <h2 class="mb-1 text-sm font-semibold uppercase tracking-wide text-on-surface-variant">¿Ayudan las imágenes?</h2>
+    <div class="glass p-5">
+        <h2 class="mb-1 label-tech text-on-surface-variant">¿Ayudan las imágenes?</h2>
         <p class="mb-4 text-xs text-outline">Tiempo medio por paso, con y sin apoyo visual</p>
 
         <dl class="space-y-1 text-sm">
@@ -175,8 +175,8 @@
         </p>
     </div>
 
-    <div class="rounded-lg border border-outline-variant bg-surface-lowest p-5">
-        <h2 class="mb-1 text-sm font-semibold uppercase tracking-wide text-on-surface-variant">Facilidad de uso</h2>
+    <div class="glass p-5">
+        <h2 class="mb-1 label-tech text-on-surface-variant">Facilidad de uso</h2>
         <p class="mb-4 text-xs text-outline">Encuesta opcional al cerrar</p>
 
         <p class="text-4xl font-bold">

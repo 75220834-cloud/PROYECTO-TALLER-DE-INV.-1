@@ -16,7 +16,7 @@
         </div>
     @endif
 
-    <div class="space-y-4 rounded-lg border border-outline-variant bg-surface-lowest p-5">
+    <div class="space-y-4 glass p-5">
         <div>
             <label class="block text-sm font-medium text-on-surface-variant">Código interno</label>
 
@@ -59,7 +59,7 @@
         </div>
     </div>
 
-    <div class="grid gap-4 rounded-lg border border-outline-variant bg-surface-lowest p-5 sm:grid-cols-2">
+    <div class="grid gap-4 glass p-5 sm:grid-cols-2">
         <div>
             <label class="block text-sm font-medium text-on-surface-variant">Prioridad base</label>
             <select name="default_priority_id" class="mt-1 block w-full rounded-md border-outline-variant text-sm">
@@ -101,7 +101,7 @@
     </div>
 
     <div class="flex items-center gap-3">
-        <button type="submit" class="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-on-primary">
+        <button type="submit" class="btn-primary focus-ring px-5 py-2.5 text-sm font-medium">
             {{ $category->exists ? 'Guardar cambios' : 'Crear categoría' }}
         </button>
         <a href="{{ route('admin.categories.index') }}" class="text-sm text-on-surface-variant underline underline-offset-2">Cancelar</a>

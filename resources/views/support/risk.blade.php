@@ -8,7 +8,7 @@
 {{-- Advertencia deliberadamente arriba y no en letra pequeña al final.
      Quien lee esta pantalla debe saber ANTES de mirar los números qué son
      y qué no son (plan 15.2). --}}
-<div class="mb-5 rounded-lg border border-warn bg-warn-container px-4 py-3 text-sm text-on-warn-container">
+<div class="mb-5 glass border-warn/60 bg-warn-container/60 px-4 py-3 text-sm text-on-warn-container">
     <p class="font-medium">Cómo leer esta pantalla</p>
     <p class="mt-1">
         Estos números <strong>ordenan por dónde conviene empezar una revisión</strong>. No son
@@ -26,7 +26,7 @@
     ];
 @endphp
 
-<h2 class="mb-3 text-sm font-semibold uppercase tracking-wide text-on-surface-variant">Por aula</h2>
+<h2 class="mb-3 label-tech text-on-surface-variant">Por aula</h2>
 
 <div class="mb-8 grid gap-3 md:grid-cols-2">
     @forelse ($rooms as $score)
@@ -71,7 +71,7 @@
     @endforelse
 </div>
 
-<h2 class="mb-3 text-sm font-semibold uppercase tracking-wide text-on-surface-variant">Por aula y tipo de problema</h2>
+<h2 class="mb-3 label-tech text-on-surface-variant">Por aula y tipo de problema</h2>
 
 <div class="grid gap-3 md:grid-cols-2">
     @forelse ($pairs as $score)

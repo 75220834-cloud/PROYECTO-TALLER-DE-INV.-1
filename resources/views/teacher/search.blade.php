@@ -3,7 +3,7 @@
 @section('step', 'Buscar por código')
 
 @section('content')
-    <h1 class="mb-5 text-2xl font-bold">Escribe el código del aula</h1>
+    <h1 class="mb-5 text-[28px] font-semibold leading-9 tracking-[-0.02em]">Escribe el código del aula</h1>
 
     <form method="GET" action="{{ route('teacher.search') }}" class="space-y-3">
         <input name="q" value="{{ $term }}" autofocus autocomplete="off"
@@ -11,7 +11,7 @@
                class="block w-full rounded-xl border-2 border-outline-variant px-5 py-4 text-center font-mono text-2xl uppercase tracking-wide focus:border-primary focus:ring-0">
 
         <button type="submit"
-                class="flex min-h-[60px] w-full items-center justify-center rounded-xl bg-primary px-5 py-4 text-lg font-semibold text-on-primary hover:opacity-90">
+                class="flex min-h-[60px] w-full items-center justify-center btn-primary focus-ring px-5 py-4 text-lg font-semibold hover:opacity-90">
             Buscar
         </button>
     </form>

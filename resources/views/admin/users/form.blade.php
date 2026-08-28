@@ -16,7 +16,7 @@
         </div>
     @endif
 
-    <div class="space-y-4 rounded-lg border border-outline-variant bg-surface-lowest p-5">
+    <div class="space-y-4 glass p-5">
         <div>
             <label class="block text-sm font-medium text-on-surface-variant">Nombre</label>
             <input type="text" name="name" value="{{ old('name', $user->name) }}" required
@@ -30,7 +30,7 @@
         </div>
     </div>
 
-    <div class="space-y-4 rounded-lg border border-outline-variant bg-surface-lowest p-5">
+    <div class="space-y-4 glass p-5">
         <div>
             <label class="block text-sm font-medium text-on-surface-variant">
                 Contraseña {{ $user->exists ? '(dejar vacío para no cambiarla)' : '' }}
@@ -47,7 +47,7 @@
         </div>
     </div>
 
-    <div class="rounded-lg border border-outline-variant bg-surface-lowest p-5">
+    <div class="glass p-5">
         <label class="block text-sm font-medium text-on-surface-variant">Rol</label>
 
         {{-- Se explica qué hace cada rol: elegir mal aquí da a alguien acceso
@@ -79,7 +79,7 @@
     </div>
 
     <div class="flex items-center gap-3">
-        <button type="submit" class="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-on-primary">
+        <button type="submit" class="btn-primary focus-ring px-5 py-2.5 text-sm font-medium">
             {{ $user->exists ? 'Guardar cambios' : 'Crear usuario' }}
         </button>
         <a href="{{ route('admin.users.index') }}" class="text-sm text-on-surface-variant underline underline-offset-2">Cancelar</a>

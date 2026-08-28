@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="theme-color" content="#fdfbff">
+    <meta name="theme-color" content="#141316">
     <title>@yield('title', 'Panel') · {{ config('app.name') }}</title>
 
     {{-- theme-init va PRIMERO: decide el tema antes de pintar y evita el
@@ -15,7 +15,7 @@
          con la salida a Internet bloqueada (OS-9). --}}
     <link rel="stylesheet" href="{{ asset('fonts/fuentes.css') }}">
 </head>
-<body class="h-full bg-surface-mid text-on-surface antialiased transition-colors">
+<body class="h-full bg-transparent text-on-surface antialiased">
 
 @php
     $demoCount = \App\Modules\Locations\Models\Site::where('is_demo', true)->count();
@@ -24,17 +24,20 @@
 @if ($demoCount > 0)
     {{-- Distintivo exigido por el plan 21: mientras existan datos demo, tiene
          que ser imposible confundirlos con informacion institucional real. --}}
-    <div class="bg-warn px-4 py-1.5 text-center text-xs font-semibold tracking-wide text-on-warn-container">
+    <div class="label-tech bg-warn px-4 py-1.5 text-center text-on-warn-container">
         DATOS DE DEMOSTRACIÓN — este sistema no contiene información institucional real
     </div>
 @endif
 
 <div class="flex min-h-full">
 
-    <aside class="hidden w-60 shrink-0 flex-col bg-primary text-outline-variant md:flex">
-        <div class="px-5 py-5">
-            <p class="text-sm font-semibold leading-tight text-surface-lowest">Incidencias en aulas</p>
-            <p class="mt-0.5 text-xs text-outline">Panel de soporte</p>
+    <aside class="hidden w-64 shrink-0 flex-col border-r border-[var(--glass-stroke)] bg-[var(--glass-bg)] backdrop-blur-xl md:flex">
+        <div class="flex items-center gap-3 px-5 py-5">
+            <x-brand-mark :size="34" />
+            <div class="min-w-0">
+                <p class="truncate text-sm font-semibold leading-tight text-on-surface">Incidencias en aulas</p>
+                <p class="label-tech mt-0.5 text-on-surface-variant">Soporte</p>
+            </div>
         </div>
 
         <nav class="flex-1 space-y-0.5 px-3 py-2 text-sm">
@@ -65,7 +68,7 @@
                 </x-nav-link>
             @endcan
             @can('locations.view')
-                <p class="px-3 pb-1 pt-4 text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">Catálogo</p>
+                <p class="label-tech px-3 pb-1 pt-4 text-on-surface-variant">Catálogo</p>
                 <x-nav-link :href="route('admin.sites.index')" :active="request()->routeIs('admin.sites.*')">
                     Sedes
                 </x-nav-link>
@@ -93,7 +96,7 @@
             @endcan
 
             @can('knowledge.view')
-                <p class="px-3 pb-1 pt-4 text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">Asistente</p>
+                <p class="label-tech px-3 pb-1 pt-4 text-on-surface-variant">Asistente</p>
                 <x-nav-link :href="route('admin.knowledge.index')" :active="request()->routeIs('admin.knowledge.*')">
                     Conocimiento
                 </x-nav-link>
@@ -112,7 +115,7 @@
             @endcan
 
             @can('locations.manage')
-                <p class="px-3 pb-1 pt-4 text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">Acceso</p>
+                <p class="label-tech px-3 pb-1 pt-4 text-on-surface-variant">Acceso</p>
                 <x-nav-link :href="route('admin.qr.show')" :active="request()->routeIs('admin.qr.*')">
                     Código QR
                 </x-nav-link>
@@ -131,12 +134,12 @@
             @endcan
         </nav>
 
-        <div class="border-t border-on-surface px-5 py-4 text-xs">
-            <p class="font-medium text-outline-variant">{{ auth()->user()?->name }}</p>
-            <p class="text-on-surface-variant">{{ auth()->user()?->getRoleNames()->first() }}</p>
+        <div class="border-t border-[var(--glass-stroke)] px-5 py-4 text-xs">
+            <p class="font-medium text-on-surface">{{ auth()->user()?->name }}</p>
+            <p class="label-tech mt-0.5 text-on-surface-variant">{{ auth()->user()?->getRoleNames()->first() }}</p>
             <form method="POST" action="{{ route('logout') }}" class="mt-2">
                 @csrf
-                <button type="submit" class="text-outline underline-offset-2 hover:text-surface-lowest hover:underline">
+                <button type="submit" class="focus-ring mt-2 text-on-surface-variant underline-offset-2 hover:text-on-surface hover:underline">
                     Cerrar sesión
                 </button>
             </form>
@@ -144,7 +147,7 @@
     </aside>
 
     <main class="min-w-0 flex-1">
-        <header class="flex items-center justify-between gap-4 border-b border-outline-variant bg-surface-lowest px-6 py-4">
+        <header class="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-[var(--glass-stroke)] bg-[var(--glass-bg)] px-6 py-4 backdrop-blur-xl">
             <div class="min-w-0">
                 {{-- El título de la página va en el color del texto normal,
                      no en el de marca: en morado compite con los botones de
@@ -217,7 +220,7 @@
             </div>
         @endcan
 
-        <div class="p-6">
+        <div class="page-enter p-6">
             @if (session('status'))
                 <div class="mb-4 rounded-md border border-ok bg-ok-container px-4 py-3 text-sm text-on-ok-container">
                     {{ session('status') }}

@@ -3,8 +3,8 @@
 @section('step', $incident?->room?->code ?? 'Ayuda')
 
 @section('content')
-    <h1 class="mb-1 text-2xl font-bold">Pregunta lo que necesites</h1>
-    <p class="mb-5 text-base text-on-surface-variant">
+    <h1 class="mb-1 text-[28px] font-semibold leading-9 tracking-[-0.02em]">Pregunta lo que necesites</h1>
+    <p class="mb-6 text-[18px] leading-7 text-on-surface-variant">
         Respondemos solo con los procedimientos que soporte tiene cargados.
     </p>
 
@@ -13,14 +13,14 @@
 
         <textarea name="question" rows="3" maxlength="500" required
                   placeholder="Por ejemplo: ¿cómo cambio la fuente del proyector?"
-                  class="block w-full rounded-xl border-2 border-outline-variant px-4 py-3 text-base focus:border-primary focus:ring-0">{{ $question }}</textarea>
+                  class="block w-full glass focus-ring w-full px-4 py-3 text-base focus:border-accent">{{ $question }}</textarea>
 
         @error('question')
             <p class="mt-2 rounded-lg bg-danger-container px-4 py-3 text-base text-on-danger-container">{{ $message }}</p>
         @enderror
 
         <button type="submit"
-                class="mt-3 min-h-[56px] w-full rounded-xl bg-primary px-5 py-4 text-lg font-semibold text-on-primary active:scale-[.99]">
+                class="mt-3 min-h-[56px] w-full btn-primary focus-ring px-5 py-4 text-lg font-semibold active:scale-[.99]">
             Preguntar
         </button>
     </form>
@@ -52,7 +52,7 @@
             {{-- Cuando el sistema no sabe, no deja al docente sin salida:
                  le ofrece el camino que sí resuelve. --}}
             <a href="{{ route('teacher.escalate') }}"
-               class="mt-4 flex min-h-[64px] w-full items-center justify-center rounded-xl bg-primary px-5 py-4 text-lg font-semibold text-on-primary active:scale-[.99]">
+               class="mt-4 flex min-h-[64px] w-full items-center justify-center btn-primary focus-ring px-5 py-4 text-lg font-semibold active:scale-[.99]">
                 Solicitar soporte técnico
             </a>
         @endif

@@ -3,7 +3,7 @@
 @section('step', 'Paso 1 de 3')
 
 @section('content')
-    <h1 class="mb-5 text-2xl font-bold">¿En qué pabellón estás?</h1>
+    <h1 class="mb-5 text-[28px] font-semibold leading-9 tracking-[-0.02em]">¿En qué pabellón estás?</h1>
 
     <div class="space-y-3">
         @foreach ($buildings as $building)

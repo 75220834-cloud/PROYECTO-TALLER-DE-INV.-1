@@ -17,7 +17,7 @@
         </div>
     @endif
 
-    <div class="space-y-4 rounded-lg border border-outline-variant bg-surface-lowest p-5">
+    <div class="space-y-4 glass p-5">
         <div>
             <label class="block text-sm font-medium text-on-surface-variant">Pregunta para el docente</label>
             <textarea name="prompt_text" rows="2" required
@@ -65,7 +65,7 @@
         </p>
     </div>
 
-    <div class="space-y-4 rounded-lg border border-outline-variant bg-surface-lowest p-5">
+    <div class="space-y-4 glass p-5">
         <div>
             <label class="block text-sm font-medium text-on-surface-variant">Respuestas posibles</label>
 
@@ -95,7 +95,7 @@
         </div>
     </div>
 
-    <div class="space-y-3 rounded-lg border border-outline-variant bg-surface-lowest p-5">
+    <div class="space-y-3 glass p-5">
         <label class="flex cursor-pointer items-start gap-3">
             <input type="hidden" name="is_terminal" value="0">
             <input type="checkbox" name="is_terminal" value="1" class="mt-1"
@@ -123,7 +123,7 @@
     </div>
 
     <div class="flex items-center gap-3">
-        <button type="submit" class="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-on-primary">
+        <button type="submit" class="btn-primary focus-ring px-5 py-2.5 text-sm font-medium">
             {{ $step->exists ? 'Guardar paso' : 'Añadir paso' }}
         </button>
         <a href="{{ route('admin.flows.show', $version) }}" class="text-sm text-on-surface-variant underline underline-offset-2">Cancelar</a>

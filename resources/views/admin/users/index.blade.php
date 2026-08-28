@@ -11,14 +11,14 @@
     </p>
 
     <a href="{{ route('admin.users.create') }}"
-       class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-on-primary">
+       class="btn-primary focus-ring px-4 py-2 text-sm font-medium">
         Nuevo usuario
     </a>
 </div>
 
-<div class="overflow-x-auto rounded-lg border border-outline-variant bg-surface-lowest">
+<div class="overflow-x-auto glass">
     <table class="w-full text-sm">
-        <thead class="border-b border-outline-variant bg-surface-low text-left text-xs uppercase tracking-wide text-on-surface-variant">
+        <thead class="border-b border-outline-variant bg-surface-low text-left label-tech text-on-surface-variant">
             <tr>
                 <th class="px-4 py-3">Nombre</th>
                 <th class="px-4 py-3">Correo</th>
@@ -32,7 +32,7 @@
                     <td class="px-4 py-3 font-medium">{{ $user->name }}</td>
                     <td class="px-4 py-3 text-on-surface-variant">{{ $user->email }}</td>
                     <td class="px-4 py-3">
-                        <span class="rounded bg-surface-mid px-2 py-0.5 text-xs text-on-surface-variant">
+                        <span class="chip bg-surface-high text-on-surface-variant">
                             {{ $user->getRoleNames()->first() ?? 'sin rol' }}
                         </span>
                     </td>
@@ -50,7 +50,7 @@
 
 {{-- Se explica por qué no hay botón de borrar, en lugar de dejar al
      administrador buscándolo. --}}
-<p class="mt-5 rounded-lg border border-outline-variant bg-surface-lowest px-4 py-3 text-sm text-on-surface-variant">
+<p class="mt-5 glass px-4 py-3 text-sm text-on-surface-variant">
     <strong class="text-on-surface">No se borran usuarios.</strong>
     Sus incidencias atendidas y su rastro en la auditoría tienen que seguir siendo legibles para la
     investigación. Cuando alguien deja el equipo, cámbiale el rol o la contraseña: eso le quita el

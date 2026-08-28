@@ -18,7 +18,7 @@
         </div>
     @endif
 
-    <div class="rounded-lg border border-outline-variant bg-surface-lowest p-5">
+    <div class="glass p-5">
         <label class="block text-sm font-medium text-on-surface-variant">
             Fotografía {{ $asset->exists ? '(dejar vacío para conservar la actual)' : '' }}
         </label>
@@ -40,7 +40,7 @@
         </p>
     </div>
 
-    <div class="grid gap-4 rounded-lg border border-outline-variant bg-surface-lowest p-5 sm:grid-cols-2">
+    <div class="grid gap-4 glass p-5 sm:grid-cols-2">
         <div>
             <label class="block text-sm font-medium text-on-surface-variant">Código</label>
             <input type="text" name="code" value="{{ old('code', $asset->code) }}" required
@@ -76,7 +76,7 @@
         </div>
     </div>
 
-    <div class="grid gap-4 rounded-lg border border-outline-variant bg-surface-lowest p-5 sm:grid-cols-2">
+    <div class="grid gap-4 glass p-5 sm:grid-cols-2">
         <div class="sm:col-span-2">
             <p class="text-sm font-medium text-on-surface-variant">Procedencia</p>
             <p class="mt-1 text-xs text-on-surface-variant">
@@ -107,7 +107,7 @@
         </div>
     </div>
 
-    <div class="grid gap-4 rounded-lg border border-outline-variant bg-surface-lowest p-5 sm:grid-cols-2">
+    <div class="grid gap-4 glass p-5 sm:grid-cols-2">
         <div class="sm:col-span-2">
             <p class="text-sm font-medium text-on-surface-variant">Dónde se usa</p>
             <p class="mt-1 text-xs text-on-surface-variant">
@@ -135,7 +135,7 @@
     </div>
 
     <div class="flex items-center gap-3">
-        <button type="submit" class="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-on-primary">
+        <button type="submit" class="btn-primary focus-ring px-5 py-2.5 text-sm font-medium">
             {{ $asset->exists ? 'Guardar cambios' : 'Subir imagen' }}
         </button>
         <a href="{{ route('admin.media.index') }}" class="text-sm text-on-surface-variant underline underline-offset-2">Cancelar</a>

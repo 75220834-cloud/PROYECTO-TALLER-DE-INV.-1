@@ -8,9 +8,9 @@
          error mas costosa del sistema: un tecnico caminando hasta el aula
          equivocada. --}}
 
-    <h1 class="mb-5 text-2xl font-bold">Confirma dónde estás</h1>
+    <h1 class="mb-5 text-[28px] font-semibold leading-9 tracking-[-0.02em]">Confirma dónde estás</h1>
 
-    <div class="rounded-xl border-2 border-primary bg-surface-low px-5 py-6 text-center">
+    <div class="glass px-5 py-6 text-center">
         <p class="text-sm text-on-surface-variant">Estás solicitando asistencia desde</p>
 
         <p class="mt-2 font-mono text-3xl font-bold tracking-tight">{{ $room->code }}</p>
@@ -29,7 +29,7 @@
         <input type="hidden" name="room_id" value="{{ $room->id }}">
 
         <button type="submit"
-                class="flex min-h-[64px] w-full items-center justify-center rounded-xl bg-primary px-5 py-4 text-lg font-semibold text-on-primary transition active:scale-[.99] hover:opacity-90">
+                class="flex min-h-[64px] w-full items-center justify-center btn-primary focus-ring px-5 py-4 text-lg font-semibold transition active:scale-[.99] hover:opacity-90">
             Sí, es correcto
         </button>
     </form>

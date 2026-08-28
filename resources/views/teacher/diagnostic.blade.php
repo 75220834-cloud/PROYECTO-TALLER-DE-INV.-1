@@ -10,7 +10,7 @@
          lo que hace el paso utilizable, no un adorno (plan §13.6). --}}
     @if ($primary)
         <figure class="mb-5">
-            <div class="overflow-hidden rounded-xl border-2 border-outline-variant bg-surface-lowest">
+            <div class="overflow-hidden glass glass-hover focus-ring">
                 @if ($primary->isInlineSvg())
                     <div class="w-full">{!! file_get_contents(Storage::disk(config('incidencias.media.disk'))->path($primary->file_path)) !!}</div>
                 @else
@@ -41,7 +41,7 @@
             {{-- Cada respuesta es un botón de envío directo: sin marcar y
                  luego confirmar. Un toque menos por paso, y son muchos pasos. --}}
             <button type="submit" name="answer" value="{{ $option['value'] }}"
-                    class="flex min-h-[64px] w-full items-center justify-between gap-3 rounded-xl border-2 border-outline-variant bg-surface-lowest px-5 py-4 text-left text-lg font-medium text-on-surface transition active:scale-[.99] hover:border-primary hover:bg-surface-high">
+                    class="flex min-h-[64px] w-full items-center justify-between gap-3 glass glass-hover focus-ring px-5 py-4 text-left text-lg font-medium text-on-surface transition active:scale-[.99] hover:border-primary hover:bg-surface-high">
                 <span>{{ $option['label'] }}</span>
                 <span aria-hidden="true" class="text-2xl leading-none text-outline">&rsaquo;</span>
             </button>

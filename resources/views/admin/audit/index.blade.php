@@ -14,9 +14,9 @@
     </select>
 </form>
 
-<div class="overflow-x-auto rounded-lg border border-outline-variant bg-surface-lowest">
+<div class="overflow-x-auto glass">
     <table class="w-full text-sm">
-        <thead class="border-b border-outline-variant bg-surface-low text-left text-xs uppercase tracking-wide text-on-surface-variant">
+        <thead class="border-b border-outline-variant bg-surface-low text-left label-tech text-on-surface-variant">
             <tr>
                 <th class="px-4 py-3">Cuándo</th>
                 <th class="px-4 py-3">Quién</th>

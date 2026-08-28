@@ -15,7 +15,7 @@
     </div>
 
     <form method="POST" action="{{ route('login.store') }}"
-          class="space-y-4 rounded-lg border border-outline-variant bg-surface-lowest p-6 shadow-sm">
+          class="space-y-4 glass p-6 shadow-sm">
         @csrf
 
         <div>
