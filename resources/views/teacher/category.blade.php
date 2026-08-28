@@ -26,20 +26,39 @@
             <p class="mt-3 rounded-lg bg-rose-50 px-4 py-3 text-base text-rose-800">{{ $message }}</p>
         @enderror
 
-        <details class="mt-6">
-            <summary class="cursor-pointer text-base text-slate-600 underline underline-offset-4">
-                Quiero explicarlo con mis palabras
-            </summary>
+    </form>
 
-            <textarea name="description" rows="3" maxlength="1000"
+    {{-- Formulario APARTE del de categorías, no anidado dentro: aquí el
+         docente describe el problema con sus palabras y el asistente propone
+         una categoría. Va después de los botones porque tocar una opción es
+         más rápido para quien ya sabe cuál es la suya; escribir es la salida
+         para quien no reconoce ninguna. --}}
+    <details class="mt-6" @if ($errors->has('description')) open @endif>
+        <summary class="cursor-pointer text-base text-slate-600 underline underline-offset-4">
+            No sé cuál es · quiero explicarlo con mis palabras
+        </summary>
+
+        <form method="POST" action="{{ route('teacher.classify') }}" class="mt-3">
+            @csrf
+
+            <textarea name="description" rows="3" maxlength="1000" required
                       placeholder="Por ejemplo: la pantalla se ve azul y no pasa nada"
-                      class="mt-3 block w-full rounded-xl border-2 border-slate-300 px-4 py-3 text-base focus:border-slate-900 focus:ring-0">{{ old('description') }}</textarea>
+                      class="block w-full rounded-xl border-2 border-slate-300 px-4 py-3 text-base focus:border-slate-900 focus:ring-0">{{ old('description') }}</textarea>
+
+            @error('description')
+                <p class="mt-2 rounded-lg bg-rose-50 px-4 py-3 text-base text-rose-800">{{ $message }}</p>
+            @enderror
+
+            <button type="submit"
+                    class="mt-3 min-h-[56px] w-full rounded-xl bg-slate-900 px-5 py-4 text-lg font-semibold text-white active:scale-[.99]">
+                Continuar
+            </button>
 
             <p class="mt-2 text-sm text-slate-500">
-                Escríbelo y luego toca la opción que más se acerque.
+                Te diremos qué entendimos y podrás corregirnos.
             </p>
-        </details>
-    </form>
+        </form>
+    </details>
 @endsection
 
 @section('back')

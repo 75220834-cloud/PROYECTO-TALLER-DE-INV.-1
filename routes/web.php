@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use App\Http\Controllers\HealthController;
 use App\Modules\Analytics\Http\Controllers\DashboardController;
+use App\Modules\Assistant\Http\Controllers\TeacherAssistantController;
+use App\Modules\Audit\Http\Controllers\AuditController;
 use App\Modules\Diagnostics\Http\Controllers\TeacherDiagnosticController;
 use App\Modules\Equipment\Http\Controllers\EquipmentController;
 use App\Modules\Identity\Http\Controllers\LoginController;
@@ -64,6 +66,21 @@ Route::middleware('throttle:120,1')->group(function () {
     Route::get('/reportar/problema', [TeacherIncidentController::class, 'chooseCategory'])->name('teacher.category');
     Route::post('/reportar/problema', [TeacherIncidentController::class, 'storeCategory'])->name('teacher.category.store');
 
+    /*
+     * Ayuda del asistente (plan 13, CU-D-06 y CU-D-13).
+     *
+     * Va dentro del limite de tasa publico como todo lo demas. Ninguna de
+     * las dos rutas es imprescindible: si el modelo no responde, el docente
+     * elige la categoria en botones y el diagnostico guiado funciona igual.
+     */
+    Route::post('/reportar/entender', [TeacherAssistantController::class, 'classify'])
+        ->name('teacher.classify');
+
+    Route::get('/reportar/preguntar', [TeacherAssistantController::class, 'askForm'])
+        ->name('teacher.ask.form');
+    Route::post('/reportar/preguntar', [TeacherAssistantController::class, 'ask'])
+        ->name('teacher.ask');
+
     // Confirmacion de solucion: las tres opciones del plan (12).
     Route::get('/reportar/resultado', [TeacherIncidentController::class, 'outcome'])->name('teacher.outcome');
     Route::post('/reportar/resuelto', [TeacherIncidentController::class, 'markResolved'])->name('teacher.resolved');
@@ -86,6 +103,10 @@ Route::middleware('throttle:120,1')->group(function () {
         ->name('teacher.diagnostic.reference');
 
     Route::get('/reportar/listo/{uuid}', [TeacherIncidentController::class, 'done'])->name('teacher.done');
+
+    // Encuesta de facilidad: opcional, una sola pregunta, despues del cierre.
+    Route::post('/reportar/listo/{uuid}/encuesta', [TeacherIncidentController::class, 'survey'])
+        ->name('teacher.survey');
 
     // Imagenes del banco visual. Publicas a proposito: el docente no esta
     // autenticado y no hay nada sensible en el dibujo de un conector.
@@ -194,6 +215,20 @@ Route::middleware('auth')->prefix('panel')->name('admin.')->group(function () {
         Route::get('/qr/cartel', [QrCodeController::class, 'poster'])->name('qr.poster');
         Route::get('/qr/descargar', [QrCodeController::class, 'download'])->name('qr.download');
     });
+
+    /*
+     * Auditoria y registro de rechazos (CU-A-11 y CU-A-06b).
+     *
+     * Permisos separados: consultar quien cambio la configuracion es una
+     * atribucion administrativa, mientras que revisar los rechazos del
+     * antiabuso lo necesita tambien quien calibra los umbrales durante el
+     * piloto.
+     */
+    Route::get('/auditoria', [AuditController::class, 'index'])
+        ->middleware('can:audit.view')->name('audit.index');
+
+    Route::get('/rechazos', [AuditController::class, 'rejections'])
+        ->middleware('can:abuse.view')->name('audit.rejections');
 
     Route::middleware('can:equipment.view')->group(function () {
         Route::get('/equipos', [EquipmentController::class, 'index'])->name('equipment.index');

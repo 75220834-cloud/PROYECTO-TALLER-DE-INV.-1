@@ -40,4 +40,13 @@
        class="mt-3 flex min-h-[64px] w-full items-center justify-center rounded-xl border-2 border-slate-900 bg-slate-900 px-5 py-4 text-lg font-semibold text-white hover:bg-slate-800">
         {{ $canContinue ? 'Necesito soporte técnico' : 'No, necesito soporte técnico' }}
     </a>
+
+    {{-- Salida intermedia entre "sigo atascado" y "que venga alguien": el
+         docente pregunta y el asistente responde con los procedimientos
+         cargados. Va discreta a propósito — quien quiere que le resuelvan ya
+         no debe tropezar con una tercera opción antes de pedir soporte. --}}
+    <a href="{{ route('teacher.ask.form') }}"
+       class="mt-4 block text-center text-base text-slate-600 underline underline-offset-4">
+        Tengo una duda distinta
+    </a>
 @endsection

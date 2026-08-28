@@ -9,6 +9,7 @@ use App\Modules\Locations\Models\Building;
 use App\Modules\Locations\Models\Floor;
 use App\Modules\Locations\Models\Room;
 use App\Modules\Locations\Models\Site;
+use App\Shared\Enums\IncidentStatus;
 use App\Shared\Enums\IncidentStatus as S;
 use App\Shared\Enums\ResolutionType;
 use Database\Seeders\CatalogSeeder;
@@ -361,4 +362,79 @@ it('al sumarse, el ticket original registra el reporte adicional', function () {
     ]);
 
     expect(Incident::where('merged_into_id', $ticket->id)->count())->toBe(1);
+});
+
+/* ------------------------------------------------------------------ */
+/* Encuesta de facilidad de uso (plan 26.bis, decisión D-8) */
+/* ------------------------------------------------------------------ */
+
+it('la encuesta se ofrece al final y es opcional', function () {
+    $incident = Incident::create([
+        'room_id' => $this->room->id,
+        'status_id' => App\Modules\Incidents\Models\IncidentStatus::idFor(IncidentStatus::Resolved),
+        'is_draft' => false,
+        'resolution_type' => 'assistant',
+        'confirmed_at' => now()->subMinutes(10),
+        'reported_at' => now()->subMinutes(8),
+        'resolved_at' => now(),
+    ]);
+
+    $this->get(route('teacher.done', ['uuid' => $incident->uuid]))
+        ->assertOk()
+        ->assertSee('¿Te resultó fácil de usar?', false)
+        ->assertSee('Opcional', false);
+});
+
+it('registra la puntuación y agradece', function () {
+    $incident = Incident::create([
+        'room_id' => $this->room->id,
+        'status_id' => App\Modules\Incidents\Models\IncidentStatus::idFor(IncidentStatus::Resolved),
+        'is_draft' => false,
+        'resolution_type' => 'assistant',
+        'confirmed_at' => now()->subMinutes(10),
+        'reported_at' => now()->subMinutes(8),
+        'resolved_at' => now(),
+    ]);
+
+    $this->post(route('teacher.survey', ['uuid' => $incident->uuid]), ['ease_score' => '4'])
+        ->assertRedirect(route('teacher.done', ['uuid' => $incident->uuid]));
+
+    $this->assertDatabaseHas('satisfaction_responses', [
+        'incident_id' => $incident->id,
+        'ease_score' => 4,
+    ]);
+});
+
+it('no pisa una respuesta ya dada', function () {
+    $incident = Incident::create([
+        'room_id' => $this->room->id,
+        'status_id' => App\Modules\Incidents\Models\IncidentStatus::idFor(IncidentStatus::Resolved),
+        'is_draft' => false,
+        'resolution_type' => 'assistant',
+        'confirmed_at' => now()->subMinutes(10),
+        'reported_at' => now()->subMinutes(8),
+        'resolved_at' => now(),
+    ]);
+
+    $this->post(route('teacher.survey', ['uuid' => $incident->uuid]), ['ease_score' => '5']);
+    $this->post(route('teacher.survey', ['uuid' => $incident->uuid]), ['ease_score' => '1']);
+
+    // Un reenvío accidental no debe cambiar un dato de la investigación.
+    expect(DB::table('satisfaction_responses')->where('incident_id', $incident->id)->count())->toBe(1)
+        ->and(DB::table('satisfaction_responses')->where('incident_id', $incident->id)->value('ease_score'))->toBe(5);
+});
+
+it('rechaza una puntuación fuera de rango', function () {
+    $incident = Incident::create([
+        'room_id' => $this->room->id,
+        'status_id' => App\Modules\Incidents\Models\IncidentStatus::idFor(IncidentStatus::Resolved),
+        'is_draft' => false,
+        'resolution_type' => 'assistant',
+        'confirmed_at' => now()->subMinutes(10),
+        'reported_at' => now()->subMinutes(8),
+        'resolved_at' => now(),
+    ]);
+
+    $this->post(route('teacher.survey', ['uuid' => $incident->uuid]), ['ease_score' => '9'])
+        ->assertSessionHasErrors('ease_score');
 });

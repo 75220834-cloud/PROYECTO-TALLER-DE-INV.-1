@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Modules\Diagnostics\Engine\DiagnosticEngine;
 use App\Modules\Incidents\Models\Incident;
 use App\Modules\Incidents\Models\IncidentCategory;
+use App\Modules\Incidents\Models\SatisfactionResponse;
 use App\Modules\Incidents\Services\AbuseContext;
 use App\Modules\Incidents\Services\AbuseGuard;
 use App\Modules\Incidents\Services\IncidentService;
@@ -263,6 +264,44 @@ class TeacherIncidentController extends Controller
      * estado que no admite continuar: en todos esos casos el docente vuelve
      * al inicio en lugar de encontrarse una pantalla rota.
      */
+    /**
+     * Encuesta de facilidad de uso (plan 26.bis, decision D-8).
+     *
+     * OPCIONAL y de una sola pregunta, mostrada DESPUES de que el problema
+     * esta resuelto. El plan advierte contra encuestas que perjudiquen la
+     * experiencia: una obligatoria a mitad del flujo penaliza al docente de
+     * pie frente a su clase y ademas contamina el propio indicador que
+     * pretende medir.
+     *
+     * Se acepta por uuid publico y sin sesion: el docente puede llegar aqui
+     * desde el enlace de "listo" aunque la sesion se haya perdido. El uuid no
+     * es enumerable y solo permite puntuar, nunca leer nada.
+     */
+    public function survey(Request $request, string $uuid): RedirectResponse
+    {
+        $incident = Incident::where('uuid', $uuid)->firstOrFail();
+
+        $data = $request->validate([
+            'ease_score' => ['required', 'integer', 'min:1', 'max:5'],
+            'comment' => ['nullable', 'string', 'max:500'],
+        ]);
+
+        // Una sola respuesta por incidencia: si ya contesto, no se pisa. Un
+        // reenvio accidental no debe cambiar un dato de la investigacion.
+        SatisfactionResponse::firstOrCreate(
+            ['incident_id' => $incident->id],
+            [
+                'ease_score' => $request->integer('ease_score'),
+                'comment' => $data['comment'] ?? null,
+                'answered_at' => now(),
+            ],
+        );
+
+        return redirect()
+            ->route('teacher.done', ['uuid' => $incident->uuid])
+            ->with('survey_thanks', true);
+    }
+
     private function currentIncident(Request $request): ?Incident
     {
         $uuid = $request->session()->get(self::SESSION_KEY);

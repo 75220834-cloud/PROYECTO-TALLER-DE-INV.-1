@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Modules\Incidents\Models;
 
+use App\Modules\Locations\Models\Room;
 use App\Shared\Enums\AbuseReason;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Registro de solicitudes rechazadas por los controles antiabuso.
@@ -39,5 +41,22 @@ class AbuseRejection extends Model
     public function reasonEnum(): AbuseReason
     {
         return AbuseReason::from($this->reason);
+    }
+
+    /*
+     * Ambas relaciones son opcionales en la base de datos y lo son tambien
+     * aqui: un rechazo puede ocurrir antes de que el docente haya elegido
+     * categoria, y el aula puede haberse dado de baja despues. La pantalla
+     * de revision tiene que seguir mostrando la fila igual, porque el motivo
+     * del rechazo sigue siendo informacion util para calibrar los umbrales.
+     */
+    public function room(): BelongsTo
+    {
+        return $this->belongsTo(Room::class);
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(IncidentCategory::class);
     }
 }

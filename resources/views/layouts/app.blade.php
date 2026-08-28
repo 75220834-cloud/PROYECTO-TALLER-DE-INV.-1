@@ -45,6 +45,12 @@
                 </x-nav-link>
             @endcan
 
+            @can('abuse.view')
+                <x-nav-link :href="route('admin.audit.rejections')" :active="request()->routeIs('admin.audit.rejections')">
+                    Solicitudes rechazadas
+                </x-nav-link>
+            @endcan
+
             @can('incidents.view')
                 <x-nav-link :href="route('support.incidents.index')" :active="request()->routeIs('support.incidents.*')">
                     Incidencias
@@ -83,6 +89,12 @@
                 <p class="px-3 pb-1 pt-4 text-[11px] font-semibold uppercase tracking-wider text-slate-500">Acceso</p>
                 <x-nav-link :href="route('admin.qr.show')" :active="request()->routeIs('admin.qr.*')">
                     Código QR
+                </x-nav-link>
+            @endcan
+
+            @can('audit.view')
+                <x-nav-link :href="route('admin.audit.index')" :active="request()->routeIs('admin.audit.index')">
+                    Auditoría
                 </x-nav-link>
             @endcan
         </nav>
