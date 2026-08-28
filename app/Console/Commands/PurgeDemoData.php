@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\DB;
  */
 class PurgeDemoData extends Command
 {
-    protected $signature = 'demo:purge {--force : No pedir confirmación}';
+    protected $signature = 'demo:purge {--force : Confirmar el borrado}';
 
     protected $description = 'Elimina todos los datos de demostración';
 
@@ -48,8 +48,24 @@ class PurgeDemoData extends Command
         $this->warn("Se van a borrar {$rooms} aulas de demostración y {$incidents} incidencias asociadas.");
         $this->line('Esto no se puede deshacer.');
 
-        if (! $this->option('force') && ! $this->confirm('¿Continuar?')) {
-            $this->info('Cancelado.');
+        /*
+         * Se EXIGE --force en lugar de preguntar, y es mejor así por dos
+         * razones.
+         *
+         * La práctica: una pregunta interactiva rompía el comando en la
+         * consola de Windows de este equipo. El proceso moría al leer la
+         * respuesta y escupía una traza sobre archivos de vendor que sí
+         * existían — un error que no tenía nada que ver con la causa y que
+         * costaba media hora entender.
+         *
+         * La de fondo: ante un «¿Continuar? [no]» se pulsa Enter sin leer.
+         * Tener que escribir --force obliga a saber lo que se está haciendo,
+         * que es justo lo que se quiere antes de borrar 121 aulas.
+         */
+        if (! $this->option('force')) {
+            $this->newLine();
+            $this->line('Para confirmar, repite el comando con <options=bold>--force</>:');
+            $this->line('  <fg=cyan>php artisan demo:purge --force</>');
 
             return self::SUCCESS;
         }

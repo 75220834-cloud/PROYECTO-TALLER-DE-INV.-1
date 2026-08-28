@@ -107,7 +107,30 @@ it('no siembra la estructura del piloto en producción', function () {
 
     // Sembrar aulas aproximadas en el servidor del piloto contaminaría los
     // datos reales de la investigación.
-    $this->artisan('piloto:sembrar', ['--force' => true])->assertFailed();
+    $this->artisan('piloto:sembrar')->assertFailed();
 
     expect(Site::count())->toBe(0);
+});
+
+it('la purga NO borra nada sin --force, y dice cómo confirmarla', function () {
+    $this->seed(PilotStructureSeeder::class);
+
+    // Ante un «¿Continuar? [no]» se pulsa Enter sin leer. Escribir --force
+    // obliga a saber lo que se está haciendo antes de borrar el catálogo.
+    $this->artisan('demo:purge')
+        ->expectsOutputToContain('--force')
+        ->assertSuccessful();
+
+    expect(Room::count())->toBeGreaterThan(0);
+});
+
+it('ningún comando destructivo depende de una pregunta interactiva', function () {
+    // Un prompt dentro de otro comando rompía artisan en la consola de
+    // Windows: el proceso moría al leer la respuesta y escupía una traza
+    // sobre archivos de vendor que sí existían.
+    foreach (['PurgeDemoData', 'SeedPilotStructure'] as $comando) {
+        $codigo = file_get_contents(app_path("Console/Commands/{$comando}.php"));
+
+        expect($codigo)->not->toContain('$this->confirm(');
+    }
 });

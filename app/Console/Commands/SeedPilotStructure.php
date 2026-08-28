@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\DB;
  */
 class SeedPilotStructure extends Command
 {
-    protected $signature = 'piloto:sembrar {--force : No pedir confirmación}';
+    protected $signature = 'piloto:sembrar';
 
     protected $description = 'Purga los datos demo y siembra la estructura aproximada del piloto';
 
@@ -33,14 +33,34 @@ class SeedPilotStructure extends Command
             return self::FAILURE;
         }
 
-        $this->call('demo:purge', ['--force' => $this->option('force')]);
+        $aulas = DB::table('rooms')->where('is_demo', true)->count();
 
-        // Si el usuario canceló la purga, quedan datos demo y sembrar encima
-        // reintroduciría la segunda sede. Mejor parar y decirlo.
+        /*
+         * NO se pregunta, y aquí sí es la decisión correcta aunque borre.
+         *
+         * Este comando solo toca datos de demostración: lo que Brayan
+         * importe de verdad no lleva la marca y sobrevive. Además es
+         * reversible —basta volver a ejecutarlo— y está bloqueado en
+         * producción unas líneas más arriba. Una pregunta aquí solo añadiría
+         * un paso que se contesta sin leer.
+         *
+         * (Y en la práctica, el prompt interactivo rompía el comando en la
+         * consola de Windows de este equipo.)
+         */
+        if ($aulas > 0) {
+            $this->warn("Se borrarán {$aulas} aulas de demostración y todo lo asociado.");
+            $this->line('Los datos reales que hayas importado NO se tocan.');
+            $this->newLine();
+        }
+
+        $this->call('demo:purge', ['--force' => true]);
+
+        // Si algo impidió la purga, sembrar encima reintroduciría la segunda
+        // sede y el docente vería una pantalla que en el aula no existirá.
         if (DB::table('sites')->where('is_demo', true)->exists()) {
-            $this->warn('Quedan datos de demostración sin purgar; no se sembró nada.');
+            $this->error('Quedaron datos de demostración sin purgar; no se sembró nada.');
 
-            return self::SUCCESS;
+            return self::FAILURE;
         }
 
         $this->call('db:seed', ['--class' => PilotStructureSeeder::class, '--force' => true]);
