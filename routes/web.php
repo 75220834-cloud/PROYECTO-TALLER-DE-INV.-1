@@ -12,6 +12,7 @@ use App\Modules\Diagnostics\Http\Controllers\TeacherDiagnosticController;
 use App\Modules\Equipment\Http\Controllers\EquipmentController;
 use App\Modules\Identity\Http\Controllers\LoginController;
 use App\Modules\Identity\Http\Controllers\UserController;
+use App\Modules\Incidents\Http\Controllers\AlertController;
 use App\Modules\Incidents\Http\Controllers\CategoryController;
 use App\Modules\Incidents\Http\Controllers\SupportIncidentController;
 use App\Modules\Incidents\Http\Controllers\TeacherIncidentController;
@@ -161,6 +162,14 @@ Route::middleware('auth')->prefix('panel')->name('support.')->group(function () 
 
     Route::get('/riesgo', [RiskController::class, 'index'])
         ->middleware('can:risk.view')->name('risk.index');
+
+    /*
+     * Aviso de incidencias nuevas (plan 12). Lo consulta el panel cada 20
+     * segundos: sin el, una incidencia urgente espera a que alguien recargue
+     * la pagina, y al otro lado hay un docente frente a su clase.
+     */
+    Route::get('/alertas', AlertController::class)
+        ->middleware('can:incidents.view')->name('alerts');
 
     Route::middleware('can:incidents.view')->group(function () {
         Route::get('/incidencias', [SupportIncidentController::class, 'index'])->name('incidents.index');

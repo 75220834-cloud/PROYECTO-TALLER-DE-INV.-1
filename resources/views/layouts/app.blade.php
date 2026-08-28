@@ -155,12 +155,67 @@
                 @endif
             </div>
 
-            <button type="button" data-theme-toggle
-                    class="touch-target flex shrink-0 items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-high"
-                    aria-label="Cambiar entre modo claro y oscuro">
-                <span class="material-symbols-outlined text-[22px]" aria-hidden="true">contrast</span>
-            </button>
+            <div class="flex shrink-0 items-center gap-1">
+                @can('incidents.view')
+                    {{-- El permiso se pide con un botón y nunca solo al cargar:
+                         un navegador que pregunta sin que nadie lo haya pedido
+                         recibe un «no» automático difícil de revertir. --}}
+                    <button type="button" data-alertas-permiso
+                                class="touch-target flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-high"
+                            title="Activar avisos del sistema"
+                            aria-label="Activar avisos del sistema">
+                        <span class="material-symbols-outlined text-[22px]" aria-hidden="true">notifications</span>
+                    </button>
+
+                    {{-- Sin esta opción, quien comparte oficina acaba
+                         silenciando la pestaña entera — y con ella el aviso
+                         que sí importa. --}}
+                    <button type="button" data-alertas-silenciar
+                            class="touch-target flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-high"
+                            title="Silenciar el sonido de los avisos"
+                            aria-label="Silenciar el sonido de los avisos">
+                        <span class="material-symbols-outlined text-[22px]" aria-hidden="true">volume_up</span>
+                    </button>
+                @endcan
+
+                <button type="button" data-theme-toggle
+                        class="touch-target flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-high"
+                        aria-label="Cambiar entre modo claro y oscuro">
+                    <span class="material-symbols-outlined text-[22px]" aria-hidden="true">contrast</span>
+                </button>
+            </div>
         </header>
+
+        {{-- AVISO DE INCIDENCIAS NUEVAS (plan 12).
+             Va fijo arriba y no como un mensaje que se pierde al hacer
+             scroll: el técnico puede estar en cualquier pantalla del panel
+             cuando entra una incidencia, y si el aviso solo estuviera en la
+             bandeja no serviría de nada. --}}
+        @can('incidents.view')
+            <div data-alertas="{{ route('support.alerts') }}"
+                 data-alertas-desde="{{ now()->toIso8601String() }}"
+                 hidden
+                 class="sticky top-0 z-20 flex flex-wrap items-center gap-3 border-b-2 px-6 py-3
+                        data-[urgente=1]:border-danger data-[urgente=1]:bg-danger-container
+                        data-[urgente=0]:border-primary data-[urgente=0]:bg-primary-container">
+
+                <span class="material-symbols-outlined text-[22px]" aria-hidden="true">notifications_active</span>
+
+                <p class="flex-1 text-sm font-medium" data-alertas-texto>Nueva incidencia</p>
+
+                <a data-alertas-enlace href="{{ route('support.incidents.index') }}"
+                   data-bandeja="{{ route('support.incidents.index') }}"
+                   class="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-on-primary">
+                    Ver
+                </a>
+
+                <button type="button" data-alertas-cerrar
+                        class="touch-target flex items-center justify-center rounded-full"
+                        aria-label="Descartar aviso">
+                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">close</span>
+                </button>
+            </div>
+        @endcan
 
         <div class="p-6">
             @if (session('status'))

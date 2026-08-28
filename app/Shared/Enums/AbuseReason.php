@@ -28,13 +28,25 @@ enum AbuseReason: string
     public function teacherMessage(): string
     {
         return match ($this) {
-            self::Duplicate => 'Ya hay una solicitud abierta para este mismo problema en esta aula.',
-            self::RoomActiveLimit => 'Esta aula ya tiene varias solicitudes abiertas. Soporte está al tanto.',
-            self::DeviceRate => 'Has enviado varias solicitudes en poco tiempo. Espera unos minutos antes de enviar otra.',
-            self::IpRate => 'Se recibieron muchas solicitudes desde esta red. Espera unos minutos, por favor.',
-            self::Similarity => 'Esta solicitud se parece mucho a otra reciente.',
-            self::BotSignal => 'No pudimos procesar la solicitud. Vuelve a intentarlo.',
-            self::Unconfirmed => 'Falta confirmar la solicitud antes de enviarla.',
+            self::Duplicate => 'Ya hay una solicitud abierta para este mismo problema en esta aula. Puedes sumarte a ella.',
+            self::RoomActiveLimit => 'Esta aula ya tiene varias solicitudes abiertas y soporte está al tanto. Puedes sumarte a una de ellas.',
+            self::DeviceRate => 'Enviaste varias solicitudes en la última hora. Espera unos minutos antes de enviar otra. Si es urgente, llama a soporte.',
+            self::IpRate => 'Se recibieron muchas solicitudes desde esta red en poco tiempo. Espera unos minutos y vuelve a intentarlo.',
+            self::Similarity => 'Esta solicitud se parece mucho a otra que acabas de enviar. Revisa si ya la mandaste.',
+
+            /*
+             * El mensaje de «no humano» decía solo «no pudimos procesar la
+             * solicitud», que es un callejón sin salida: el docente no sabe
+             * qué hizo mal ni qué hacer. El plan (16.4) exige justo lo
+             * contrario — explicar y ofrecer salida.
+             *
+             * NO se dice «detectamos un bot»: quien dispara esto casi siempre
+             * es una persona con prisa que envió el formulario en dos
+             * segundos, y acusarla de robot la deja peor que antes.
+             */
+            self::BotSignal => 'El formulario se envió demasiado rápido y no pudimos verificarlo. Espera un momento y vuelve a enviarlo.',
+
+            self::Unconfirmed => 'Falta marcar la casilla de confirmación antes de enviar.',
         };
     }
 
