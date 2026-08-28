@@ -14,6 +14,38 @@ Un `INSERT` a mano salta las validaciones (unicidad de códigos, coherencia de l
 
 ---
 
+## 0. Por dónde entra cada cosa
+
+Todo se carga desde la aplicación. Ya no hace falta pedirle a nadie que toque código.
+
+| Qué tienes | Por dónde entra |
+|---|---|
+| **Excel/CSV de aulas** | `php artisan import:catalogo aulas archivo.csv` |
+| **Excel/CSV de equipos** | `php artisan import:catalogo equipos archivo.csv` |
+| **PDF, DOCX, MD o TXT** de procedimientos | Panel → **Conocimiento** |
+| **Fotos** de equipos y puertos | Panel → **Banco de imágenes** |
+| **Los pasos del diagnóstico** | Panel → **Procedimientos** |
+| **Tipos de problema** que ve el docente | Panel → **Tipos de problema** |
+| **Cuentas del equipo de soporte** | Panel → **Usuarios** |
+
+### La importación no escribe hasta que se lo dices
+
+```bash
+php artisan import:catalogo aulas mis-aulas.csv
+```
+
+Eso **solo simula**: te dice cuántas aulas entrarían y en qué línea está cada error, sin tocar
+nada. Corriges el Excel, lo repites, y cuando salga limpio:
+
+```bash
+php artisan import:catalogo aulas mis-aulas.csv --confirmar
+```
+
+**Es todo o nada.** Si una fila está mal, no se carga ninguna: un catálogo a medias parece
+completo y nadie sabe por dónde iba. Las plantillas están en `docs/plantillas/`.
+
+---
+
 ## 1. Aulas y equipos
 
 ### El orden importa

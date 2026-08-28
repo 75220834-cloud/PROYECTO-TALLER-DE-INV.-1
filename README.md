@@ -124,6 +124,9 @@ docs/decisions/       bitácora de decisiones técnicas (ADR)
 | 11 · Despliegue institucional | ⬜ depende de la Universidad |
 | 12 · Piloto y medición | ⬜ depende de la Universidad |
 
+**Todo lo que Brayan necesita cargar tiene ya su pantalla o su comando**: aulas y equipos por CSV,
+procedimientos en PDF/DOCX, fotos, árboles de diagnóstico, tipos de problema y usuarios.
+
 **Todo el código del plan está escrito.** Lo que queda no es programación:
 son autorizaciones, datos reales y trabajo de campo.
 
