@@ -37,18 +37,44 @@ final class OllamaProvider implements LlmProvider
 
         $labels = implode(', ', $allowedLabels);
 
+        /*
+         * El glosario NO es relleno del prompt: es la diferencia entre
+         * acertar y no. Un modelo entrenado con español general no sabe que
+         * en un aula peruana «cañón» es el proyector, y clasificaba esa
+         * palabra como micrófono. Son los términos que un docente usa de
+         * verdad, no los del manual.
+         *
+         * Se comprueba con casos reales en tests/Ai: si alguien recorta esta
+         * lista, las pruebas lo dicen.
+         */
         $prompt = <<<PROMPT
-        Eres un clasificador de incidencias tecnológicas en aulas.
+        Eres un clasificador de incidencias tecnológicas en aulas de una
+        universidad peruana.
 
         Clasifica el siguiente reporte en UNA de estas categorías exactas:
         {$labels}
+
+        Vocabulario del aula en Perú:
+        - "cañón", "cañon", "proyector multimedia" = el PROYECTOR
+        - "compu", "PC", "CPU", "la máquina" = la COMPUTADORA
+        - "ecran", "telón", "pantalla de proyección" = la PANTALLA donde se proyecta
+        - "no jala", "no prende", "está malogrado" = no funciona
+        - "parlantes", "bocinas", "altavoces" = los PARLANTES
+        - "wifi", "señal", "no hay internet" = problema de RED
 
         Reglas:
         - Responde SOLO con un JSON: {"label":"CATEGORIA","confidence":0.0}
         - "label" debe ser exactamente una de las categorías listadas.
         - Si el texto es ambiguo o no corresponde a ninguna, usa "label": null.
-        - "confidence" es un número entre 0 y 1.
+        - Si el docente describe varios síntomas, elige el equipo que falla
+          primero en la cadena: sin imagen del proyector, la pantalla y el
+          cable son consecuencia, no causa.
+        - "confidence" es un número entre 0 y 1. Baja el valor cuando dudes:
+          es preferible preguntar al docente que acertar por casualidad.
         - No expliques nada. No inventes categorías.
+
+        IMPORTANTE: «cañón» significa proyector, nunca computadora ni
+        micrófono. Es la palabra que más se usa y la que más se confunde.
 
         Reporte del docente:
         """

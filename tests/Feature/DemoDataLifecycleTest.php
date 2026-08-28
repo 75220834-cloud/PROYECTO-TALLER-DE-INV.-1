@@ -31,8 +31,8 @@ it('siembra la estructura del piloto con una sola sede', function () {
     // eligiendo pabellón. Dos sedes le añadirían un paso que no existe en el
     // aula real.
     expect(Site::count())->toBe(1)
-        ->and(Building::count())->toBe(8)
-        ->and(Floor::count())->toBe(40); // 8 pabellones x 5 pisos
+        ->and(Building::count())->toBe(7)
+        ->and(Floor::count())->toBe(35); // 7 pabellones x 5 pisos
 });
 
 it('marca como demostración todo lo que siembra', function () {

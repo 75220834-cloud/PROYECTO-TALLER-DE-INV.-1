@@ -196,8 +196,8 @@ funciona completo sin él.
 php artisan piloto:sembrar
 ```
 
-Deja la base con la estructura **aproximada** de la sede Huancayo: pabellones **C, D, E, G, H, I, J, K**,
-5 pisos cada uno y 3–4 aulas por piso (~138 aulas), más su equipamiento. Purga primero los datos demo
+Deja la base con la estructura **aproximada** de la sede Huancayo: pabellones **C, D, E, G, H, I, J**,
+5 pisos cada uno y 3–4 aulas por piso (~121 aulas), más su equipamiento. Purga primero los datos demo
 anteriores, para que quede **una sola sede** y el docente no vea una pantalla de selección que en el
 aula real no existirá.
 

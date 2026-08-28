@@ -9,6 +9,7 @@ use App\Modules\Audit\Http\Controllers\AuditController;
 use App\Modules\Diagnostics\Http\Controllers\TeacherDiagnosticController;
 use App\Modules\Equipment\Http\Controllers\EquipmentController;
 use App\Modules\Identity\Http\Controllers\LoginController;
+use App\Modules\Identity\Http\Controllers\UserController;
 use App\Modules\Incidents\Http\Controllers\SupportIncidentController;
 use App\Modules\Incidents\Http\Controllers\TeacherIncidentController;
 use App\Modules\Knowledge\Http\Controllers\KnowledgeController;
@@ -243,6 +244,20 @@ Route::middleware('auth')->prefix('panel')->name('admin.')->group(function () {
             ->whereNumber('asset')->name('media.update');
         Route::patch('/imagenes/{asset}/visibilidad', [MediaLibraryController::class, 'toggle'])
             ->whereNumber('asset')->name('media.toggle');
+    });
+
+    /*
+     * Usuarios del panel (CU-A-05). Solo personal interno: el docente no
+     * tiene cuenta ni la va a tener (decision D-2 del plan).
+     */
+    Route::middleware('can:users.manage')->group(function () {
+        Route::get('/usuarios', [UserController::class, 'index'])->name('users.index');
+        Route::get('/usuarios/nuevo', [UserController::class, 'create'])->name('users.create');
+        Route::post('/usuarios', [UserController::class, 'store'])->name('users.store');
+        Route::get('/usuarios/{user}/editar', [UserController::class, 'edit'])
+            ->whereNumber('user')->name('users.edit');
+        Route::put('/usuarios/{user}', [UserController::class, 'update'])
+            ->whereNumber('user')->name('users.update');
     });
 
     Route::get('/auditoria', [AuditController::class, 'index'])

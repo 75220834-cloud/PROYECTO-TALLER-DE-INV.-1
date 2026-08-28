@@ -98,6 +98,12 @@
                 </x-nav-link>
             @endcan
 
+            @can('users.manage')
+                <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
+                    Usuarios
+                </x-nav-link>
+            @endcan
+
             @can('audit.view')
                 <x-nav-link :href="route('admin.audit.index')" :active="request()->routeIs('admin.audit.index')">
                     Auditoría

@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\DB;
  *
  * QUE ES REAL AQUI Y QUE NO — leer antes de usar estos datos para nada.
  *
- * REAL (lo indicó Ítalo el 2026-08-27):
+ * REAL (lo indicó Ítalo; los pabellones los confirmó el 2026-08-28):
  *   - Sede única: Huancayo.
- *   - Del pabellón A al K existen, pero el piloto usa C, D, E, G, H, I, J, K.
+ *   - Del pabellón A al K existen, pero el piloto usa C, D, E, G, H, I, J.
  *   - Esos pabellones tienen 5 pisos, y entre 3 y 4 aulas por piso.
  *
  * NO REAL, generado aquí:
@@ -43,12 +43,12 @@ use Illuminate\Support\Facades\DB;
 class PilotStructureSeeder extends Seeder
 {
     /**
-     * Los 8 pabellones del piloto. A, B y F existen en la sede pero quedan
-     * fuera del alcance acordado.
+     * Los 7 pabellones del piloto, confirmados por Ítalo el 2026-08-28.
+     * A, B, F y K existen en la sede pero quedan fuera del alcance acordado.
      *
      * @var list<string>
      */
-    private const BUILDINGS = ['C', 'D', 'E', 'G', 'H', 'I', 'J', 'K'];
+    private const BUILDINGS = ['C', 'D', 'E', 'G', 'H', 'I', 'J'];
 
     private const FLOORS = 5;
 
@@ -98,14 +98,11 @@ class PilotStructureSeeder extends Seeder
                         'capacity' => 30 + ($n * 5),
 
                         // Criticidad: la primera aula de cada piso se marca
-                        // media y las del pabellón K altas, solo para que el
-                        // cálculo de prioridad tenga con qué trabajar. NO
-                        // describe la criticidad real de ninguna aula.
-                        'criticality' => match (true) {
-                            $letter === 'K' => 3,
-                            $n === 1 => 2,
-                            default => 1,
-                        },
+                        // media, solo para que el cálculo de prioridad tenga
+                        // con qué trabajar. NO describe la criticidad real de
+                        // ninguna aula: eso lo dirá soporte. La única alta es
+                        // el laboratorio, y también es una suposición.
+                        'criticality' => $n === 1 ? 2 : 1,
                         'is_active' => true,
                         'is_demo' => true,
                         'created_at' => $now,
