@@ -83,7 +83,10 @@ jobs:
           # la IA apagada, que es el criterio de aceptacion del plan (27.1).
           LLM_PROVIDER: 'null'
 
-      - name: Publicar el resultado en el resumen
+      # Doble publicacion a proposito: el resumen es comodo de leer, pero
+      # solo lo ve quien ha iniciado sesion. Las anotaciones las expone la
+      # API publica, asi que un fallo se puede diagnosticar sin credenciales.
+      - name: Publicar el resultado
         if: always()
         run: |
           {
@@ -93,3 +96,7 @@ jobs:
             tail -n 120 salida.txt 2>/dev/null || echo "(sin salida)"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ -f salida.txt ]; then
+            grep -E "Tests:|FAILED|Failed asserting|^\s+at |Error|Exception|SQLSTATE" salida.txt               | tail -n 30               | sed 's/%/%25/g; s// /g'               | awk '{printf "%s%%0A", $0}'               | xargs -0 -I{} echo "::error title=Salida de las pruebas::{}"
+          fi
