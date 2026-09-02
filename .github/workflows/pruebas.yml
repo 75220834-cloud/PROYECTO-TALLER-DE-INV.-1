@@ -29,7 +29,7 @@ jobs:
           --health-interval=10s --health-timeout=5s --health-retries=10
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Preparar PHP
         uses: shivammathur/setup-php@v2
@@ -64,8 +64,13 @@ jobs:
           npm ci
           npm run build
 
+      # La salida se copia al resumen de la ejecucion. Descargar los logs
+      # de Actions exige permisos de administrador del repositorio; el
+      # resumen lo ve cualquiera, incluido quien revisa el trabajo.
       - name: Pruebas
-        run: php artisan test
+        run: |
+          set -o pipefail
+          php artisan test 2>&1 | tee salida.txt
         env:
           DB_CONNECTION: mysql
           DB_HOST: 127.0.0.1
@@ -77,3 +82,14 @@ jobs:
           # Sin modelo de lenguaje a proposito: la suite tiene que pasar con
           # la IA apagada, que es el criterio de aceptacion del plan (27.1).
           LLM_PROVIDER: 'null'
+
+      - name: Publicar el resultado en el resumen
+        if: always()
+        run: |
+          {
+            echo "## Resultado de las pruebas"
+            echo
+            echo '```'
+            tail -n 120 salida.txt 2>/dev/null || echo "(sin salida)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
