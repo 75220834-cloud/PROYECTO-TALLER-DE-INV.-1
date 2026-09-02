@@ -34,16 +34,34 @@ sed 's/\x1b\[[0-9;]*m//g' "$SALIDA" > "$LIMPIA"
   echo '```'
 } >> "${GITHUB_STEP_SUMMARY:-/dev/null}"
 
-# Las anotaciones solo tienen sentido cuando algo fallo. Si todo paso, basta
-# con la linea de resumen: llenar la pestaña de anotaciones en cada ejecucion
-# correcta hace que nadie las mire cuando de verdad importan.
-if grep -q "FAILED\|Tests:.*failed\|Fatal error\|SQLSTATE" "$LIMPIA"; then
-  tail -n 60 "$LIMPIA" | grep -v '^[[:space:]]*$' | while IFS= read -r linea; do
-    # El % es el caracter de escape de los comandos de flujo de trabajo.
-    echo "::error title=Pruebas::${linea//%/%25}"
-  done
-else
-  grep -m1 "Tests:" "$LIMPIA" || true
+# La linea de totales, siempre.
+grep -m1 "Tests:" "$LIMPIA" || true
+
+if ! grep -q "FAILED\|Fatal error\|SQLSTATE" "$LIMPIA"; then
+  rm -f "$LIMPIA"
+  exit 0
 fi
+
+# UNA sola anotacion con todo el bloque del fallo.
+#
+# GitHub solo conserva diez anotaciones por paso: emitir una por linea
+# hacia que el detalle util —el diff de la asercion— se perdiera detras de
+# las primeras diez lineas, que son las que menos dicen.
+BLOQUE="$(grep -n "FAILED" "$LIMPIA" | head -1 | cut -d: -f1)"
+
+if [ -n "$BLOQUE" ]; then
+  DESDE=$(( BLOQUE > 25 ? BLOQUE - 25 : 1 ))
+  DETALLE="$(sed -n "${DESDE},$(( BLOQUE + 35 ))p" "$LIMPIA")"
+else
+  DETALLE="$(tail -n 60 "$LIMPIA")"
+fi
+
+# %25, %0D y %0A son los escapes que exigen los comandos de flujo de trabajo:
+# sin ellos, un salto de linea corta la anotacion por la mitad.
+DETALLE="${DETALLE//'%'/%25}"
+DETALLE="${DETALLE//$'\r'/%0D}"
+DETALLE="${DETALLE//$'\n'/%0A}"
+
+echo "::error title=Detalle del fallo::${DETALLE}"
 
 rm -f "$LIMPIA"
