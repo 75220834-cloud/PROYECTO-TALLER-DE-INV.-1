@@ -6,6 +6,7 @@ namespace App\Modules\Incidents\Models;
 
 use App\Models\User;
 use App\Modules\Equipment\Models\Equipment;
+use App\Modules\Knowledge\Models\KnowledgeDocument;
 use App\Modules\Locations\Models\Room;
 use App\Shared\Enums\IncidentStatus as StatusCode;
 use App\Shared\Enums\ResolutionType;
@@ -37,6 +38,7 @@ use Illuminate\Support\Str;
  * @property int|null $priority_id
  * @property string|null $reported_description
  * @property bool $blocks_class
+ * @property string|null $reporter_photo_path
  * @property bool $hazard_reported
  * @property string|null $hazard_term
  * @property bool $is_draft
@@ -66,6 +68,7 @@ class Incident extends Model
         'classification_confidence', 'blocks_class', 'hazard_reported',
         'hazard_term', 'assigned_to',
         'resolution_type', 'resolution_notes', 'technical_diagnosis',
+        'reporter_photo_path',
         'reporter_hint', 'device_key', 'ip_hash', 'is_draft', 'merged_into_id',
         'reopened_count', 'confirmed_at', 'reported_at', 'first_response_at',
         'assigned_at', 'arrived_at', 'resolved_at', 'closed_at',
@@ -146,6 +149,18 @@ class Incident extends Model
     public function satisfaction(): HasOne
     {
         return $this->hasOne(SatisfactionResponse::class);
+    }
+
+    /**
+     * Artículo de conocimiento redactado a partir de esta incidencia
+     * (plan CU-S-16). Sirve para no duplicarlo y para poder rastrear de
+     * dónde salió lo que el asistente le afirma a un docente.
+     *
+     * @return HasOne<KnowledgeDocument, $this>
+     */
+    public function knowledgeArticle(): HasOne
+    {
+        return $this->hasOne(KnowledgeDocument::class, 'source_incident_id');
     }
 
     // ------------------------------------------------------------ estado

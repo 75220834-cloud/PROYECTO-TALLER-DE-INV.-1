@@ -81,8 +81,22 @@
         </p>
     @endif
 
+    {{-- El enlace de seguimiento va ANTES de "reportar otro problema": el
+         docente que acaba de pedir soporte quiere saber si le hacen caso, no
+         abrir otro ticket. --}}
+    @unless ($incident->resolution_type === 'assistant')
+        <a href="{{ route('teacher.track', ['uuid' => $incident->uuid]) }}"
+           class="btn-primary focus-ring mt-6 flex min-h-[60px] w-full items-center justify-center px-5 py-3 text-lg font-semibold">
+            Ver el estado de mi solicitud
+        </a>
+
+        <p class="mt-2 text-center text-sm text-on-surface-variant">
+            Guarda esta página para volver a consultarlo.
+        </p>
+    @endunless
+
     <a href="{{ route('teacher.start') }}"
-       class="mt-6 flex min-h-[60px] w-full items-center justify-center rounded-xl border-2 border-outline-variant px-5 py-3 text-lg font-medium text-on-surface-variant hover:bg-surface-high">
+       class="mt-4 flex min-h-[60px] w-full items-center justify-center rounded-xl border-2 border-outline-variant px-5 py-3 text-lg font-medium text-on-surface-variant hover:bg-surface-high">
         Reportar otro problema
     </a>
 @endsection

@@ -28,7 +28,7 @@ class KnowledgeDocument extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title', 'type', 'category_id', 'status', 'summary', 'created_by', 'is_demo'];
+    protected $fillable = ['title', 'type', 'category_id', 'source_incident_id', 'status', 'summary', 'created_by', 'is_demo'];
 
     protected function casts(): array
     {

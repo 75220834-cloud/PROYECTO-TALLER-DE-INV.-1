@@ -12,6 +12,7 @@ use App\Modules\Incidents\Models\SatisfactionResponse;
 use App\Modules\Incidents\Services\AbuseContext;
 use App\Modules\Incidents\Services\AbuseGuard;
 use App\Modules\Incidents\Services\IncidentService;
+use App\Modules\Incidents\Services\ReporterPhotoStore;
 use App\Modules\Incidents\Services\SafetySignalDetector;
 use App\Shared\Enums\IncidentStatus as S;
 use Illuminate\Http\RedirectResponse;
@@ -39,6 +40,7 @@ class TeacherIncidentController extends Controller
         private readonly IncidentService $incidents,
         private readonly AbuseGuard $guard,
         private readonly SafetySignalDetector $safety,
+        private readonly ReporterPhotoStore $photos,
     ) {}
 
     /**
@@ -181,6 +183,17 @@ class TeacherIncidentController extends Controller
 
             // Campo trampa: oculto por CSS, solo lo rellenan los bots.
             'website' => ['nullable', 'string', 'max:255'],
+
+            /*
+             * Foto del problema (decision D-12). OPCIONAL y debe seguir
+             * siendolo: un docente con el aula esperando no puede quedar
+             * bloqueado porque la camara no abre.
+             *
+             * Solo mapas de bits. Un SVG puede llevar JavaScript ejecutable,
+             * y esta es la unica subida de archivos que acepta el sistema sin
+             * autenticacion — la superficie mas expuesta que hay.
+             */
+            'foto' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:8192'],
         ], [
             'blocks_class.required' => 'Indícanos si el problema impide continuar la clase.',
             'confirmed.accepted' => 'Confirma la solicitud antes de enviarla.',
@@ -211,6 +224,15 @@ class TeacherIncidentController extends Controller
             }
 
             return back()->with('error', $verdict->teacherMessage());
+        }
+
+        // La foto se guarda ANTES de escalar: si el procesado falla, el
+        // ticket no se crea y el docente reintenta con el formulario intacto,
+        // en lugar de acabar con un ticket a medias sin imagen.
+        if ($request->hasFile('foto')) {
+            $incident->update([
+                'reporter_photo_path' => $this->photos->store($request->file('foto'), $incident->uuid),
+            ]);
         }
 
         $ticket = $this->incidents->escalate($incident, (bool) $data['blocks_class']);

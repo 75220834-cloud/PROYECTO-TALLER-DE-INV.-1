@@ -30,7 +30,7 @@
         <p class="mt-1 text-lg text-on-surface-variant">{{ $incident->category?->name }}</p>
     </div>
 
-    <form method="POST" action="{{ route('teacher.escalate.store') }}">
+    <form method="POST" action="{{ route('teacher.escalate.store') }}" enctype="multipart/form-data">
         @csrf
 
         {{-- Marca de tiempo de apertura: alimenta la señal de "no humano"
@@ -63,6 +63,30 @@
         @error('blocks_class')
             <p class="mt-3 rounded-lg bg-danger-container px-4 py-3 text-base text-on-danger-container">{{ $message }}</p>
         @enderror
+
+        {{-- Foto opcional (decisión D-12). `capture="environment"` abre la
+             cámara trasera directamente en el móvil, sin pasar por la
+             galería: el docente tiene el problema delante.
+
+             Va después de la pregunta de la clase y antes de confirmar, y
+             deja clarísimo que es opcional — quien tiene el aula esperando
+             no puede sentir que le falta un paso. --}}
+        <div class="mt-6">
+            <p class="text-lg font-semibold">¿Quieres mandarnos una foto?</p>
+            <p class="mt-1 text-sm text-on-surface-variant">
+                Opcional. Ayuda al técnico a saber qué llevar antes de venir.
+            </p>
+
+            <label class="glass focus-ring mt-3 flex min-h-[56px] w-full cursor-pointer items-center justify-center gap-3 px-5 py-3 text-base font-medium">
+                <span class="material-symbols-outlined" aria-hidden="true">photo_camera</span>
+                <span>Tomar una foto</span>
+                <input type="file" name="foto" accept="image/*" capture="environment" class="sr-only">
+            </label>
+
+            @error('foto')
+                <p class="mt-2 glass border-danger/70 bg-danger-container/70 px-4 py-3 text-base text-on-danger-container">{{ $message }}</p>
+            @enderror
+        </div>
 
         {{-- Confirmación explícita: primer control antiabuso y, sobre todo,
              lo que evita los envíos accidentales, que son la causa más

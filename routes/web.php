@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use App\Http\Controllers\HealthController;
 use App\Modules\Analytics\Http\Controllers\DashboardController;
+use App\Modules\Analytics\Http\Controllers\ReportsController;
+use App\Modules\Analytics\Http\Controllers\RoomHistoryController;
 use App\Modules\Assistant\Http\Controllers\TeacherAssistantController;
 use App\Modules\Audit\Http\Controllers\AuditController;
 use App\Modules\Diagnostics\Http\Controllers\FlowController;
@@ -14,8 +16,11 @@ use App\Modules\Identity\Http\Controllers\LoginController;
 use App\Modules\Identity\Http\Controllers\UserController;
 use App\Modules\Incidents\Http\Controllers\AlertController;
 use App\Modules\Incidents\Http\Controllers\CategoryController;
+use App\Modules\Incidents\Http\Controllers\ReporterPhotoController;
 use App\Modules\Incidents\Http\Controllers\SupportIncidentController;
 use App\Modules\Incidents\Http\Controllers\TeacherIncidentController;
+use App\Modules\Incidents\Http\Controllers\TrackingController;
+use App\Modules\Knowledge\Http\Controllers\ArticleFromIncidentController;
 use App\Modules\Knowledge\Http\Controllers\KnowledgeController;
 use App\Modules\Locations\Http\Controllers\BuildingController;
 use App\Modules\Locations\Http\Controllers\FloorController;
@@ -110,6 +115,13 @@ Route::middleware('throttle:120,1')->group(function () {
 
     Route::get('/reportar/listo/{uuid}', [TeacherIncidentController::class, 'done'])->name('teacher.done');
 
+    /*
+     * Seguimiento del estado (CU-D-11). Sin contrasena, igual que todo lo del
+     * docente: el uuid no es adivinable y solo abre ESTA incidencia. Pedirle
+     * una cuenta para ver su propio ticket contradiria la decision D-2.
+     */
+    Route::get('/reportar/estado/{uuid}', TrackingController::class)->name('teacher.track');
+
     // Encuesta de facilidad: opcional, una sola pregunta, despues del cierre.
     Route::post('/reportar/listo/{uuid}/encuesta', [TeacherIncidentController::class, 'survey'])
         ->name('teacher.survey');
@@ -160,6 +172,18 @@ Route::middleware('auth')->prefix('panel')->name('support.')->group(function () 
     Route::get('/exportar', [DashboardController::class, 'export'])
         ->middleware('can:reports.export')->name('dashboard.export');
 
+    /*
+     * Reportes por periodo, pabellon, aula, categoria, equipo y tecnico
+     * (CU-S-15). El tablero dice como va el servicio; esto dice DONDE se
+     * concentra el problema, que es lo que sostiene una decision de compra
+     * o de turno.
+     */
+    Route::middleware('can:reports.view')->group(function () {
+        Route::get('/reportes', [ReportsController::class, 'index'])->name('reports');
+        Route::get('/reportes/csv', [ReportsController::class, 'export'])
+            ->middleware('can:reports.export')->name('reports.export');
+    });
+
     Route::get('/riesgo', [RiskController::class, 'index'])
         ->middleware('can:risk.view')->name('risk.index');
 
@@ -175,6 +199,19 @@ Route::middleware('auth')->prefix('panel')->name('support.')->group(function () 
         Route::get('/incidencias', [SupportIncidentController::class, 'index'])->name('incidents.index');
         Route::get('/incidencias/{incident}', [SupportIncidentController::class, 'show'])
             ->whereNumber('incident')->name('incidents.show');
+
+        // La foto del docente se sirve por controlador y no desde public/:
+        // puede mostrar cosas que nadie decidio publicar.
+        Route::get('/incidencias/{incident}/foto', ReporterPhotoController::class)
+            ->whereNumber('incident')->name('incidents.photo');
+
+        /*
+         * Historial del aula (CU-S-12). Sirve para que el tecnico salga con
+         * la pieza correcta: si las ultimas tres veces fue el cable HDMI, ir
+         * sin cable garantiza un segundo viaje.
+         */
+        Route::get('/aulas/{room}/historial', RoomHistoryController::class)
+            ->whereNumber('room')->name('rooms.history');
     });
 
     Route::middleware('can:incidents.assign')->group(function () {
@@ -358,6 +395,17 @@ Route::middleware('auth')->prefix('panel')->name('admin.')->group(function () {
             ->whereNumber('document')->name('knowledge.archive');
         Route::post('/conocimiento/version/{version}/reindexar', [KnowledgeController::class, 'reindex'])
             ->whereNumber('version')->name('knowledge.reindex');
+
+        /*
+         * Convertir una solucion ya registrada en articulo (CU-S-16). El
+         * saber util de soporte no esta en los manuales: esta en la nota
+         * que el tecnico escribio al cerrar el ticket. Esto la saca de ahi
+         * y la mete en el indice que consulta el asistente.
+         */
+        Route::get('/incidencias/{incident}/articulo', [ArticleFromIncidentController::class, 'create'])
+            ->whereNumber('incident')->name('knowledge.from-incident');
+        Route::post('/incidencias/{incident}/articulo', [ArticleFromIncidentController::class, 'store'])
+            ->whereNumber('incident')->name('knowledge.from-incident.store');
     });
 
     Route::middleware('can:equipment.manage')->group(function () {

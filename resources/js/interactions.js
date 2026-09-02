@@ -51,3 +51,26 @@ document.addEventListener('click', (event) => {
         window.location.assign(row.dataset.rowHref);
     }
 });
+
+/*
+ * Recarga periódica de una página de solo lectura.
+ *
+ * La usa el seguimiento del docente, que promete en pantalla «esta página se
+ * actualiza sola». Una promesa así en la interfaz obliga: si no se cumple,
+ * el docente mira una pantalla congelada creyendo que nada avanza.
+ *
+ * Se detiene cuando la pestaña no está visible. Un docente que dejó la
+ * página abierta y guardó el móvil no necesita que su teléfono consulte al
+ * servidor cada treinta segundos durante toda la clase.
+ */
+const refrescable = document.querySelector('[data-auto-refresh]');
+
+if (refrescable) {
+    const cada = Number(refrescable.dataset.autoRefresh) * 1000;
+
+    setInterval(() => {
+        if (document.visibilityState === 'visible') {
+            window.location.reload();
+        }
+    }, Number.isFinite(cada) && cada >= 5000 ? cada : 30000);
+}

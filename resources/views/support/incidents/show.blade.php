@@ -30,6 +30,20 @@
             </div>
         @endif
 
+        {{-- La foto va ARRIBA, junto a los avisos: el técnico decide qué
+             llevar antes de salir, y para eso tiene que verla antes de leer
+             el detalle. --}}
+        @if ($incident->reporter_photo_path)
+            <div class="glass p-4">
+                <p class="label-tech mb-2 text-on-surface-variant">Foto que envió el docente</p>
+                <a href="{{ route('support.incidents.photo', $incident) }}" target="_blank" rel="noopener">
+                    <img src="{{ route('support.incidents.photo', $incident) }}"
+                         alt="Foto del problema enviada por el docente"
+                         class="max-h-80 rounded-md border border-outline-variant">
+                </a>
+            </div>
+        @endif
+
         @if ($incident->blocks_class)
             <div class="glass border-danger/70 bg-danger-container/70 px-4 py-3">
                 <p class="font-semibold text-on-danger-container">El docente no puede dictar la clase</p>
@@ -44,6 +58,14 @@
                     <dd class="text-sm text-on-surface-variant">
                         {{ $incident->room?->floor?->building?->name }} · {{ $incident->room?->floor?->label }}
                     </dd>
+                    @if ($incident->room)
+                        <dd class="mt-1">
+                            <a href="{{ route('support.rooms.history', $incident->room) }}"
+                               class="text-sm text-accent underline underline-offset-2">
+                                Ver qué ha fallado antes aquí
+                            </a>
+                        </dd>
+                    @endif
                 </div>
                 <div>
                     <dt class="label-tech text-on-surface-variant">Problema</dt>
@@ -235,6 +257,33 @@
                     </form>
                 </div>
             @endunless
+        @endcan
+
+        @can('knowledge.manage')
+            @if ($incident->resolved_at && $incident->resolution_notes && ! $incident->knowledgeArticle()->exists())
+                {{-- El saber que importa no esta en los manuales: esta en lo
+                     que este tecnico acaba de escribir. Si no se saca de aqui,
+                     la proxima vez alguien lo vuelve a averiguar desde cero. --}}
+                <div class="glass p-5">
+                    <h2 class="mb-2 label-tech text-on-surface-variant">Base de conocimiento</h2>
+                    <p class="mb-3 text-sm text-on-surface-variant">
+                        Si esto le puede pasar a otra aula, conviértelo en artículo para que el
+                        asistente pueda resolverlo solo la próxima vez.
+                    </p>
+                    <a href="{{ route('admin.knowledge.from-incident', $incident) }}"
+                       class="focus-ring block rounded-md border border-outline-variant px-4 py-2 text-center text-sm hover:bg-surface-low">
+                        Convertir en artículo
+                    </a>
+                </div>
+            @elseif ($incident->knowledgeArticle()->exists())
+                <div class="glass p-5 text-sm">
+                    <h2 class="mb-2 label-tech text-on-surface-variant">Base de conocimiento</h2>
+                    <a href="{{ route('admin.knowledge.show', $incident->knowledgeArticle) }}"
+                       class="text-accent underline underline-offset-2">
+                        Ver el artículo que salió de este ticket
+                    </a>
+                </div>
+            @endif
         @endcan
 
         <a href="{{ route('support.incidents.index') }}"

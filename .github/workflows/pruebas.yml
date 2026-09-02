@@ -1,0 +1,79 @@
+name: Pruebas
+
+# Se ejecuta en cada cambio y en cada propuesta de cambio. Hoy las 408
+# pruebas solo corren si alguien se acuerda de lanzarlas; asi corren siempre,
+# y queda constancia publica de que pasaron — que es evidencia de proceso
+# para el trabajo de investigacion, no solo una comodidad.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+
+    services:
+      # MariaDB de verdad y no SQLite: la suite depende de comportamientos
+      # que SQLite no tiene —indices FULLTEXT en modo booleano, el enum de
+      # estado de los equipos, las claves foraneas RESTRICT del catalogo—.
+      # Probar contra otro motor daria verde aqui y rojo en el servidor.
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MARIADB_ROOT_PASSWORD: secreto
+          MARIADB_DATABASE: incidencias_test
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s --health-timeout=5s --health-retries=10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Preparar PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: pdo_mysql, mbstring, fileinfo, zip, gd, exif, intl
+          coverage: none
+
+      - name: Instalar dependencias de PHP
+        run: composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Preparar el entorno
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+        env:
+          DB_CONNECTION: mysql
+
+      - name: Estilo de codigo
+        run: ./vendor/bin/pint --test
+
+      - name: Analisis estatico
+        run: ./vendor/bin/phpstan analyse --no-progress
+
+      # Sin --no-dev: si un paquete de desarrollo tiene un fallo conocido,
+      # tambien conviene enterarse.
+      - name: Vulnerabilidades en dependencias
+        run: composer audit
+
+      - name: Compilar assets
+        run: |
+          npm ci
+          npm run build
+
+      - name: Pruebas
+        run: php artisan test
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: incidencias_test
+          DB_USERNAME: root
+          DB_PASSWORD: secreto
+
+          # Sin modelo de lenguaje a proposito: la suite tiene que pasar con
+          # la IA apagada, que es el criterio de aceptacion del plan (27.1).
+          LLM_PROVIDER: 'null'

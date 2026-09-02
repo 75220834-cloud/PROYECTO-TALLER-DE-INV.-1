@@ -50,6 +50,12 @@
                 </x-nav-link>
             @endcan
 
+            @can('reports.view')
+                <x-nav-link :href="route('support.reports')" :active="request()->routeIs('support.reports*')">
+                    Reportes
+                </x-nav-link>
+            @endcan
+
             @can('risk.view')
                 <x-nav-link :href="route('support.risk.index')" :active="request()->routeIs('support.risk.*')">
                     Señales de riesgo
