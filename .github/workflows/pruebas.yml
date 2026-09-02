@@ -85,7 +85,8 @@ jobs:
 
       # Doble publicacion a proposito: el resumen es comodo de leer, pero
       # solo lo ve quien ha iniciado sesion. Las anotaciones las expone la
-      # API publica, asi que un fallo se puede diagnosticar sin credenciales.
+      # API publica, asi que un fallo se puede diagnosticar sin credenciales
+      # del repositorio.
       - name: Publicar el resultado
         if: always()
         run: |
@@ -98,5 +99,9 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
           if [ -f salida.txt ]; then
-            grep -E "Tests:|FAILED|Failed asserting|^\s+at |Error|Exception|SQLSTATE" salida.txt               | tail -n 30               | sed 's/%/%25/g; s// /g'               | awk '{printf "%s%%0A", $0}'               | xargs -0 -I{} echo "::error title=Salida de las pruebas::{}"
+            grep -E "Tests:|FAILED|Failed asserting|SQLSTATE|Exception|Error" salida.txt \
+              | tail -n 25 \
+              | while IFS= read -r linea; do
+                  echo "::error title=Pruebas::${linea//%/%25}"
+                done
           fi
