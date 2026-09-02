@@ -102,8 +102,22 @@ app/
 │   ├── Media/        banco de imágenes curado
 │   └── …
 └── Shared/           enums, excepciones y utilidades transversales
+docs/tecnica/         documentación técnica completa (16 documentos)
 docs/decisions/       bitácora de decisiones técnicas (ADR)
 ```
+
+---
+
+## Documentación
+
+**[docs/tecnica/](docs/tecnica/)** — dieciséis documentos que explican qué hace el
+sistema, cómo lo hace y por qué está hecho así: arquitectura, modelo de datos, la
+inteligencia artificial y su búsqueda por recuperación, el modelo de riesgo, seguridad,
+pruebas, métricas, el estado real del piloto y las mejoras futuras.
+
+Guías prácticas: [instalación en otra PC](docs/instalar-en-otra-pc.md) ·
+[carga de datos](docs/carga-de-datos.md) ·
+[endurecimiento y operación](docs/endurecimiento-y-operacion.md)
 
 ---
 
