@@ -1,7 +1,7 @@
 name: Pruebas
 
-# Se ejecuta en cada cambio y en cada propuesta de cambio. Hoy las 408
-# pruebas solo corren si alguien se acuerda de lanzarlas; asi corren siempre,
+# Se ejecuta en cada cambio y en cada propuesta de cambio. Hoy las 436
+# pruebas solo correrian si alguien se acuerda de lanzarlas; asi corren siempre,
 # y queda constancia publica de que pasaron — que es evidencia de proceso
 # para el trabajo de investigacion, no solo una comodidad.
 on:
