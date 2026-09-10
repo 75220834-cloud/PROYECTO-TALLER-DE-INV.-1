@@ -212,7 +212,33 @@ avise. La suite de vocabulario peruano protege el prompt, pero no el modelo.
 
 ---
 
-### 16.4.2 💡 Verificación semántica de la respuesta
+### 16.4.2 🔍 El respaldo por palabras clave prefiere el síntoma al equipo
+
+**Qué es:** cuando el modelo no está disponible, el clasificador puntúa las pistas por su
+longitud. Eso hace que una frase larga y genérica («no prende») gane a un nombre de equipo
+corto («cañón»), y «el cañón no prende» se clasifique como computadora.
+
+**Qué resuelve:** hoy hay una incoherencia entre los dos caminos. Con el modelo, esa frase
+clasifica como proyector, que es lo correcto; sin él, como computadora. Y el camino sin
+modelo es justo el que corre cuando Ollama está apagado, que es cuando menos conviene
+equivocarse.
+
+**Cómo se arreglaría:** distinguir en el catálogo de pistas las que **nombran un equipo**
+de las que **describen un síntoma**, y dar preferencia a las primeras. Si el docente nombra
+el equipo, eso es lo que está roto; el síntoma solo debería decidir cuando no se nombra
+ninguno.
+
+**Por qué no se hizo ya:** cambia el comportamiento del clasificador en producción y
+merece evaluarse contra frases reales de docentes, no a ojo. Es trabajo de la etapa de
+calibración.
+
+| Esfuerzo | Valor | Depende de |
+|---|---|---|
+| Bajo | Medio | Frases reales del piloto para validar el cambio |
+
+---
+
+### 16.4.3 💡 Verificación semántica de la respuesta
 
 **Qué es:** sustituir el verificador léxico actual por uno que compruebe el significado.
 
@@ -227,7 +253,7 @@ correctas y las combine mal («desconecta el cable HDMI para que aparezca la ima
 
 ---
 
-### 16.4.3 💡 Accesibilidad verificada
+### 16.4.4 💡 Accesibilidad verificada
 
 **Qué es:** auditoría con lector de pantalla y contraste, y pruebas automatizadas.
 
@@ -240,7 +266,7 @@ ha verificado** con herramientas de accesibilidad.
 
 ---
 
-### 16.4.4 💡 Multisede
+### 16.4.5 💡 Multisede
 
 **Qué es:** ampliar el piloto a otras sedes.
 
@@ -254,7 +280,7 @@ programar.
 
 ---
 
-### 16.4.5 💡 Integración con la mesa de ayuda institucional
+### 16.4.6 💡 Integración con la mesa de ayuda institucional
 
 **Qué es:** que los tickets se sincronicen con el sistema corporativo.
 

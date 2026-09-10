@@ -1,6 +1,6 @@
 name: Pruebas
 
-# Se ejecuta en cada cambio y en cada propuesta de cambio. Hoy las 436
+# Se ejecuta en cada cambio y en cada propuesta de cambio. Hoy las 442
 # pruebas solo correrian si alguien se acuerda de lanzarlas; asi corren siempre,
 # y queda constancia publica de que pasaron — que es evidencia de proceso
 # para el trabajo de investigacion, no solo una comodidad.

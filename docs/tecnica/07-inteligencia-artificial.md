@@ -132,7 +132,7 @@ graph LR
 
 ### Qué gana el proyecto con esto
 
-1. **Las 436 pruebas corren sin tener Ollama instalado.** Eso permite integración continua
+1. **Las 442 pruebas corren sin tener Ollama instalado.** Eso permite integración continua
    en GitHub, donde no hay una GPU ni 6 GB para un modelo.
 2. **El sistema funciona completo con la IA apagada.** Si esto deja de ser cierto, es un
    defecto — y así está escrito en la configuración del proyecto.

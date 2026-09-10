@@ -16,7 +16,7 @@
 | JavaScript | Vanilla, un solo archivo | — | Sin `onclick` en el HTML. Todo el comportamiento se engancha por atributos `data-*`. Es lo que permite una política de seguridad estricta (ver [11](11-seguridad-y-privacidad.md)). |
 | Modelo de lenguaje | Ollama + Qwen 2.5 7B | — | Corre en la propia computadora. Sin costes, sin cuenta, sin datos saliendo a internet. |
 | Vectores | Ollama + nomic-embed-text | 768 dim. | Mismo motivo: local. |
-| Pruebas | Pest | 3.8 | 436 pruebas. Ver [12](12-pruebas-y-calidad.md). |
+| Pruebas | Pest | 3.8 | 442 pruebas. Ver [12](12-pruebas-y-calidad.md). |
 | Análisis estático | PHPStan | nivel 5 | Detecta errores de tipos antes de ejecutar. |
 | Formato | Laravel Pint | — | Un solo estilo de código en todo el proyecto. |
 
@@ -162,7 +162,7 @@ en tiempo de ejecución cuál de las tres implementaciones entregar:
 | `NullLlmProvider` | Cuando no hay IA disponible | Dice honestamente que no puede |
 | `FakeLlmProvider` | En las pruebas | Responde de forma predecible |
 
-Esto es lo que permite que **las 436 pruebas se ejecuten sin necesidad de tener Ollama
+Esto es lo que permite que **las 442 pruebas se ejecuten sin necesidad de tener Ollama
 instalado**, y que el sistema funcione completo con la IA apagada.
 
 ### c) Llamada directa a un servicio
@@ -347,7 +347,7 @@ esperando no puede quedar bloqueado porque la cámara no abre.
 | `resources/js/interactions.js` | Todo el comportamiento del navegador |
 | `routes/web.php` | Las 139 rutas, agrupadas por permiso |
 | `routes/console.php` | Las tareas programadas |
-| `tests/` | Las 436 pruebas, en siete suites |
+| `tests/` | Las 442 pruebas, en siete suites |
 | `docs/` | Esta documentación y las guías de operación |
 
 ### El archivo de configuración

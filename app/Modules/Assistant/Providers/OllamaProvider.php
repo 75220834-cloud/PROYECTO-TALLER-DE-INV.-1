@@ -6,6 +6,7 @@ namespace App\Modules\Assistant\Providers;
 
 use App\Modules\Assistant\Contracts\Classification;
 use App\Modules\Assistant\Contracts\LlmProvider;
+use App\Shared\Support\TextNormalizer;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Throwable;
@@ -212,7 +213,7 @@ final class OllamaProvider implements LlmProvider
 
             // El modelo reconoce que no sabe. Es el desenlace CORRECTO, no
             // un fallo: escalar es preferible a improvisar (plan 44).
-            if ($answer === '' || str_contains(mb_strtoupper($answer), 'NO_SE')) {
+            if ($answer === '' || str_contains(TextNormalizer::upper($answer), 'NO_SE')) {
                 return null;
             }
 

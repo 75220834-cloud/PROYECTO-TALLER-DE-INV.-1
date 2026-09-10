@@ -206,7 +206,7 @@ php artisan tinker --execute="echo app(App\Modules\Assistant\Contracts\LlmProvid
 php artisan test
 ```
 
-**Qué tiene que salirte:** `Tests: 436 passed` (o más). Si alguna falla, el entorno tiene algo mal
+**Qué tiene que salirte:** `Tests: 442 passed` (o más). Si alguna falla, el entorno tiene algo mal
 y **no hay que seguir**: avisa antes de cargar datos reales.
 
 ---

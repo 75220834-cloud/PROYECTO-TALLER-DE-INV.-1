@@ -25,7 +25,7 @@ pregunte.
 
 | Dimensión | Estado |
 |---|---|
-| **Código** | ✅ Terminado. 139 rutas, 436 pruebas en verde, análisis estático limpio |
+| **Código** | ✅ Terminado. 139 rutas, 442 pruebas en verde, análisis estático limpio |
 | **Datos institucionales reales** | ⬜ Pendientes |
 | **Corpus para la IA** | ⬜ Vacío |
 | **Piloto ejecutado** | ⬜ No iniciado |
@@ -80,7 +80,7 @@ No todo es incertidumbre. Esto sí está comprobado:
 | El modelo clasifica vocabulario peruano | 10 de 10 en los casos de prueba, contra el modelo real |
 | El asistente no inventa | Sondas de alucinación: se le hacen preguntas sin respaldo y no responde |
 | No hay fuga temporal en el modelo de riesgo | Suite dedicada de pruebas |
-| El sistema funciona con la IA apagada | Las 436 pruebas corren sin Ollama |
+| El sistema funciona con la IA apagada | Las 442 pruebas corren sin Ollama |
 | Los datos de demostración se purgan por completo | Prueba de ciclo de vida |
 | Las cabeceras de seguridad son correctas | Prueba específica |
 | Los permisos se respetan | Cada ruta del panel tiene su prueba de permiso |
@@ -239,7 +239,7 @@ flowchart TD
 
 > A la fecha de este informe, el desarrollo del sistema se encuentra concluido y
 > verificado: la totalidad de los casos de uso especificados está implementada y cubierta
-> por 436 pruebas automatizadas, con análisis estático sin observaciones. La instancia
+> por 442 pruebas automatizadas, con análisis estático sin observaciones. La instancia
 > operativa contiene exclusivamente datos sintéticos, marcados como tales y eliminables en
 > bloque, por lo que ninguna cifra de resultado puede reportarse en esta etapa. Los
 > parámetros que requieren calibración empírica —umbrales de confianza del asistente y

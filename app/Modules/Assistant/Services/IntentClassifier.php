@@ -7,6 +7,7 @@ namespace App\Modules\Assistant\Services;
 use App\Modules\Assistant\Contracts\Classification;
 use App\Modules\Assistant\Contracts\LlmProvider;
 use App\Modules\Incidents\Models\IncidentCategory;
+use App\Shared\Support\TextNormalizer;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -143,7 +144,10 @@ final class IntentClassifier
      */
     private function byKeywords(string $text, array $allowed): Classification
     {
-        $normalized = mb_strtolower($text);
+        // Se pliegan las DOS partes: el texto del docente y las pistas.
+        // Normalizar solo una haria que una pista escrita con tilde dejara
+        // de coincidir con nada, y en silencio.
+        $normalized = TextNormalizer::fold($text);
         $scores = [];
 
         foreach (self::KEYWORDS as $code => $hints) {
@@ -151,7 +155,7 @@ final class IntentClassifier
                 continue;
             }
 
-            foreach ($hints as $hint) {
+            foreach (TextNormalizer::foldAll($hints) as $hint) {
                 if (str_contains($normalized, $hint)) {
                     // Las pistas largas son mas especificas que las cortas:
                     // "no se ve" dice mucho mas que "video".

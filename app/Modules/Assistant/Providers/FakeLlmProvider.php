@@ -6,6 +6,7 @@ namespace App\Modules\Assistant\Providers;
 
 use App\Modules\Assistant\Contracts\Classification;
 use App\Modules\Assistant\Contracts\LlmProvider;
+use App\Shared\Support\TextNormalizer;
 
 /**
  * Proveedor DETERMINISTA para pruebas (plan 17.3).
@@ -43,7 +44,7 @@ final class FakeLlmProvider implements LlmProvider
     {
         $this->classifyCalls[] = $text;
 
-        $normalized = mb_strtolower($text);
+        $normalized = TextNormalizer::fold($text);
         $matches = [];
 
         foreach (self::HINTS as $label => $hints) {
@@ -51,7 +52,7 @@ final class FakeLlmProvider implements LlmProvider
                 continue;
             }
 
-            foreach ($hints as $hint) {
+            foreach (TextNormalizer::foldAll($hints) as $hint) {
                 if (str_contains($normalized, $hint)) {
                     $matches[$label] = ($matches[$label] ?? 0) + 1;
                 }
@@ -62,6 +63,10 @@ final class FakeLlmProvider implements LlmProvider
             return Classification::unknown('fake');
         }
 
+        // arsort es estable desde PHP 8.0, asi que un empate lo decide el
+        // orden de declaracion de HINTS. Se deja dicho porque de ese detalle
+        // depende que "el cañon no prende" —que nombra un equipo y describe
+        // un sintoma de otro— clasifique siempre igual.
         arsort($matches);
         $label = (string) array_key_first($matches);
 

@@ -53,7 +53,7 @@ Resumen de la secuencia:
 | 5 | `php artisan migrate --seed` y `npm run build` |
 | 6 | `php artisan serve` |
 | 7 | Ollama con los dos modelos (opcional) |
-| 8 | `php artisan test` — tiene que decir 436 |
+| 8 | `php artisan test` — tiene que decir 442 |
 | 9 | `php artisan demo:purge --force` antes de cargar datos reales |
 
 ### La trampa que más tiempo hace perder

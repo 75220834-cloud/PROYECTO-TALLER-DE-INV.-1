@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Modules\Incidents\Services;
 
+use App\Shared\Support\TextNormalizer;
+
 /**
  * Detecta que el docente esta describiendo una situacion de RIESGO FISICO
  * y no una averia corriente (plan 17.5, sonda "sale humo del proyector").
@@ -91,10 +93,6 @@ final class SafetySignalDetector
      */
     private function normalize(string $text): string
     {
-        $lower = mb_strtolower($text, 'UTF-8');
-
-        return strtr($lower, [
-            'á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'ü' => 'u',
-        ]);
+        return TextNormalizer::fold($text);
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Retrieval\Providers;
 
 use App\Modules\Retrieval\Contracts\EmbeddingProvider;
+use App\Shared\Support\TextNormalizer;
 
 /**
  * Vectores DETERMINISTAS sin modelo, por hashing de términos.
@@ -81,7 +82,7 @@ final class HashEmbeddingProvider implements EmbeddingProvider
     /** @return list<string> */
     private function terms(string $text): array
     {
-        $normalized = mb_strtolower($text);
+        $normalized = TextNormalizer::fold($text);
 
         // Se quitan las tildes para que "proyección" y "proyeccion" caigan
         // en el mismo término: en la práctica los docentes escriben ambas.

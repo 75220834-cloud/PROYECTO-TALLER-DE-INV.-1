@@ -24,7 +24,7 @@ documento del curso: cada afirmación sale del código real, no de lo que estaba
 | 09 | [Diagnóstico guiado](09-diagnostico-guiado.md) | Los árboles de diagnóstico, por qué son deterministas, el versionado y las imágenes |
 | 10 | [Modelo de riesgo](10-modelo-de-riesgo.md) | Qué significa y qué **no** significa el score, la prevención de fuga temporal y el camino hacia un modelo supervisado |
 | 11 | [Seguridad y privacidad](11-seguridad-y-privacidad.md) | Modelo de amenazas, los 21 permisos y 6 roles, la política de seguridad de contenido, y qué datos personales se manejan |
-| 12 | [Pruebas y calidad](12-pruebas-y-calidad.md) | Las 436 pruebas en 7 suites, el análisis estático y la integración continua |
+| 12 | [Pruebas y calidad](12-pruebas-y-calidad.md) | Las 442 pruebas en 7 suites, el análisis estático y la integración continua |
 | 13 | [Operación](13-operacion.md) | Puesta en marcha, comandos, tareas programadas, respaldos y solución de problemas |
 | 14 | [Métricas e investigación](14-metricas-e-investigacion.md) | Qué mide el sistema, las diez preguntas de investigación que puede responder y cómo se exportan los datos |
 | 15 | [Estado real del piloto](15-estado-real-del-piloto.md) | Qué está probado y qué no, con las cifras exactas de hoy. **Situación transitoria** |
@@ -67,7 +67,7 @@ Estas son operativas, no descriptivas. Explican **cómo hacer algo**, paso a pas
 
 | Dimensión | Estado |
 |---|---|
-| Código | ✅ Terminado — 139 rutas, 436 pruebas en verde, análisis estático limpio |
+| Código | ✅ Terminado — 139 rutas, 442 pruebas en verde, análisis estático limpio |
 | Datos institucionales | ⬜ Pendientes de cargar |
 | Corpus para la IA | ⬜ Vacío |
 | Piloto | ⬜ No iniciado |

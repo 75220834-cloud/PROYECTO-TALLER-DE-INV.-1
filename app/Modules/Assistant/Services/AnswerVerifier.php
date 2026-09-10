@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Modules\Assistant\Services;
 
+use App\Shared\Support\TextNormalizer;
+
 /**
  * Comprueba que una respuesta generada esté ANCLADA en las fuentes.
  *
@@ -91,7 +93,7 @@ final class AnswerVerifier
      */
     public function isSafe(string $answer): bool
     {
-        $normalized = mb_strtolower($answer);
+        $normalized = TextNormalizer::fold($answer);
 
         $forbidden = [
             'abre el equipo', 'abrir el equipo', 'destornilla', 'desatornilla',
@@ -100,7 +102,7 @@ final class AnswerVerifier
             'toca los contactos', 'interruptor eléctrico', 'tablero eléctrico',
         ];
 
-        foreach ($forbidden as $phrase) {
+        foreach (TextNormalizer::foldAll($forbidden) as $phrase) {
             if (str_contains($normalized, $phrase)) {
                 return false;
             }
@@ -119,10 +121,10 @@ final class AnswerVerifier
      */
     public function hasOverconfidentClaim(string $answer): bool
     {
-        $normalized = mb_strtolower($answer);
+        $normalized = TextNormalizer::fold($answer);
 
-        foreach (['definitivamente funciona', 'seguro que funciona', 'esto lo soluciona siempre',
-            'garantizado', 'con toda seguridad', 'sin duda funcionará', 'sin duda funcionara'] as $phrase) {
+        foreach (TextNormalizer::foldAll(['definitivamente funciona', 'seguro que funciona', 'esto lo soluciona siempre',
+            'garantizado', 'con toda seguridad', 'sin duda funcionará', 'sin duda funcionara']) as $phrase) {
             if (str_contains($normalized, $phrase)) {
                 return true;
             }
@@ -134,11 +136,7 @@ final class AnswerVerifier
     /** @return list<string> */
     private function terms(string $text): array
     {
-        $normalized = mb_strtolower($text);
-
-        $normalized = strtr($normalized, [
-            'á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'ü' => 'u',
-        ]);
+        $normalized = TextNormalizer::fold($text);
 
         $words = preg_split('/[^a-z0-9ñ]+/u', $normalized, -1, PREG_SPLIT_NO_EMPTY) ?: [];
 

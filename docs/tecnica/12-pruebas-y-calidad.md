@@ -9,11 +9,11 @@
 
 | Métrica | Valor |
 |---|---|
-| Pruebas automáticas | **436** |
-| Aserciones | 1 160 |
-| Archivos de prueba | 35 |
+| Pruebas automáticas | **442** |
+| Aserciones | 1 171 |
+| Archivos de prueba | 36 |
 | Suites | 7 |
-| Duración de la suite completa | ~230 segundos |
+| Duración de la suite completa | ~5 minutos |
 | Nivel de PHPStan | 5, sin errores |
 | Estilo de código | Laravel Pint, sin desviaciones |
 
@@ -23,7 +23,7 @@
 
 ```mermaid
 graph TB
-    U["Unit<br/>1 archivo"] --> D["Lógica pura,<br/>sin base de datos"]
+    U["Unit<br/>2 archivos"] --> D["Lógica pura,<br/>sin base de datos"]
     F["Feature<br/>26 archivos"] --> E["Flujos completos<br/>por HTTP"]
     A["Ai<br/>4 archivos"] --> G["Comportamiento<br/>del modelo"]
     R["Retrieval<br/>1 archivo"] --> H["Búsqueda híbrida"]
@@ -45,6 +45,7 @@ la completa se corre antes de subir cambios.
 | Archivo | Qué verifica |
 |---|---|
 | `IncidentStateMachineTest` | Que las transiciones inválidas se rechacen y las válidas se acepten |
+| `TextNormalizerTest` | Que comparar palabras dé el mismo resultado en cualquier máquina. Ver 12.5 |
 
 Es la única suite que corre sin base de datos, y por eso es instantánea.
 
@@ -224,7 +225,7 @@ flowchart LR
     D --> E[PHPStan: tipos]
     E --> F[composer audit:<br/>vulnerabilidades conocidas]
     F --> G[npm run build]
-    G --> H[436 pruebas]
+    G --> H[442 pruebas]
     H --> I{¿Todo verde?}
     I -->|Sí| J[✅]
     I -->|No| K[❌ y dice cuál falló]
@@ -239,11 +240,31 @@ flowchart LR
 | `composer audit` | Activado | Avisa de dependencias con vulnerabilidades publicadas |
 | Compilación del frontend | Incluida | Un error de CSS o de JavaScript rompe la compilación y hay que verlo |
 
+### Lo primero que encontró, y es el mejor argumento a su favor
+
+En su primera ejecución, la integración continua detectó un defecto que **436 pruebas en
+verde sobre Windows no habían visto**: el clasificador comparaba texto con una función que
+depende de la codificación configurada en PHP, sin fijarla explícitamente.
+
+En XAMPP sobre Windows esa configuración era UTF-8 y todo funcionaba. En el Linux del
+servidor de integración no, y «cañon» dejaba de coincidir con «cañon». El síntoma era
+absurdo: la misma frase clasificaba como **proyector** en una máquina y como
+**computadora** en otra, sin que nada fallara visiblemente.
+
+Es exactamente la clase de defecto que no aparece hasta que el sistema se mueve de
+computadora — es decir, hasta el día en que se instala en la universidad.
+
+El arreglo fue extraer la normalización a una clase compartida que fija la codificación y
+además pliega tildes y eñes, porque en un aula nadie escribe con tildes y «cañón»,
+«cañon» y «canon» son la misma palabra dicha por tres docentes distintos. Queda protegido
+por `TextNormalizerTest`, que incluye una prueba que cambia deliberadamente la
+codificación interna de PHP para comprobar que el resultado no varía.
+
 ### Para qué sirve de verdad
 
 Para que **el estado del proyecto sea verificable por alguien que no lo ejecutó**. El
 profesor, el jurado o un colaborador ven en GitHub una marca verde que significa: en esta
-versión concreta del código, las 436 pruebas pasaban, el análisis estático estaba limpio y
+versión concreta del código, las 442 pruebas pasaban, el análisis estático estaba limpio y
 el proyecto compilaba.
 
 Eso es una afirmación mucho más fuerte que «a mí me funciona».
