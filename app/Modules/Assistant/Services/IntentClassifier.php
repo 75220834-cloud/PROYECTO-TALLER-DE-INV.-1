@@ -27,7 +27,43 @@ use Illuminate\Support\Facades\Log;
 final class IntentClassifier
 {
     /**
-     * Pistas por categoria para el modo sin modelo.
+     * Pistas que NOMBRAN un equipo.
+     *
+     * Se separan de los sintomas porque pesan mas, y conviene explicar por
+     * que: si el docente nombra el equipo, eso es lo que esta roto. El
+     * sintoma solo deberia decidir cuando no se nombra ninguno.
+     *
+     * El caso que obligo a esta separacion es la frase mas comun del
+     * proyecto: «el cañón no prende». Nombra el proyector y describe un
+     * sintoma que la lista asociaba a la computadora. Puntuando por
+     * longitud —como se hacia antes— «no prende» (9 caracteres) le ganaba a
+     * «cañon» (5), y el sistema mandaba un tecnico a revisar la
+     * computadora de un aula donde el problema era el proyector.
+     *
+     * @var array<string, list<string>>
+     */
+    private const DEVICE_TERMS = [
+        'PROJECTOR' => ['proyector', 'canon', 'cañon', 'cañón', 'proyeccion', 'proyección', 'ecran'],
+        'HDMI_VIDEO' => ['hdmi', 'video', 'vídeo', 'cable de video'],
+        'AUDIO' => ['sonido', 'audio', 'volumen'],
+        'MICROPHONE' => ['microfono', 'micrófono', 'micro'],
+        'SPEAKERS' => ['parlante', 'altavoz', 'bocina', 'cornetas'],
+        'COMPUTER' => ['computadora', 'compu', 'cpu', 'pc'],
+        'KEYBOARD' => ['teclado', 'teclas'],
+        'MOUSE' => ['mouse', 'raton', 'ratón'],
+        'NETWORK' => ['cable de red', 'ethernet', 'punto de red'],
+        'INTERNET' => ['internet', 'wifi', 'wi-fi'],
+        'SOFTWARE' => ['programa', 'software', 'aplicacion', 'aplicación'],
+        'SCREEN' => ['pantalla', 'monitor'],
+    ];
+
+    /**
+     * Pistas que describen un SINTOMA, sin nombrar el equipo.
+     *
+     * Solo deciden cuando el docente no nombro ningun equipo. «No prende»
+     * puede ser la computadora, el proyector o los parlantes; sin mas
+     * informacion, la computadora es la apuesta razonable, pero es una
+     * apuesta y no una certeza.
      *
      * Vive en codigo y no en base de datos a proposito: es logica de
      * respaldo, no configuracion operativa. Si se editara desde el panel,
@@ -36,19 +72,13 @@ final class IntentClassifier
      *
      * @var array<string, list<string>>
      */
-    private const KEYWORDS = [
-        'PROJECTOR' => ['proyector', 'canon', 'cañon', 'cañón', 'proyecta', 'proyeccion', 'proyección'],
-        'HDMI_VIDEO' => ['hdmi', 'no se ve', 'sin imagen', 'no aparece', 'video', 'vídeo', 'pantalla azul', 'pantalla negra'],
-        'AUDIO' => ['sonido', 'audio', 'no suena', 'no escucha', 'no se oye', 'volumen'],
-        'MICROPHONE' => ['microfono', 'micrófono', 'micro'],
-        'SPEAKERS' => ['parlante', 'altavoz', 'bocina', 'cornetas'],
-        'COMPUTER' => ['computadora', 'compu', 'cpu', 'no prende', 'no enciende', 'se colgo', 'se colgó'],
-        'KEYBOARD' => ['teclado', 'teclas'],
-        'MOUSE' => ['mouse', 'raton', 'ratón'],
-        'NETWORK' => ['cable de red', 'ethernet', 'punto de red'],
-        'INTERNET' => ['internet', 'wifi', 'wi-fi', 'sin conexion', 'sin conexión', 'no navega'],
-        'SOFTWARE' => ['programa', 'software', 'aplicacion', 'aplicación', 'no abre'],
-        'SCREEN' => ['pantalla', 'monitor'],
+    private const SYMPTOM_TERMS = [
+        'PROJECTOR' => ['no proyecta', 'proyecta mal', 'se ve morado', 'se ve verde'],
+        'HDMI_VIDEO' => ['no se ve', 'sin imagen', 'no aparece', 'pantalla azul', 'pantalla negra', 'sin señal'],
+        'AUDIO' => ['no suena', 'no escucha', 'no se oye', 'sin sonido'],
+        'COMPUTER' => ['no prende', 'no enciende', 'se colgo', 'se colgó', 'no arranca'],
+        'INTERNET' => ['sin conexion', 'sin conexión', 'no navega', 'no hay señal'],
+        'SOFTWARE' => ['no abre', 'se cierra solo'],
     ];
 
     public function __construct(private readonly LlmProvider $llm) {}
@@ -130,6 +160,37 @@ final class IntentClassifier
     }
 
     /** @return list<string> */
+    /**
+     * Puntua el texto contra un catalogo de pistas.
+     *
+     * Dentro de un mismo catalogo, la pista mas larga es la mas especifica:
+     * «cable de red» dice mucho mas que «red».
+     *
+     * @param  array<string, list<string>>  $catalog
+     * @param  list<string>  $allowed
+     * @return array<string, int>
+     */
+    private function scoreAgainst(string $normalized, array $catalog, array $allowed): array
+    {
+        $scores = [];
+
+        foreach ($catalog as $code => $hints) {
+            if (! in_array($code, $allowed, true)) {
+                continue;
+            }
+
+            foreach (TextNormalizer::foldAll($hints) as $hint) {
+                if (str_contains($normalized, $hint)) {
+                    $scores[$code] = ($scores[$code] ?? 0) + mb_strlen($hint);
+                }
+            }
+        }
+
+        arsort($scores);
+
+        return $scores;
+    }
+
     private function allowedCodes(): array
     {
         return IncidentCategory::query()
@@ -148,27 +209,21 @@ final class IntentClassifier
         // Normalizar solo una haria que una pista escrita con tilde dejara
         // de coincidir con nada, y en silencio.
         $normalized = TextNormalizer::fold($text);
-        $scores = [];
 
-        foreach (self::KEYWORDS as $code => $hints) {
-            if (! in_array($code, $allowed, true)) {
-                continue;
-            }
+        // Los equipos primero. Si alguna categoria coincide por el nombre
+        // del equipo, los sintomas ya no compiten: quedan fuera del
+        // reparto por completo, no como un empate a resolver.
+        $scores = $this->scoreAgainst($normalized, self::DEVICE_TERMS, $allowed);
 
-            foreach (TextNormalizer::foldAll($hints) as $hint) {
-                if (str_contains($normalized, $hint)) {
-                    // Las pistas largas son mas especificas que las cortas:
-                    // "no se ve" dice mucho mas que "video".
-                    $scores[$code] = ($scores[$code] ?? 0) + mb_strlen($hint);
-                }
-            }
+        if ($scores === []) {
+            $scores = $this->scoreAgainst($normalized, self::SYMPTOM_TERMS, $allowed);
         }
 
         if ($scores === []) {
             return Classification::unknown('keywords');
         }
 
-        arsort($scores);
+        // Ya vienen ordenados por scoreAgainst().
         $codes = array_keys($scores);
 
         return new Classification(
