@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Retrieval\Services;
 
 use App\Modules\Knowledge\Models\KnowledgeChunk;
+use App\Modules\Knowledge\Models\KnowledgeDocumentVersion;
 use App\Modules\Retrieval\Contracts\EmbeddingProvider;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -89,9 +90,9 @@ final class RetrievalService
         }
 
         $lexical = $this->rankLexically($query, $candidates);
-        $semantic = $this->rankSemantically($query, $candidates);
+        [$semantic, $similarities] = $this->rankSemantically($query, $candidates);
 
-        return $this->fuse($lexical, $semantic, $candidates);
+        return $this->fuse($lexical, $semantic, $similarities, $candidates);
     }
 
     /**
@@ -111,9 +112,28 @@ final class RetrievalService
             $boolean = $query;
         }
 
+        /*
+         * Solo la ULTIMA version indexada de cada documento publicado.
+         *
+         * Sin la restriccion de version, un procedimiento corregido compite
+         * con su propia version obsoleta: las dos estan indexadas, las dos
+         * hablan del mismo tema, y el asistente puede citar la que ya no es
+         * cierta. Es un fallo silencioso —no da error, solo responde con
+         * informacion vieja— y se detecto al recargar las guias y ver que
+         * los fragmentos se habian duplicado.
+         *
+         * Las versiones anteriores NO se borran: siguen explicando por que
+         * una incidencia pasada se resolvio como se resolvio. Simplemente
+         * dejan de alimentar al asistente.
+         */
+        $latest = KnowledgeDocumentVersion::query()
+            ->where('processing_status', 'indexed')
+            ->whereHas('document', fn ($d) => $d->where('status', 'published'))
+            ->selectRaw('MAX(id) as id')
+            ->groupBy('document_id');
+
         $base = fn () => KnowledgeChunk::query()
-            ->whereHas('version', fn ($v) => $v->where('processing_status', 'indexed')
-                ->whereHas('document', fn ($d) => $d->where('status', 'published')));
+            ->whereIn('document_version_id', $latest->clone()->pluck('id'));
 
         $byText = $base()
             ->when($categoryId !== null, fn ($q) => $q->where(fn ($sub) => $sub
@@ -177,7 +197,7 @@ final class RetrievalService
      * Etapa 3: similitud coseno en PHP sobre los candidatos.
      *
      * @param  Collection<int, KnowledgeChunk>  $candidates
-     * @return array<int, int>
+     * @return array{0: array<int, int>, 1: array<int, float>} posiciones y similitudes
      */
     private function rankSemantically(string $query, Collection $candidates): array
     {
@@ -185,14 +205,14 @@ final class RetrievalService
 
         if ($vector === null) {
             // Sin vectores el sistema no se cae: se apoya solo en el léxico.
-            return [];
+            return [[], []];
         }
 
         $model = $this->embeddings->modelIdentifier();
         $queryNorm = $this->norm($vector);
 
         if ($queryNorm <= 0.0) {
-            return [];
+            return [[], []];
         }
 
         $scored = [];
@@ -221,7 +241,7 @@ final class RetrievalService
             $ranks[(int) $id] = $position++;
         }
 
-        return $ranks;
+        return [$ranks, $scored];
     }
 
     /**
@@ -234,10 +254,11 @@ final class RetrievalService
      *
      * @param  array<int, int>  $lexical
      * @param  array<int, int>  $semantic
+     * @param  array<int, float>  $similarities
      * @param  Collection<int, KnowledgeChunk>  $candidates
      * @return Collection<int, RetrievedChunk>
      */
-    private function fuse(array $lexical, array $semantic, Collection $candidates): Collection
+    private function fuse(array $lexical, array $semantic, array $similarities, Collection $candidates): Collection
     {
         $k = (int) config('incidencias.retrieval.rrf_k');
         $limit = (int) config('incidencias.retrieval.context_limit');
@@ -258,8 +279,11 @@ final class RetrievalService
 
         $byId = $candidates->keyBy('id');
 
+        $floor = (float) config('incidencias.retrieval.relevance_floor');
+        $agreement = (int) config('incidencias.retrieval.agreement_rank');
+
         return collect(array_slice($scores, 0, $limit, true))
-            ->map(function (float $score, int $id) use ($byId, $lexical, $semantic): ?RetrievedChunk {
+            ->map(function (float $score, int $id) use ($byId, $lexical, $semantic, $similarities): ?RetrievedChunk {
                 $chunk = $byId->get($id);
 
                 return $chunk === null ? null : new RetrievedChunk(
@@ -267,9 +291,21 @@ final class RetrievalService
                     score: $score,
                     lexicalRank: $lexical[$id] ?? null,
                     semanticRank: $semantic[$id] ?? null,
+                    similarity: $similarities[$id] ?? null,
                 );
             })
             ->filter()
+
+            /*
+             * PISO DE RELEVANCIA. Se descarta lo que no tiene nada que ver
+             * con la pregunta aunque sea lo mejor que haya.
+             *
+             * Sin esto, una pregunta ajena al dominio —«cuánto cuesta la
+             * matrícula»— recuperaba cuatro pasajes sobre el proyector y el
+             * asistente los presentaba como respuesta. Devolver vacío hace
+             * que el sistema escale, que es el desenlace correcto.
+             */
+            ->filter(fn (RetrievedChunk $c): bool => $c->isRelevant($floor, $agreement))
             ->values();
     }
 

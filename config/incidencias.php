@@ -80,6 +80,34 @@ return [
         'prefilter_limit' => (int) env('RETRIEVAL_PREFILTER_LIMIT', 300),
         'prefilter_min' => (int) env('RETRIEVAL_PREFILTER_MIN', 20),
         'latency_budget_ms' => (int) env('RETRIEVAL_LATENCY_BUDGET_MS', 800),
+        /*
+         * Similitud coseno minima para que un fragmento cuente como
+         * relevante cuando NO coincidio en el indice de texto completo.
+         *
+         * Coincidir lexicamente ya es señal suficiente: significa que
+         * comparte vocabulario con la pregunta. Este piso protege el otro
+         * camino, el semantico, donde la salvaguarda del prefiltro
+         * garantiza que siempre haya candidatos aunque ninguno sirva.
+         *
+         * 0.65 es provisional. Se midio con cinco preguntas de prueba: las
+         * ajenas al dominio dieron hasta 0.602 y las legitimas desde 0.582,
+         * asi que las bandas SE SOLAPAN y este umbral por si solo no
+         * separa. Por eso hay una segunda condicion —agreement_rank— y por
+         * eso los dos numeros hay que calibrarlos con el conjunto
+         * etiquetado, igual que los umbrales de confianza.
+         */
+        'relevance_floor' => (float) env('RETRIEVAL_RELEVANCE_FLOOR', 0.65),
+
+        /*
+         * Posicion maxima en AMBOS rankings para que la coincidencia cuente
+         * como acuerdo entre las dos vias.
+         *
+         * Es el discriminador que si funciono: en las preguntas legitimas el
+         * mejor fragmento estaba arriba en los dos rankings; en las ajenas,
+         * el que ganaba por lexico caia al puesto 22 o mas en el semantico.
+         */
+        'agreement_rank' => (int) env('RETRIEVAL_AGREEMENT_RANK', 10),
+
         'top_k' => 10,
         'context_limit' => 4,
         'rrf_k' => 60,
