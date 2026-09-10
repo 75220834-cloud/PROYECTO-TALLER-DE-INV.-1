@@ -153,7 +153,7 @@ class DemoDiagnosticsSeeder extends Seeder
 
     private function buildAudioFlow(): void
     {
-        $category = IncidentCategory::where('code', 'AUDIO')->first();
+        $category = IncidentCategory::where('code', 'SPEAKER')->first();
 
         if ($category === null) {
             return;

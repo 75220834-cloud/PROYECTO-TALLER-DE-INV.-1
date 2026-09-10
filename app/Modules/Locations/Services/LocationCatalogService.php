@@ -70,6 +70,49 @@ final class LocationCatalogService
      * o null cuando hay cero o varios. El controlador lo usa para saltarse
      * la pantalla entera.
      */
+    /**
+     * Todos los pabellones activos, con su sede.
+     *
+     * Para la pantalla unica: se envian todos y el navegador filtra. Ver el
+     * porque en TeacherLocationController::start().
+     *
+     * @return Collection<int, Building>
+     */
+    public function allBuildings(): Collection
+    {
+        return Building::query()
+            ->active()
+            ->orderBy('sort_order')
+            ->orderBy('code')
+            ->get();
+    }
+
+    /**
+     * Todos los pisos activos, con su pabellon.
+     *
+     * @return Collection<int, Floor>
+     */
+    public function allFloors(): Collection
+    {
+        return Floor::query()
+            ->active()
+            ->orderBy('number')
+            ->get();
+    }
+
+    /**
+     * Todas las aulas activas, con su piso.
+     *
+     * @return Collection<int, Room>
+     */
+    public function allRooms(): Collection
+    {
+        return Room::query()
+            ->active()
+            ->orderBy('code')
+            ->get();
+    }
+
     public function autoSelect(Collection $options): ?object
     {
         return $options->count() === 1 ? $options->first() : null;

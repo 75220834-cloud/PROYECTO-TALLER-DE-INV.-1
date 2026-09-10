@@ -31,3 +31,10 @@ Thumbs.db
 
 # Documentacion del curso: vive junto al proyecto pero no es codigo.
 /APLICACIÓN DEL FRAMEWORK A3 THINKING/
+
+# Checklists e inventarios reales de la universidad. El repositorio es
+# publico: los codigos de aula y el inventario de equipos no son nuestros
+# para publicarlos. Van a la base de datos, no a Git.
+/datos-reales/
+*CHECLIST*
+*CHECKLIST*

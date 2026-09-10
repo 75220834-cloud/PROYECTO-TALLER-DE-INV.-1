@@ -54,13 +54,18 @@ beforeEach(function () {
      */
     $this->reportar = function (Room $room, string $descripcion, bool $bloqueaClase = true): Incident {
         // [1] El QR es el mismo para todas las aulas y no lleva ubicación.
-        $this->get(route('teacher.start'))->assertRedirect();
+        //     Lleva a UNA pantalla con las cuatro preguntas.
+        $this->get(route('teacher.start'))->assertOk()->assertSee($room->code);
 
-        // [2] Cascada. Se envían cadenas, que es lo que manda un formulario
-        //     de verdad: un entero aquí escondería un fallo de conversión.
-        $this->get(route('teacher.rooms', [
-            'site' => $this->site->id, 'building' => $room->floor->building_id, 'floor' => $room->floor_id,
-        ]))->assertOk()->assertSee($room->code);
+        // [2] La elección viaja junta. Se envían cadenas, que es lo que manda
+        //     un formulario de verdad: un entero aquí escondería un fallo de
+        //     conversión.
+        $this->post(route('teacher.locate'), [
+            'site_id' => (string) $this->site->id,
+            'building_id' => (string) $room->floor->building_id,
+            'floor_id' => (string) $room->floor_id,
+            'room_id' => (string) $room->id,
+        ])->assertRedirect();
 
         // [3] Confirmación explícita de la ubicación → nace el borrador.
         $this->post(route('teacher.confirm.store'), [

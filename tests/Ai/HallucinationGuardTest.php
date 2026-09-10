@@ -157,7 +157,7 @@ it('NO inventa pasos para una categoria sin procedimiento cargado', function () 
     // institucional. El sistema debe reconocer que no lo tiene.
     $engine = app(DiagnosticEngine::class);
 
-    foreach (['KEYBOARD', 'MOUSE', 'SOFTWARE', 'OTHER'] as $code) {
+    foreach (['KEYBOARD', 'MOUSE', 'SCREEN', 'OTHER'] as $code) {
         $category = IncidentCategory::where('code', $code)->firstOrFail();
 
         expect($engine->flowFor($category->id))
@@ -228,5 +228,14 @@ it('tolera errores ortograficos y lenguaje coloquial', function () {
 
     expect($classifier->classify('el cañon no prende')->label)->toBe('PROJECTOR')
         ->and($classifier->classify('la compu no enciende')->label)->toBe('COMPUTER')
-        ->and($classifier->classify('no hay wifi')->label)->toBe('INTERNET');
+        // El internet ya no es una categoria propia: el checklist no lo
+        // inventaria por aula, asi que el sistema no sabe que aulas lo
+        // tienen. Aqui el clasificador NO adivina: devuelve desconocido y el
+        // docente elige «Otro problema» con un boton.
+        //
+        // Que no pueda elegir «Otro» por su cuenta es deliberado. Esa
+        // categoria salta el diagnostico y va directo a soporte; si el
+        // clasificador pudiera elegirla, una frase ambigua mandaria a un
+        // tecnico al aula sin haber intentado nada.
+        ->and($classifier->classify('no hay wifi')->label)->toBeNull();
 });

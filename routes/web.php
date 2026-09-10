@@ -51,6 +51,15 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('throttle:120,1')->group(function () {
 
     Route::get('/reportar', [TeacherLocationController::class, 'start'])->name('teacher.start');
+
+    // Las cuatro preguntas viven en una sola pantalla y llegan juntas. El
+    // recorrido por pasos de mas abajo sigue existiendo: lo usa el buscador
+    // por codigo y es la red de seguridad si el navegador del docente no
+    // ejecuta el filtrado.
+    Route::post('/reportar/ubicacion', [TeacherLocationController::class, 'locate'])
+        ->name('teacher.locate');
+
+    Route::get('/reportar/sedes', [TeacherLocationController::class, 'sitesStep'])->name('teacher.sites');
     Route::get('/reportar/buscar', [TeacherLocationController::class, 'search'])->name('teacher.search');
 
     Route::get('/reportar/{site}/pabellones', [TeacherLocationController::class, 'buildings'])

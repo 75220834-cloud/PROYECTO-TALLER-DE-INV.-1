@@ -26,13 +26,14 @@ class Room extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['floor_id', 'code', 'name', 'capacity', 'criticality', 'is_active', 'is_demo'];
+    protected $fillable = ['floor_id', 'code', 'name', 'room_type', 'capacity', 'criticality', 'self_service', 'support_only_reason', 'is_active', 'is_demo'];
 
     protected function casts(): array
     {
         return [
             'is_active' => 'boolean',
             'is_demo' => 'boolean',
+            'self_service' => 'boolean',
             'capacity' => 'integer',
             'criticality' => 'integer',
         ];

@@ -40,7 +40,7 @@ beforeEach(function () {
     $this->otherRoom = Room::create(['floor_id' => $floor->id, 'code' => 'C306', 'criticality' => 1, 'is_active' => true]);
 
     $this->category = IncidentCategory::where('code', 'PROJECTOR')->first();
-    $this->otherCategory = IncidentCategory::where('code', 'AUDIO')->first();
+    $this->otherCategory = IncidentCategory::where('code', 'SPEAKER')->first();
 });
 
 /**

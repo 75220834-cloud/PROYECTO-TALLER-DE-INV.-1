@@ -40,20 +40,48 @@ it('permite entrar sin autenticacion', function () {
     expect($response->baseResponse->getContent())->not->toContain('Iniciar sesión');
 });
 
-it('omite la pantalla de sede cuando solo hay una', function () {
-    // Con una sola sede no hay nada que preguntar: el docente se ahorra un
-    // toque sin que exista un caso especial en el codigo (plan OS-1).
+it('pregunta las cuatro cosas en una sola pantalla', function () {
+    // Cuatro paginas costaban cuatro cargas y cuatro esperas a alguien de pie
+    // con una clase mirandolo. Cada carga es una oportunidad de abandonar, y
+    // el abandono es precisamente lo que el piloto mide.
     $this->get('/reportar')
-        ->assertRedirect(route('teacher.buildings', ['site' => $this->site->id]));
+        ->assertOk()
+        ->assertSee('¿En qué sede estás?')
+        ->assertSee('¿En qué pabellón estás?')
+        ->assertSee('¿En qué piso estás?')
+        ->assertSee('¿En qué aula estás?');
 });
 
-it('muestra la pantalla de sede cuando hay mas de una', function () {
+it('pregunta la sede aunque solo haya una', function () {
+    // Cuesta un toque y hace que el dia que exista una segunda sede la
+    // pantalla ya funcione sin tocar nada. Es una decision explicita: la
+    // alternativa —darla por elegida— habria dejado el sistema atado a una
+    // sola sede sin que nadie lo notara hasta ampliarlo.
+    $this->get('/reportar')
+        ->assertOk()
+        ->assertSee('Huancayo');
+});
+
+it('ofrece todas las sedes cuando hay mas de una', function () {
     Site::create(['code' => 'OTRA', 'name' => 'Otra sede', 'is_active' => true]);
 
     $this->get('/reportar')
         ->assertOk()
         ->assertSee('Huancayo')
         ->assertSee('Otra sede');
+});
+
+it('rechaza una ubicación que no encaja entre sí', function () {
+    // La pantalla unica filtra en el navegador, pero quien decide si la
+    // cadena existe es el servidor: este POST es alcanzable directamente.
+    $otra = Site::create(['code' => 'OTRA', 'name' => 'Otra sede', 'is_active' => true]);
+
+    $this->post(route('teacher.locate'), [
+        'site_id' => (string) $otra->id,
+        'building_id' => (string) $this->aulaC305->floor->building_id,
+        'floor_id' => (string) $this->aulaC305->floor_id,
+        'room_id' => (string) $this->aulaC305->id,
+    ])->assertRedirect(route('teacher.start'));
 });
 
 it('ofrece solo los pabellones de la sede', function () {

@@ -13,6 +13,7 @@ use App\Modules\Incidents\Services\AbuseContext;
 use App\Modules\Incidents\Services\AbuseGuard;
 use App\Modules\Incidents\Services\IncidentService;
 use App\Modules\Incidents\Services\ReporterPhotoStore;
+use App\Modules\Incidents\Services\RoomCatalogFilter;
 use App\Modules\Incidents\Services\SafetySignalDetector;
 use App\Shared\Enums\IncidentStatus as S;
 use Illuminate\Http\RedirectResponse;
@@ -41,6 +42,7 @@ class TeacherIncidentController extends Controller
         private readonly AbuseGuard $guard,
         private readonly SafetySignalDetector $safety,
         private readonly ReporterPhotoStore $photos,
+        private readonly RoomCatalogFilter $roomCatalog,
     ) {}
 
     /**
@@ -56,7 +58,12 @@ class TeacherIncidentController extends Controller
 
         return view('teacher.category', [
             'incident' => $incident,
-            'categories' => IncidentCategory::active()->orderBy('sort_order')->get(),
+
+            // Solo los equipos que ESTA aula tiene registrados. Ofrecer un
+            // boton de parlante en un aula sin parlante hace perder el
+            // tiempo al docente y mete en la investigacion una incidencia
+            // contra un equipo inexistente.
+            'categories' => $this->roomCatalog->categoriesFor($incident->room),
         ]);
     }
 

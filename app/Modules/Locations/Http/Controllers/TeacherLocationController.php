@@ -43,9 +43,95 @@ class TeacherLocationController extends Controller
     ) {}
 
     /**
-     * Entrada del QR. Elige sede, u omite ese paso si solo hay una.
+     * Entrada del QR: sede, pabellon, piso y aula en UNA sola pantalla.
+     *
+     * POR QUE UNA PANTALLA Y NO CUATRO
+     *
+     * El recorrido de cuatro paginas costaba cuatro cargas y cuatro esperas
+     * a alguien que esta de pie con una clase mirandolo. Cada carga es una
+     * oportunidad de abandonar, y el abandono es precisamente lo que el
+     * piloto mide. Aqui las cuatro preguntas viven juntas y cada una aparece
+     * al contestar la anterior: mismo numero de decisiones, una sola espera.
+     *
+     * POR QUE LAS OPCIONES VIAJAN TODAS DE UNA VEZ
+     *
+     * Se envian los 10 pabellones, los 47 pisos y las 212 aulas en el mismo
+     * HTML, y el navegador filtra. La alternativa —pedirle al servidor los
+     * pisos al elegir el pabellon— aniade una ida y vuelta por pregunta en
+     * una red de aula que puede estar saturada, justo cuando algo acaba de
+     * fallar. El catalogo entero pesa menos que una sola foto de las que se
+     * muestran despues.
+     *
+     * SIN DEPENDER DE JAVASCRIPT PARA LO QUE IMPORTA
+     *
+     * La validacion de que la cadena sede-pabellon-piso-aula es coherente se
+     * hace en el servidor al continuar. Lo que hace el navegador es filtrar
+     * listas; lo que decide si la ubicacion existe es el servidor.
      */
     public function start(): View|RedirectResponse
+    {
+        $sites = $this->catalog->sites();
+
+        if ($sites->isEmpty()) {
+            return view('teacher.unavailable');
+        }
+
+        return view('teacher.locate', [
+            'sites' => $sites,
+            'buildings' => $this->catalog->allBuildings(),
+            'floors' => $this->catalog->allFloors(),
+            'rooms' => $this->catalog->allRooms(),
+        ]);
+    }
+
+    /**
+     * Recibe la eleccion de la pantalla unica y la manda a confirmar.
+     *
+     * No confirma nada aqui: la pantalla de confirmacion existe porque un
+     * ticket con el aula equivocada es un dato falso dentro de la
+     * investigacion Y un tecnico caminando al sitio incorrecto. Vale la pena
+     * la pantalla de mas.
+     */
+    public function locate(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'site_id' => ['required', 'integer'],
+            'building_id' => ['required', 'integer'],
+            'floor_id' => ['required', 'integer'],
+            'room_id' => ['required', 'integer'],
+        ], [
+            'room_id.required' => 'Elige el aula donde estás antes de continuar.',
+            'floor_id.required' => 'Elige el piso donde estás.',
+            'building_id.required' => 'Elige el pabellón donde estás.',
+            'site_id.required' => 'Elige la sede donde estás.',
+        ]);
+
+        try {
+            $this->validator->validate(
+                $request->integer('site_id'),
+                $request->integer('building_id'),
+                $request->integer('floor_id'),
+                $request->integer('room_id'),
+            );
+        } catch (InvalidLocationException $e) {
+            return redirect()->route('teacher.start')->with('error', $e->teacherMessage());
+        }
+
+        return redirect()->route('teacher.confirm', [
+            'site' => $request->integer('site_id'),
+            'building' => $request->integer('building_id'),
+            'floor' => $request->integer('floor_id'),
+            'room' => $request->integer('room_id'),
+        ]);
+    }
+
+    /**
+     * Recorrido por pasos, que sigue existiendo.
+     *
+     * Lo usa el buscador por codigo y es la red de seguridad si el navegador
+     * del docente no ejecuta el filtrado de la pantalla unica.
+     */
+    public function sitesStep(): View|RedirectResponse
     {
         $sites = $this->catalog->sites();
 
@@ -198,6 +284,25 @@ class TeacherLocationController extends Controller
         );
 
         $request->session()->put(TeacherIncidentController::sessionKey(), $incident->uuid);
+
+        /*
+         * Aulas que no se autoatienden: directo a soporte, sin preguntar el
+         * problema y sin diagnostico.
+         *
+         * Hoy son las HYFLEX, cuyas averias son de software y quedan fuera
+         * del alcance del proyecto. Hacerle recorrer al docente la lista de
+         * equipos para acabar igualmente en el boton de soporte seria
+         * hacerle perder el tiempo con una pregunta cuya respuesta ya se
+         * conoce.
+         *
+         * Se le lleva a la pantalla de solicitud, no se le manda a otro
+         * canal: el ticket tiene que quedar registrado. Un problema que el
+         * sistema no puede resolver sigue siendo un problema que la
+         * investigacion necesita contar.
+         */
+        if (! $room->self_service) {
+            return redirect()->route('teacher.escalate');
+        }
 
         return redirect()->route('teacher.category');
     }

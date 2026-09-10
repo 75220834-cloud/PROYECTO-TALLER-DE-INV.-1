@@ -24,17 +24,14 @@ final class FakeLlmProvider implements LlmProvider
     /** @var array<string, list<string>> etiqueta => pistas */
     private const HINTS = [
         'PROJECTOR' => ['proyector', 'cañon', 'canon', 'proyecta'],
-        'HDMI_VIDEO' => ['hdmi', 'imagen', 'video', 'no se ve', 'pantalla azul'],
-        'AUDIO' => ['sonido', 'audio', 'no suena', 'volumen'],
-        'MICROPHONE' => ['microfono', 'micro', 'micrófono'],
-        'SPEAKERS' => ['parlante', 'altavoz', 'bocina'],
+        'HDMI' => ['hdmi', 'imagen', 'video', 'no se ve', 'pantalla azul'],
+        'SPEAKER' => ['parlante', 'altavoz', 'bocina', 'sonido', 'audio', 'no suena', 'volumen'],
+        'SCREEN' => ['ecran', 'ecram', 'telon'],
+        'PROJECTOR_REMOTE' => ['control del proyector', 'control remoto', 'mando'],
         'COMPUTER' => ['computadora', 'compu', 'pc', 'cpu', 'no prende'],
         'KEYBOARD' => ['teclado'],
         'MOUSE' => ['mouse', 'raton', 'ratón'],
-        'NETWORK' => ['red', 'cable de red', 'ethernet'],
-        'INTERNET' => ['internet', 'wifi', 'conexion', 'conexión'],
-        'SOFTWARE' => ['programa', 'software', 'aplicacion', 'aplicación'],
-        'SCREEN' => ['pantalla'],
+        'OTHER' => ['internet', 'wifi', 'red', 'programa', 'software', 'microfono'],
     ];
 
     /** @var list<string> */

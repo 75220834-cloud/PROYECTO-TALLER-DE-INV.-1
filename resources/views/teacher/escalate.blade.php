@@ -24,10 +24,25 @@
         </div>
     @endif
 
+    {{-- Aulas que no se autoatienden. Va antes del resumen porque explica
+         por qué el docente llegó aquí sin haber elegido un problema: sin
+         esta caja, la pantalla parece habérselo saltado por error. --}}
+    @if ($incident->room && ! $incident->room->self_service)
+        <div class="mb-6 glass border-primary/60 bg-surface-low px-5 py-4">
+            <p class="text-lg font-semibold">Esta aula la atiende soporte técnico</p>
+            <p class="mt-2 text-base text-on-surface-variant">
+                {{ $incident->room->support_only_reason ?? 'Soporte técnico se encarga directamente de esta aula.' }}
+                Cuéntanos qué pasa y les avisamos.
+            </p>
+        </div>
+    @endif
+
     <div class="mb-6 glass px-5 py-4">
         <p class="text-sm text-on-surface-variant">Se avisará a soporte sobre</p>
         <p class="mt-1 font-mono text-2xl font-bold">{{ $incident->room?->code }}</p>
-        <p class="mt-1 text-lg text-on-surface-variant">{{ $incident->category?->name }}</p>
+        @if ($incident->category)
+            <p class="mt-1 text-lg text-on-surface-variant">{{ $incident->category->name }}</p>
+        @endif
     </div>
 
     <form method="POST" action="{{ route('teacher.escalate.store') }}" enctype="multipart/form-data">

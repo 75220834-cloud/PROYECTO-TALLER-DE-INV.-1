@@ -24,7 +24,7 @@ beforeEach(function () {
     $this->seed(CatalogSeeder::class);
 
     $this->projector = IncidentCategory::where('code', 'PROJECTOR')->firstOrFail();
-    $this->audio = IncidentCategory::where('code', 'AUDIO')->firstOrFail();
+    $this->audio = IncidentCategory::where('code', 'SPEAKER')->firstOrFail();
 
     $this->retrieval = app(RetrievalService::class);
     $this->embeddings = app(EmbeddingProvider::class);

@@ -214,7 +214,7 @@ it('sube la prioridad cuando la clase está detenida', function () {
     // Misma categoría y misma aula, pero sin clase detenida.
     $this->flushSession();
     confirmLocation();
-    $this->post(route('teacher.category.store'), ['category_id' => IncidentCategory::where('code', 'AUDIO')->first()->id]);
+    $this->post(route('teacher.category.store'), ['category_id' => IncidentCategory::where('code', 'SPEAKER')->first()->id]);
     $this->post(route('teacher.escalate.store'), [
         'blocks_class' => 0, 'confirmed' => 1,
         'form_opened_at' => now()->subSeconds(40)->timestamp,

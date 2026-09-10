@@ -178,7 +178,7 @@ class PilotStructureSeeder extends Seeder
     private function seedEquipment(Carbon $now): void
     {
         $types = DB::table('equipment_types')
-            ->whereIn('code', ['PROJECTOR', 'DESKTOP_PC', 'SPEAKERS'])
+            ->whereIn('code', ['PROJECTOR', 'COMPUTER', 'SPEAKER'])
             ->pluck('id', 'code');
 
         if ($types->isEmpty()) {

@@ -136,7 +136,7 @@ class DemoLocationsSeeder extends Seeder
     private function seedEquipment(Carbon $now): void
     {
         $types = DB::table('equipment_types')
-            ->whereIn('code', ['PROJECTOR', 'DESKTOP_PC', 'SPEAKERS'])
+            ->whereIn('code', ['PROJECTOR', 'COMPUTER', 'SPEAKER'])
             ->pluck('id', 'code');
 
         $rooms = DB::table('rooms')->where('is_demo', true)->where('is_active', true)->get(['id', 'code']);

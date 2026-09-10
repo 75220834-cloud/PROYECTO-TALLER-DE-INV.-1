@@ -43,18 +43,29 @@ final class IntentClassifier
      * @var array<string, list<string>>
      */
     private const DEVICE_TERMS = [
-        'PROJECTOR' => ['proyector', 'canon', 'cañon', 'cañón', 'proyeccion', 'proyección', 'ecran'],
-        'HDMI_VIDEO' => ['hdmi', 'video', 'vídeo', 'cable de video'],
-        'AUDIO' => ['sonido', 'audio', 'volumen'],
-        'MICROPHONE' => ['microfono', 'micrófono', 'micro'],
-        'SPEAKERS' => ['parlante', 'altavoz', 'bocina', 'cornetas'],
-        'COMPUTER' => ['computadora', 'compu', 'cpu', 'pc'],
+        'PROJECTOR' => ['proyector', 'canon', 'cañon', 'cañón', 'proyeccion', 'proyección'],
+        'HDMI' => ['hdmi', 'video', 'vídeo', 'cable de video'],
+        'SCREEN' => ['ecran', 'ecram', 'telon', 'telón', 'pantalla de proyeccion', 'pantalla de proyección'],
+        'PROJECTOR_REMOTE' => ['control del proyector', 'control remoto', 'mando'],
+        'SPEAKER' => ['parlante', 'altavoz', 'bocina', 'cornetas', 'sonido', 'audio', 'volumen'],
+        'COMPUTER' => ['computadora', 'compu', 'cpu', 'pc', 'aio', 'nuc'],
         'KEYBOARD' => ['teclado', 'teclas'],
         'MOUSE' => ['mouse', 'raton', 'ratón'],
-        'NETWORK' => ['cable de red', 'ethernet', 'punto de red'],
-        'INTERNET' => ['internet', 'wifi', 'wi-fi'],
-        'SOFTWARE' => ['programa', 'software', 'aplicacion', 'aplicación'],
-        'SCREEN' => ['pantalla', 'monitor'],
+
+        /*
+         * NO hay entrada para «Otro problema», y es deliberado.
+         *
+         * Esa categoria salta el diagnostico y va directo a soporte. Si el
+         * clasificador pudiera elegirla, una frase ambigua —«no funciona el
+         * sistema de audio»— mandaria a un tecnico al aula sin haber
+         * intentado nada. Por eso allowedCodes() la excluye y el docente la
+         * elige a mano cuando de verdad es lo que quiere.
+         *
+         * Tampoco hay internet, red ni software: el checklist no los
+         * inventaria por aula, asi que el sistema no sabe cuales existen
+         * donde. Ante esas frases el clasificador devuelve desconocido y el
+         * docente elige con botones, que es el camino principal.
+         */
     ];
 
     /**
@@ -74,11 +85,10 @@ final class IntentClassifier
      */
     private const SYMPTOM_TERMS = [
         'PROJECTOR' => ['no proyecta', 'proyecta mal', 'se ve morado', 'se ve verde'],
-        'HDMI_VIDEO' => ['no se ve', 'sin imagen', 'no aparece', 'pantalla azul', 'pantalla negra', 'sin señal'],
-        'AUDIO' => ['no suena', 'no escucha', 'no se oye', 'sin sonido'],
+        'HDMI' => ['no se ve', 'sin imagen', 'no aparece', 'pantalla azul', 'pantalla negra', 'sin señal'],
+        'SCREEN' => ['no baja', 'no sube', 'no se despliega'],
+        'SPEAKER' => ['no suena', 'no escucha', 'no se oye', 'sin sonido'],
         'COMPUTER' => ['no prende', 'no enciende', 'se colgo', 'se colgó', 'no arranca'],
-        'INTERNET' => ['sin conexion', 'sin conexión', 'no navega', 'no hay señal'],
-        'SOFTWARE' => ['no abre', 'se cierra solo'],
     ];
 
     public function __construct(private readonly LlmProvider $llm) {}
