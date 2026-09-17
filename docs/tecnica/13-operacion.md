@@ -77,11 +77,30 @@ inexplicables.
 
 | Comando | Qué hace | Cuándo se ejecuta |
 |---|---|---|
-| `piloto:sembrar` | Purga los datos de demostración y siembra la estructura aproximada del piloto | A mano, al preparar el entorno |
+| `import:checklist <archivo>` | **Carga las aulas y sus equipos desde el checklist de soporte.** Sin `--confirmar` solo simula | A mano, cuando cambia el inventario |
+| `conocimiento:cargar` | Carga las guías técnicas del proyecto y las manda a indexar | A mano, cuando cambian las guías |
+| `pruebas:reiniciar --force` | **Borra la actividad de prueba y conserva aulas, equipos, guías y procedimientos** | Entre una prueba y otra |
+| `piloto:sembrar` | Siembra una estructura aproximada. **Obsoleto**: se usaba antes de tener el checklist real | — |
 | `demo:purge --force` | Elimina **todos** los datos de demostración | A mano, antes de cargar datos reales |
 | `incidents:purge-drafts` | Borra los borradores abandonados | Automático, cada hora |
 | `metrics:snapshot` | Recalcula los agregados diarios | Automático, 2:30 |
 | `risk:compute` | Calcula las señales de riesgo | Automático, 3:00 |
+
+### Por qué el importador simula antes de escribir
+
+`import:checklist` **no escribe nada** hasta que se le pasa `--confirmar`. Quien carga el
+catálogo lo hace con un archivo que preparó otra persona, y descubrir los errores después
+de escribir obliga a limpiar antes de reintentar.
+
+El ciclo correcto es: previsualizar, corregir el checklist, previsualizar otra vez, y solo
+entonces confirmar.
+
+Lo más importante que hay que revisar en la vista previa **no son los errores, sino los
+equipos ausentes**: cada celda vacía es un botón que el docente no verá, y eso no produce
+ningún error. Es la única oportunidad de detectar una celda vacía por descuido.
+
+El importador es **idempotente**: volver a ejecutarlo actualiza en lugar de duplicar, así
+que se puede corregir el archivo y reintentar sin limpiar antes.
 
 ### Por qué `demo:purge` exige `--force`
 

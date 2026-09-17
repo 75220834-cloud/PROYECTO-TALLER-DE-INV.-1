@@ -24,10 +24,10 @@ documento del curso: cada afirmación sale del código real, no de lo que estaba
 | 09 | [Diagnóstico guiado](09-diagnostico-guiado.md) | Los árboles de diagnóstico, por qué son deterministas, el versionado y las imágenes |
 | 10 | [Modelo de riesgo](10-modelo-de-riesgo.md) | Qué significa y qué **no** significa el score, la prevención de fuga temporal y el camino hacia un modelo supervisado |
 | 11 | [Seguridad y privacidad](11-seguridad-y-privacidad.md) | Modelo de amenazas, los 21 permisos y 6 roles, la política de seguridad de contenido, y qué datos personales se manejan |
-| 12 | [Pruebas y calidad](12-pruebas-y-calidad.md) | Las 442 pruebas en 7 suites, el análisis estático y la integración continua |
+| 12 | [Pruebas y calidad](12-pruebas-y-calidad.md) | Las 460 pruebas en 7 suites, el análisis estático y la integración continua |
 | 13 | [Operación](13-operacion.md) | Puesta en marcha, comandos, tareas programadas, respaldos y solución de problemas |
 | 14 | [Métricas e investigación](14-metricas-e-investigacion.md) | Qué mide el sistema, las diez preguntas de investigación que puede responder y cómo se exportan los datos |
-| 15 | [Estado real del piloto](15-estado-real-del-piloto.md) | Qué está probado y qué no, con las cifras exactas de hoy. **Situación transitoria** |
+| 15 | [Estado real del piloto](15-estado-real-del-piloto.md) | Qué está probado y qué no, con las cifras exactas de hoy, y **lo que se sabe que falla**. Situación transitoria |
 | 16 | [Mejoras futuras](16-mejoras-futuras.md) | Todo lo que se puede añadir, marcando de dónde sale cada idea, y la recomendación de alcance para Taller 2 |
 
 ---
@@ -60,6 +60,7 @@ Estas son operativas, no descriptivas. Explican **cómo hacer algo**, paso a pas
 | [`docs/endurecimiento-y-operacion.md`](../endurecimiento-y-operacion.md) | Preparar el sistema para el piloto real |
 | [`docs/decisions/`](../decisions/) | Registro de decisiones de arquitectura |
 | [`docs/plantillas/`](../plantillas/) | Plantillas CSV para importar aulas y equipos |
+| [`database/conocimiento/`](../../database/conocimiento/) | Las ocho guías técnicas que alimentan al asistente |
 
 ---
 
@@ -67,9 +68,11 @@ Estas son operativas, no descriptivas. Explican **cómo hacer algo**, paso a pas
 
 | Dimensión | Estado |
 |---|---|
-| Código | ✅ Terminado — 139 rutas, 442 pruebas en verde, análisis estático limpio |
-| Datos institucionales | ⬜ Pendientes de cargar |
-| Corpus para la IA | ⬜ Vacío |
+| Código | ✅ Terminado — 134 rutas, 460 pruebas en verde, análisis estático limpio |
+| Catálogo de aulas y equipos | ✅ **Real y cargado** — 212 ambientes, 1 551 equipos |
+| Procedimientos de diagnóstico | ✅ **Ocho árboles publicados** |
+| Corpus para la IA | ✅ **Ocho guías, 46 fragmentos indexados** |
+| Fotos de los equipos | ⬜ **Ninguna** — es lo único que bloquea |
 | Piloto | ⬜ No iniciado |
 
 El detalle honesto de esa tabla está en

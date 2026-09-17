@@ -197,7 +197,50 @@ puede contestar.
 
 ---
 
-## 9.9 Cuando no hay árbol cargado
+## 9.9 Los ocho árboles del piloto
+
+Hay un árbol publicado por cada equipo del checklist. Todos siguen la misma forma: **tres
+preguntas de diagnóstico y una de comprobación**, cuatro pantallas como máximo.
+
+| Categoría | Qué recorre |
+|---|---|
+| Computadora | Luz encendida → regleta o reinicio → comprobar |
+| Proyector | Color de la luz → corriente o control → comprobar |
+| HDMI | Qué se ve en la pared → reconectar → Windows + P → comprobar |
+| Control del proyector | Apuntar bien → pilas → comprobar |
+| Ecran | Interruptor → obstáculo → comprobar |
+| Parlante | Volumen de Windows → parlantes → cable verde → comprobar |
+| Mouse | Conexión → pilas → superficie → comprobar |
+| Teclado | Conexión → luz de Bloq Num → pilas → comprobar |
+
+### El límite de cuatro pantallas no es técnico
+
+Un docente de pie, con cuarenta personas esperando, abandona antes del quinto paso.
+Alargar el árbol no resuelve más casos: solo hace que se vaya por el canal informal, que
+es exactamente lo que el piloto mide.
+
+### Hasta dónde llega la mano del docente
+
+El responsable del proyecto fijó el límite y **ningún paso lo cruza**:
+
+| Puede | No puede |
+|---|---|
+| Prender y apagar equipos | Abrir ningún equipo |
+| Usar el control remoto | Tocar tableros eléctricos |
+| Reconectar cables sueltos (HDMI, USB, audio, corriente) | Desarmar nada |
+| Prender la regleta y cambiar de tomacorriente | |
+
+### Quién escribió estos árboles
+
+Los redactó el equipo del proyecto, porque soporte técnico no tenía procedimientos
+escritos. El contenido es técnicamente correcto y verificable —revisar un cable HDMI se
+hace igual en cualquier aula del mundo— pero **no es normativa institucional**: nadie de
+la universidad los ha aprobado. Conviene decirlo así en el informe en lugar de
+presentarlos como oficiales.
+
+---
+
+## 9.10 Cuando no hay árbol cargado
 
 Es un caso **normal**, no un error.
 
@@ -210,7 +253,7 @@ que dar instrucciones que nadie revisó.
 
 ---
 
-## 9.10 Qué se le entrega a soporte al escalar
+## 9.11 Qué se le entrega a soporte al escalar
 
 Cuando el docente escala tras intentar el diagnóstico, el ticket llega con **el recorrido
 completo**: qué pasos se le mostraron, qué respondió a cada uno y en qué orden.
@@ -222,7 +265,7 @@ descartado.
 
 ---
 
-## 9.11 Cómo se construye un árbol
+## 9.12 Cómo se construye un árbol
 
 Se hace desde el panel, sin programar, con permiso `diagnostics.manage`.
 

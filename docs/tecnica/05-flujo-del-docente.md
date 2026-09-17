@@ -9,11 +9,11 @@
 
 ```mermaid
 flowchart TD
-    QR([Escanea el QR]) --> S1[Elegir pabellón]
-    S1 --> S2[Elegir piso]
-    S2 --> S3[Elegir aula]
-    S3 --> S4[Confirmar]
-    S4 --> S5{¿Qué problema<br/>tienes?}
+    QR([Escanea el QR]) --> S1["UNA pantalla:<br/>sede · pabellón · piso · aula"]
+    S1 --> S4[Confirmar]
+    S4 --> HY{¿El aula se<br/>autoatiende?}
+    HY -->|No, es HYFLEX| ESC
+    HY -->|Sí| S5{¿Qué problema<br/>tienes?<br/>solo los equipos<br/>que el aula tiene}
 
     S5 -->|escribe con<br/>sus palabras| IA[La IA lo clasifica]
     S5 -->|elige un botón| CAT[Categoría elegida]
@@ -45,18 +45,48 @@ Son **veinticinco rutas** dedicadas al docente, ninguna de ellas autenticada.
 
 ---
 
-## 5.2 Paso 1 · Localizar el aula
+## 5.2 Paso 1 · Localizar el aula, en una sola pantalla
 
 El docente escanea un QR que lleva a `/reportar`. El mismo QR está en todas las aulas.
 
-### La cascada
+### Las cuatro preguntas viven juntas
 
-| Pantalla | Qué muestra |
+| Pregunta | Qué muestra |
 |---|---|
-| Pabellón | Solo los pabellones activos de la sede |
-| Piso | Solo los pisos de ese pabellón |
-| Aula | Solo las aulas de ese piso |
-| Confirmar | El código del aula en grande, para verificarlo |
+| ¿En qué sede estás? | Huancayo. Se pregunta aunque hoy sea la única |
+| ¿En qué pabellón estás? | Los diez pabellones de la sede |
+| ¿En qué piso estás? | Solo los de ese pabellón. En G: sótano y pisos 1 a 8 |
+| ¿En qué aula estás? | Solo las de ese piso |
+
+**Cada pregunta aparece al contestar la anterior**, en la misma página y sin recargar. El
+botón «Continuar» no aparece hasta que hay aula elegida: un botón que todavía no hace nada
+se pulsa igual, y el rebote sin explicación se lee como que el sistema está roto.
+
+**Cuando solo hay una opción, se elige sola.** Ocurre de verdad en los pabellones B, K y L,
+que tienen una sola aula cada uno.
+
+### Por qué una pantalla y no cuatro
+
+Cuatro páginas costaban cuatro cargas y cuatro esperas a alguien de pie con una clase
+mirándolo. Cada carga es una oportunidad de abandonar, y **el abandono es precisamente lo
+que el piloto mide**. El número de decisiones es el mismo; la espera, una sola.
+
+### Por qué las opciones viajan todas de una vez
+
+Se envían los 10 pabellones, los 47 pisos y las 212 aulas en el mismo HTML, y el navegador
+filtra. Pedirle los pisos al servidor al elegir el pabellón añadiría una ida y vuelta por
+pregunta en la red de un aula que puede estar saturada, justo cuando algo acaba de fallar.
+El catálogo entero pesa menos que una sola de las fotos que se muestran después.
+
+**Lo que decide si la ubicación existe sigue siendo el servidor.** El navegador solo filtra
+listas; la cadena sede-pabellón-piso-aula se revalida contra el catálogo al continuar,
+porque ese envío es alcanzable sin pasar por la pantalla.
+
+### Por qué se pregunta la sede habiendo una sola
+
+Cuesta un toque y hace que el día que exista una segunda sede la pantalla ya funcione sin
+tocar nada. Es una decisión explícita del responsable del proyecto: darla por elegida
+habría atado el sistema a una sola sede sin que nadie lo notara hasta intentar ampliarlo.
 
 ### La búsqueda directa
 
@@ -65,8 +95,8 @@ y llega en un paso. La cascada es para quien no recuerda el código exacto.
 
 ### Decisiones de esta etapa
 
-**Por qué la cascada y no un desplegable único con las 121 aulas:** un desplegable de 121
-elementos en un celular es inutilizable. Y tres listas cortas se recorren más rápido que
+**Por qué la cascada y no un desplegable único con las 212 aulas:** un desplegable de 212
+elementos en un celular es inutilizable. Cuatro listas cortas se recorren más rápido que
 una larga, incluso sumando los toques.
 
 **Por qué se muestra el código en grande antes de confirmar:** un ticket con el aula
@@ -95,14 +125,68 @@ muestra los botones.
 
 ### Camino B: elegir con botones
 
-Una cuadrícula de categorías con iconos. Es el camino **principal**: funciona siempre,
-sin IA, sin escribir nada.
+Una lista de nueve categorías. Es el camino **principal**: funciona siempre, sin IA, sin
+escribir nada.
+
+| | |
+|---|---|
+| La computadora no prende o no responde | El proyector no prende |
+| No se ve la imagen en el proyector | El control del proyector no responde |
+| El ecran no baja o no sube | No se escucha el audio |
+| El mouse no se mueve | El teclado no escribe |
+| Otro problema | |
+
+El orden es **por frecuencia esperada de avería**, no alfabético: el docente lee de arriba
+abajo y se detiene en cuanto reconoce su problema. Poner el mouse antes que el proyector le
+costaría una lectura completa de la lista a casi todo el mundo.
+
+### Solo se ofrecen los equipos que ESA aula tiene
+
+La lista se construye con el inventario del aula concreta. No son nueve botones siempre:
+
+| Aula | Botones | Por qué |
+|---|---|---|
+| H901 | 9 | Tiene los ocho equipos |
+| C201-A | 8 | **Sin «No se escucha el audio»**: no tiene parlante registrado |
+| G802 | 8 | **Sin «El ecran no baja»**: tiene pizarra corrediza |
+
+Ofrecer un botón de parlante en un aula sin parlante hace perder el tiempo al docente y,
+si acaba escalando, mete en la investigación una incidencia contra un equipo inexistente.
+**Un dato falso vale menos que ninguno.**
+
+**«Otro problema» se ofrece siempre**, porque no depende del inventario. Sin esa salida, el
+docente cuyo problema no encaja en ningún botón se queda sin canal y vuelve al camino
+informal.
+
+**Si el aula no tiene ningún equipo registrado, se muestran los nueve.** Que no haya
+inventario casi nunca significa «no tiene nada»: significa que el checklist todavía no
+llegó, y ocultarle todo al docente lo dejaría mirando una pantalla vacía.
 
 ### La decisión de fondo
 
 El sistema **nunca depende** de que la clasificación acierte. La IA acelera el camino de
 quien prefiere escribir; no lo sustituye. Si el modelo no está disponible, falla o
 devuelve una categoría que no existe, el docente ve los botones y no se entera de nada.
+
+---
+
+## 5.3.bis Las aulas que van directo a soporte
+
+Catorce aulas —las HYFLEX— **no llegan a la pantalla de problemas**. Al confirmar la
+ubicación, el sistema escala directamente y le explica por qué:
+
+> **Esta aula la atiende soporte técnico**
+> Las aulas HYFLEX las atiende soporte técnico directamente. Cuéntanos qué pasa y les
+> avisamos.
+
+**Por qué:** sus averías son de software y el proyecto aborda hardware. Hacerle recorrer la
+lista de equipos para acabar igualmente en el botón de soporte sería hacerle perder el
+tiempo con una pregunta cuya respuesta ya se conoce.
+
+**Por qué existen en el sistema:** si no aparecieran, el docente de C305 no encontraría su
+aula, concluiría que el sistema está roto y volvería al canal informal. Y el ticket se
+registra igual: un problema que el sistema no puede resolver sigue siendo un problema que
+la investigación necesita contar.
 
 ---
 

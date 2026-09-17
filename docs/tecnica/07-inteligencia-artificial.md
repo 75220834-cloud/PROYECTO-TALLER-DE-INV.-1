@@ -132,7 +132,7 @@ graph LR
 
 ### Qué gana el proyecto con esto
 
-1. **Las 442 pruebas corren sin tener Ollama instalado.** Eso permite integración continua
+1. **Las 460 pruebas corren sin tener Ollama instalado.** Eso permite integración continua
    en GitHub, donde no hay una GPU ni 6 GB para un modelo.
 2. **El sistema funciona completo con la IA apagada.** Si esto deja de ser cierto, es un
    defecto — y así está escrito en la configuración del proyecto.
@@ -260,6 +260,7 @@ señales objetivas y medibles.
 | Señal | Qué mide | Cómo se calcula |
 |---|---|---|
 | **Recuperación** | ¿Existe conocimiento relevante? | Calidad del mejor resultado **y el margen** entre el primero y el tercero |
+| **Piso de relevancia** | ¿Los fragmentos tienen algo que ver? | Se descartan antes de evaluar. Ver [08](08-conocimiento-y-recuperacion.md) |
 | **Clasificación** | ¿Está clara la intención? | La confianza que devolvió el clasificador |
 | **Cobertura** | ¿Está sustentada la respuesta? | Proporción de fragmentos recuperados que aparecen realmente citados |
 
@@ -296,6 +297,35 @@ Eso es intencional:
 
 El error barato y el caro no son simétricos, así que la política por defecto tampoco lo
 es.
+
+### El piso de relevancia: un fallo real y lo que enseñó
+
+Con el corpus ya cargado apareció un defecto que con cero documentos era invisible: a la
+pregunta **«cuánto cuesta la matrícula»** el sistema devolvía pasajes sobre el control del
+proyector con confianza media, en lugar de escalar. La palabra «cuesta» aparecía en «cuesta
+más subir hasta el equipo», y con eso bastaba.
+
+La causa: la fusión por posición no conserva ninguna medida absoluta. El peor de cuatro
+candidatos sigue teniendo una posición, y la salvaguarda que amplía el prefiltro garantiza
+que siempre haya candidatos aunque ninguno sirva.
+
+**Lo interesante es que la solución obvia no funcionó.** Se midió antes de decidir:
+
+| Preguntas | Similitud de sus fragmentos |
+|---|---|
+| Ajenas al dominio | 0,506 – **0,602** |
+| Legítimas | **0,582** – 0,783 |
+
+**Se solapan.** Ningún umbral de similitud las separa, porque el modelo de vectores
+comprime las similitudes en una banda estrecha. Lo que sí separa es que **las dos búsquedas
+coincidan**: en las preguntas legítimas el mejor fragmento estaba arriba en el ranking
+léxico y en el semántico; en las ajenas, el que ganaba por léxico caía al puesto 22 o más
+en el semántico.
+
+Compartir una palabra suelta es fácil; compartir vocabulario **y** significado, no.
+
+Queda una limitación conocida y está documentada en
+[15 · Estado real del piloto](15-estado-real-del-piloto.md#157-lo-que-se-sabe-que-falla).
 
 ### Los umbrales están sin fijar, a propósito
 

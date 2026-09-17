@@ -73,15 +73,17 @@ y está justificada en [02 · Arquitectura](02-arquitectura.md#26-decisiones-de-
 | Dimensión | Alcance |
 |---|---|
 | Sede | Huancayo, únicamente |
-| Pabellones | C, D, E, G, H, I, J (siete) |
-| Pisos por pabellón | Cinco |
-| Aulas por piso | Tres a cuatro |
-| Tipo de incidencia | Tecnológica de aula (proyección, audio, cómputo, red) |
+| Pabellones | **Diez**: B, C, D, E, G, H, I, J, K, L |
+| Pisos | **Hasta nueve**, y sótano en G y H |
+| Aulas | **212**: 198 con autoservicio y 14 HYFLEX |
+| Equipos inventariados | **1 551**, de ocho tipos |
+| Tipo de incidencia | Hardware de aula: cómputo, proyección, audio y periféricos |
 | Modalidad de acceso | Un único QR genérico para toda la sede |
 
-> **Estado:** esa estructura está hoy cargada como aproximación de prueba. Los códigos
-> reales de aula todavía no se han incorporado. Ver
-> [15 · Estado real del piloto](15-estado-real-del-piloto.md).
+> **Esta estructura es real.** Sale del checklist 2026 de soporte técnico, cargado el 10
+> de septiembre de 2026. Corrigió tres suposiciones del plan original: no son siete
+> pabellones sino diez, no son cinco pisos sino hasta nueve, y existen aulas en sótano.
+> Ver [15 · Estado real del piloto](15-estado-real-del-piloto.md).
 
 ## 1.6 Qué NO hace el sistema, y por qué
 
@@ -90,6 +92,8 @@ Declarar los límites es parte del diseño. Cada exclusión tiene un motivo:
 | No hace | Por qué |
 |---|---|
 | **No gestiona incidencias no tecnológicas** (limpieza, mobiliario, infraestructura) | Cada dominio tiene su propio flujo de resolución y su propio equipo. Mezclarlos diluye el indicador central. |
+| **No diagnostica problemas de software** | El proyecto aborda hardware. Las 14 aulas HYFLEX, cuyas averías son de software, se derivan directamente a soporte. |
+| **No ofrece equipos que el aula no tiene** | Si el inventario no registra parlante en un aula, ese botón no se muestra ahí. Un ticket contra un equipo inexistente sería un dato falso. |
 | **No sustituye la mesa de ayuda institucional** | Es un canal para el aula, medido, no un reemplazo del sistema corporativo. |
 | **No controla equipos de forma remota** | Requeriría acceso administrativo a la red de la universidad, fuera del alcance de un trabajo de investigación. |
 | **No identifica al docente** | Pedir identificación reintroduce la fricción que el sistema existe para eliminar. Ver [11 · Seguridad](11-seguridad-y-privacidad.md). |
@@ -105,7 +109,10 @@ Términos que aparecen en toda la documentación y en el propio código.
 | **Incidencia** | Un problema tecnológico reportado en un aula concreta. Sinónimo de «ticket». |
 | **Borrador** *(draft)* | Una incidencia que el docente empezó pero no llegó a enviar. No cuenta como incidencia en ninguna métrica. |
 | **Escalar** | Pasar de «el docente lo está intentando» a «soporte tiene que venir». |
-| **Categoría** | Tipo de problema (proyector, audio, red…). Catálogo administrable. |
+| **Categoría** | Tipo de problema. Son nueve: los ocho equipos del checklist más «Otro problema». |
+| **HYFLEX** | Aula con equipamiento de clase híbrida. Sus fallos son de software, así que se derivan a soporte sin diagnóstico. |
+| **Ecran** | La pantalla de proyección. Tres aulas no tienen y proyectan sobre pizarra corrediza. |
+| **Autoservicio** | Que el docente pueda intentar resolverlo solo. Las aulas HYFLEX lo tienen desactivado. |
 | **Árbol / flujo de diagnóstico** | Secuencia de pasos que el sistema le propone al docente para una categoría. |
 | **Fragmento** *(chunk)* | Trozo de un documento cargado, indexado para que la IA pueda buscarlo y citarlo. |
 | **Recuperación / RAG** | Buscar fragmentos relevantes antes de responder, para que la IA cite en vez de inventar. |

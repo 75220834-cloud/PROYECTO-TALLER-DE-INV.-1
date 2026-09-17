@@ -12,11 +12,12 @@
 | Lenguaje | PHP | 8.2 | Es lo que trae XAMPP, que es lo que hay instalado en las computadoras de la universidad. No exige permisos de administrador ni software adicional. |
 | Framework | Laravel | 12 | Trae resueltos autenticación, permisos, migraciones, colas, tareas programadas y pruebas. Escribir eso a mano habría consumido el semestre. |
 | Base de datos | MariaDB | 10.4 | La que incluye XAMPP. Impone una restricción real: **no tiene índice vectorial**, y eso condiciona todo el diseño de la búsqueda (ver [08](08-conocimiento-y-recuperacion.md)). |
+| Datos del piloto | Checklist 2026 de soporte | — | 212 ambientes y 1 551 equipos reales. El sistema no inventa ninguna ubicación ni ningún equipo. |
 | Interfaz | Blade + Tailwind CSS 4 | — | Renderizado en el servidor. Sin framework de JavaScript: la página tiene que abrir rápido en un celular de gama media, de pie, en un aula. |
 | JavaScript | Vanilla, un solo archivo | — | Sin `onclick` en el HTML. Todo el comportamiento se engancha por atributos `data-*`. Es lo que permite una política de seguridad estricta (ver [11](11-seguridad-y-privacidad.md)). |
 | Modelo de lenguaje | Ollama + Qwen 2.5 7B | — | Corre en la propia computadora. Sin costes, sin cuenta, sin datos saliendo a internet. |
 | Vectores | Ollama + nomic-embed-text | 768 dim. | Mismo motivo: local. |
-| Pruebas | Pest | 3.8 | 442 pruebas. Ver [12](12-pruebas-y-calidad.md). |
+| Pruebas | Pest | 3.8 | 460 pruebas. Ver [12](12-pruebas-y-calidad.md). |
 | Análisis estático | PHPStan | nivel 5 | Detecta errores de tipos antes de ejecutar. |
 | Formato | Laravel Pint | — | Un solo estilo de código en todo el proyecto. |
 
@@ -162,7 +163,7 @@ en tiempo de ejecución cuál de las tres implementaciones entregar:
 | `NullLlmProvider` | Cuando no hay IA disponible | Dice honestamente que no puede |
 | `FakeLlmProvider` | En las pruebas | Responde de forma predecible |
 
-Esto es lo que permite que **las 442 pruebas se ejecuten sin necesidad de tener Ollama
+Esto es lo que permite que **las 460 pruebas se ejecuten sin necesidad de tener Ollama
 instalado**, y que el sistema funcione completo con la IA apagada.
 
 ### c) Llamada directa a un servicio
@@ -322,6 +323,62 @@ saber nada, que es exactamente la experiencia del canal informal que se quiere s
 **Lo que deliberadamente NO muestra:** el nombre del técnico asignado. Mostrarlo invita
 a contactarlo directamente y a saltarse el canal que se está midiendo.
 
+### D-13 · Las cuatro preguntas de ubicación en una sola pantalla
+
+**Qué se hizo:** sede, pabellón, piso y aula viven en la misma página, y cada pregunta
+aparece al contestar la anterior.
+
+**Alternativa descartada:** cuatro páginas encadenadas, que es como estaba antes.
+
+**Por qué:** cuatro páginas costaban cuatro cargas y cuatro esperas a alguien de pie con
+una clase mirándolo. Cada carga es una oportunidad de abandonar, y el abandono es
+precisamente lo que el piloto mide. El número de decisiones es el mismo; la espera, una.
+
+**El detalle que importa:** las opciones viajan **todas** en el mismo HTML —los 10
+pabellones, los 47 pisos, las 212 aulas— y el navegador filtra. Pedirle los pisos al
+servidor al elegir el pabellón añadiría una ida y vuelta por pregunta en la red de un aula
+que puede estar saturada, justo cuando algo acaba de fallar. El catálogo entero pesa menos
+que una sola de las fotos que se muestran después.
+
+**Lo que no cambió:** quien decide si la ubicación existe sigue siendo el servidor. El
+navegador solo filtra listas.
+
+### D-14 · Solo se ofrecen los equipos que el aula tiene
+
+**Qué se hizo:** la lista de problemas se construye a partir del inventario de esa aula
+concreta. En las 30 aulas sin parlante registrado no aparece «No se escucha el audio»; en
+G802, G803 y G804 no aparece «Ecran», porque tienen pizarra corrediza.
+
+**Por qué:** ofrecer un botón de parlante en un aula sin parlante tiene dos consecuencias
+malas y ninguna buena. El docente pierde el tiempo en un diagnóstico sobre un equipo que
+no existe, y si acaba escalando, la investigación se queda con una incidencia registrada
+contra un equipo inexistente. **Un dato falso vale menos que ninguno.**
+
+**La excepción:** «Otro problema» se ofrece siempre, porque no depende del inventario.
+
+**La salvaguarda:** un aula sin ningún equipo registrado muestra todos los botones. Que no
+haya inventario casi nunca significa «no tiene nada»; significa que el checklist todavía no
+llegó, y ocultarle todo al docente lo dejaría mirando una pantalla vacía.
+
+### D-15 · Las aulas HYFLEX existen, pero van directo a soporte
+
+**Qué se hizo:** las 14 aulas HYFLEX aparecen en la lista, y al confirmarlas el sistema
+escala sin preguntar el problema.
+
+**Alternativa descartada:** no cargarlas.
+
+**Por qué:** sus averías son de software y el proyecto aborda hardware, así que el
+diagnóstico no tendría nada que ofrecer. Pero si no existieran, el docente de C305 no
+encontraría su aula, concluiría que el sistema está roto y volvería al canal informal —
+que es exactamente lo que el piloto quiere medir que desaparece. **El ticket se registra
+igual:** un problema que el sistema no puede resolver sigue siendo un problema que la
+investigación necesita contar.
+
+**Cómo está modelado:** dos columnas y no una. `room_type` dice **qué** es el ambiente y
+es dato del inventario; `self_service` dice **si** el docente puede intentarlo solo y es
+una regla operativa. Con una sola columna, apagar el autoservicio en un aula obligaría a
+mentir sobre su tipo.
+
 ### D-12 · La foto es opcional
 
 **Qué se hizo:** el docente puede adjuntar una foto desde la cámara, pero no es
@@ -345,9 +402,9 @@ esperando no puede quedar bloqueado porque la cámara no abre.
 | `resources/views/` | Las pantallas |
 | `resources/css/app.css` | El sistema de diseño completo |
 | `resources/js/interactions.js` | Todo el comportamiento del navegador |
-| `routes/web.php` | Las 139 rutas, agrupadas por permiso |
+| `routes/web.php` | Las 134 rutas, agrupadas por permiso |
 | `routes/console.php` | Las tareas programadas |
-| `tests/` | Las 442 pruebas, en siete suites |
+| `tests/` | Las 460 pruebas, en siete suites |
 | `docs/` | Esta documentación y las guías de operación |
 
 ### El archivo de configuración

@@ -142,16 +142,51 @@ php artisan migrate --seed
 **Qué tiene que salirte:** una lista larga de líneas terminadas en `DONE`.
 
 ```bash
-php artisan piloto:sembrar
-```
-
-**Qué tiene que salirte:** `Piloto: 121 aulas en 7 pabellones`.
-
-```bash
 npm run build
 ```
 
 **Qué tiene que salirte:** `built in ...` con unos archivos listados.
+
+---
+
+## Paso 7.bis · Cargar las aulas reales
+
+El sistema viene **sin ninguna aula**. Se cargan del checklist de soporte, que es un
+archivo de Excel guardado como CSV.
+
+Primero se **simula**, sin escribir nada:
+
+```bash
+php artisan import:checklist "C:\ruta\al\checklist.csv"
+```
+
+**Qué tiene que salirte:** un recuento de aulas y equipos, y una lista de los equipos que
+el checklist **no** registra.
+
+> **Eso último es lo importante de revisar.** Cada equipo ausente es un botón que el
+> docente no va a ver, y eso no produce ningún error. Es la única oportunidad de detectar
+> una celda que quedó vacía por descuido.
+
+Si los números cuadran, se carga de verdad:
+
+```bash
+php artisan import:checklist "C:\ruta\al\checklist.csv" --confirmar
+```
+
+Se puede repetir las veces que haga falta: **actualiza en lugar de duplicar**.
+
+Después, las guías que lee la inteligencia artificial:
+
+```bash
+php artisan conocimiento:cargar
+```
+
+```bash
+php artisan queue:work --stop-when-empty
+```
+
+**Qué tiene que salirte:** ocho guías cargadas y, tras la segunda orden, ocho líneas
+terminadas en `DONE`.
 
 ---
 
@@ -206,7 +241,7 @@ php artisan tinker --execute="echo app(App\Modules\Assistant\Contracts\LlmProvid
 php artisan test
 ```
 
-**Qué tiene que salirte:** `Tests: 442 passed` (o más). Si alguna falla, el entorno tiene algo mal
+**Qué tiene que salirte:** `Tests: 460 passed` (o más). Si alguna falla, el entorno tiene algo mal
 y **no hay que seguir**: avisa antes de cargar datos reales.
 
 ---

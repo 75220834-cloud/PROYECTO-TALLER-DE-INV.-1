@@ -207,22 +207,44 @@ Requieren `php artisan schedule:work` en desarrollo, o cron / Programador de tar
 revelar nada de la instalación. **La falta del modelo de lenguaje no cuenta como caída**: el sistema
 funciona completo sin él.
 
-### Probar a escala del piloto
+### Cargar el catálogo real
 
 ```bash
-php artisan piloto:sembrar
+php artisan import:checklist "ruta\al\checklist.csv"
 ```
 
-Deja la base con la estructura **aproximada** de la sede Huancayo: pabellones **C, D, E, G, H, I, J**,
-5 pisos cada uno y 3–4 aulas por piso (~121 aulas), más su equipamiento. Purga primero los datos demo
-anteriores, para que quede **una sola sede** y el docente no vea una pantalla de selección que en el
-aula real no existirá.
+Lee el checklist de soporte —una fila por aula, una columna por equipo— y carga la sede, los
+pabellones, los pisos, las aulas y su inventario. **Sin `--confirmar` solo simula**: enseña el
+recuento y no escribe nada.
 
-> **Qué es real y qué no.** Los pabellones, los pisos y la cantidad aproximada de aulas los indicó
-> Ítalo. Los **códigos concretos de cada aula** (`C301`, `D105`…) los genera el seeder siguiendo una
-> convención verosímil que **nadie ha confirmado** contra el catálogo oficial. Por eso todo queda con
-> `is_demo = true` y el aviso de DATOS DE DEMOSTRACIÓN sigue visible. Cuando Brayan entregue el
-> catálogo real, esto se purga y se reemplaza entero — no se corrige a mano.
+Hoy la base tiene el checklist 2026 cargado: **212 ambientes en 10 pabellones y 1 551 equipos**,
+todos reales y con `is_demo = false`.
+
+> **Lo que hay que mirar en la simulación** no son los errores, sino la lista de equipos que el
+> checklist **no** registra. Cada ausencia es un botón que el docente no verá, y eso no da ningún
+> error. Es la única oportunidad de detectar una celda vacía por descuido.
+
+El importador es **idempotente**: volver a ejecutarlo actualiza en lugar de duplicar, así que se
+puede corregir el archivo y reintentar sin limpiar antes.
+
+### Cargar las guías que lee la IA
+
+```bash
+php artisan conocimiento:cargar
+```
+
+Carga las ocho guías técnicas de `database/conocimiento/` y las manda a indexar. Hay que tener la
+cola corriendo (`php artisan queue:work`) para que se vectoricen.
+
+### Dejar el contador en cero entre pruebas
+
+```bash
+php artisan pruebas:reiniciar --force
+```
+
+Borra incidencias, encuestas, conversaciones con el asistente y señales de riesgo. **Conserva**
+aulas, equipos, guías, procedimientos, imágenes y usuarios: entre una prueba y otra no hay que
+volver a importar nada.
 
 ```bash
 php artisan demo:purge

@@ -72,7 +72,7 @@ Cuatro niveles jerárquicos. Cada uno con su propia tabla en lugar de campos de 
 | `sites` | Sedes | código, nombre, activa |
 | `buildings` | Pabellones | pertenece a una sede, código, nombre, activo |
 | `floors` | Pisos | pertenece a un pabellón, número, etiqueta, activo |
-| `rooms` | Aulas | pertenece a un piso, código, **criticidad**, activa, `is_demo` |
+| `rooms` | Aulas | pertenece a un piso, código, **tipo de ambiente**, **criticidad**, **autoservicio**, activa, `is_demo` |
 
 **Por qué cuatro tablas y no un campo de texto «C-3-305»:** porque la cascada del docente
 necesita listar los pabellones, luego los pisos de ese pabellón, luego las aulas de ese
@@ -86,6 +86,21 @@ riesgo.
 
 **El campo `is_active`:** las aulas no se borran, se desactivan. Un aula clausurada sigue
 teniendo incidencias históricas que la investigación va a analizar.
+
+**`room_type` y `self_service`, dos columnas y no una.** La primera dice **qué** es el
+ambiente —aula, laboratorio o HYFLEX— y sale directamente del checklist. La segunda dice
+**si** el docente puede intentar resolverlo por su cuenta, y es una regla operativa que
+puede cambiar sin que el aula deje de ser lo que es. Modelarlo con una sola columna
+obligaría a mentir sobre el tipo para apagar el autoservicio de un aula concreta, y el
+inventario dejaría de coincidir con el documento del que salió.
+
+**`support_only_reason`** guarda el motivo en texto, y se le muestra tal cual al docente.
+Si el sistema le dice que no puede intentarlo solo, tiene derecho a saber por qué; un «no
+disponible» a secas se lee como una avería del sistema.
+
+**El piso se deduce del código del aula.** El checklist no trae columna de piso: G802 está
+en el piso 8 y GS03 en el sótano. Es la única deducción que hace el importador, y un
+código que no encaje en el patrón se reporta como error en lugar de adivinarse.
 
 ---
 

@@ -190,6 +190,37 @@ cambiaría el sentido de su propia búsqueda sin que él lo supiera.
 También se descartan las palabras de menos de tres caracteres: el índice las ignora de
 todos modos.
 
+### El piso de relevancia
+
+Después de fusionar, se descarta lo que no tiene nada que ver con la pregunta **aunque sea
+lo mejor que haya**.
+
+Un fragmento cuenta como relevante si:
+
+- aparece **arriba en los dos rankings** —léxico y semántico— dentro de la posición 10, **o**
+- su similitud coseno supera **0,65**, que es el caso de la paráfrasis que no comparte
+  ninguna palabra con el documento y solo puede llegar por el vector.
+
+Si no queda ninguno, la recuperación devuelve vacío y el sistema escala, que es el
+desenlace correcto.
+
+**Por qué hacía falta y por qué no basta un umbral:** ver
+[07 · Inteligencia artificial](07-inteligencia-artificial.md#el-piso-de-relevancia-un-fallo-real-y-lo-que-enseñó).
+Los dos números son provisionales: salen de cinco preguntas de prueba, no de un conjunto
+etiquetado.
+
+### Solo la última versión de cada documento
+
+La búsqueda usa **únicamente la última versión indexada** de cada documento publicado.
+
+Sin esa restricción, un procedimiento corregido compite con su propia versión obsoleta:
+las dos están indexadas, las dos hablan del mismo tema, y el asistente puede citar la que
+ya no es cierta. Es un fallo silencioso —no da error, solo responde con información
+vieja— y se detectó al recargar las guías y ver que los fragmentos se habían duplicado.
+
+Las versiones anteriores **no se borran**: siguen explicando por qué una incidencia pasada
+se resolvió como se resolvió. Simplemente dejan de alimentar al asistente.
+
 ### La fusión: Reciprocal Rank Fusion
 
 Los dos rankings se combinan con una técnica llamada **Reciprocal Rank Fusion**.
@@ -279,6 +310,11 @@ o cuando se corrige un error del fragmentador.
 ---
 
 ## 8.7 Qué se puede cargar y en qué formato
+
+**Lo que hay cargado hoy:** ocho guías técnicas escritas por el equipo del proyecto,
+una por equipo del checklist, con **46 fragmentos indexados**. Se cargan con
+`php artisan conocimiento:cargar`. Ver
+[15 · Estado real del piloto](15-estado-real-del-piloto.md).
 
 | Contenido | Formato | Dónde se sube |
 |---|---|---|

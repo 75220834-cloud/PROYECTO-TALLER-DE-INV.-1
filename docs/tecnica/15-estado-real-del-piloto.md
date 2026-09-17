@@ -4,20 +4,19 @@
 > exactas de hoy. Es el documento que responde las preguntas incómodas antes de que las
 > haga el jurado.
 >
-> **Fecha de corte de este documento: 2 de septiembre de 2026.**
+> **Fecha de corte: 17 de septiembre de 2026.**
 
 ---
 
 ## 15.1 Cómo leer este documento
 
-Este documento describe **una situación transitoria**. Todo lo que aparece aquí como
-«falta» se resuelve cargando información, no programando: el software ya está terminado y
-verificado.
+Describe **una situación transitoria**. Lo que aparece como «falta» se resuelve cargando
+información o ejecutando el piloto, no programando.
 
-Cuando la información esté cargada y el piloto haya corrido, este documento se actualiza y
-la mayoría de las advertencias desaparecen. **Hasta entonces, conviene tenerlas escritas**:
-un trabajo que declara sus límites es más creíble que uno que los omite y espera que nadie
-pregunte.
+Este documento se reescribió el 17 de septiembre, cuando entraron los datos reales del
+checklist de soporte. La versión anterior describía un sistema con 121 aulas de
+demostración y cero documentos; **ya nada de eso es cierto**, y por eso el documento se
+rehízo entero en lugar de parchearse.
 
 ---
 
@@ -25,226 +24,258 @@ pregunte.
 
 | Dimensión | Estado |
 |---|---|
-| **Código** | ✅ Terminado. 139 rutas, 442 pruebas en verde, análisis estático limpio |
-| **Datos institucionales reales** | ⬜ Pendientes |
-| **Corpus para la IA** | ⬜ Vacío |
+| **Código** | ✅ Terminado. 134 rutas, 460 pruebas en verde, análisis estático limpio |
+| **Catálogo de aulas y equipos** | ✅ **Cargado y real** |
+| **Procedimientos de diagnóstico** | ✅ **Ocho árboles publicados** |
+| **Corpus para la IA** | ✅ **Ocho guías, 46 fragmentos indexados** |
+| **Fotos de los equipos** | ⬜ **Ninguna** — es lo único que bloquea |
 | **Piloto ejecutado** | ⬜ No iniciado |
-| **Calibración de parámetros** | ⬜ Pendiente de datos |
+| **Calibración de parámetros** | ⬜ Pendiente de datos del piloto |
 
-**El código ya no es el cuello de botella.** Lo que falta es trabajo de campo: ir a las
-aulas, levantar el inventario, escribir los procedimientos y conseguir los manuales.
+Hasta el 10 de septiembre el cuello de botella era la información. Hoy ya no: **lo único
+que falta para que el diagnóstico esté completo son las fotografías de los equipos.**
 
 ---
 
 ## 15.3 Qué hay hoy en la base de datos
 
-Cifras exactas al 2 de septiembre de 2026:
+Cifras exactas al 17 de septiembre de 2026:
 
-| Tabla | Registros | Qué son |
+| Tabla | Registros | Origen |
 |---|---|---|
 | Sedes | 1 | Huancayo |
-| Pabellones | 7 | C, D, E, G, H, I, J — **estructura aproximada, no verificada** |
-| Pisos | 35 | 5 por pabellón — aproximados |
-| Aulas | 121 | **Las 121 están marcadas como demostración** |
-| Equipos | 360 | Inventados para probar |
-| **Incidencias reales** | **4** | Creadas al probar el sistema |
-| **Documentos para la IA** | **0** | **Ninguno** |
-| **Fragmentos indexados** | **0** | Consecuencia de lo anterior |
-| Árboles de diagnóstico | 2 | De prueba |
-| Pasos de diagnóstico | 26 | De prueba |
-| Imágenes | 6 | De prueba |
-| Interacciones con el asistente | 2 | De las pruebas manuales |
-| Scores de riesgo | 0 | Nunca se ha ejecutado el cálculo con datos reales |
-| Encuestas respondidas | 3 | De prueba |
+| Pabellones | 10 | B, C, D, E, G, H, I, J, K, L — **del checklist real** |
+| Pisos | 47 | Deducidos del código de cada aula, incluido el sótano |
+| **Aulas** | **212** | **Reales.** 198 con autoservicio + 14 HYFLEX |
+| **Equipos** | **1 551** | Reales, según lo que el checklist marca por aula |
+| Aulas de demostración | **0** | Purgadas |
+| Categorías activas | 9 | Los 8 equipos del checklist + «Otro problema» |
+| Árboles de diagnóstico | 8 | Uno por equipo, 92 pasos en total |
+| **Guías para la IA** | **8** | 46 fragmentos indexados y en uso |
+| Imágenes | 6 | **Todas de demostración.** Ver 15.4 |
+| **Incidencias reales** | **0** | El contador está a cero, listo para el piloto |
 
-### La cifra que más importa
+### La cifra que cambió todo
 
-> **Cero documentos cargados.**
-
-Mientras siga así, el asistente responde «no lo sé» a prácticamente todo. **Y hace bien:
-no puede inventar.** Pero eso significa que la función más visible del sistema no se puede
-demostrar todavía.
-
-Es también la más fácil de resolver: subir manuales y procedimientos por el panel, y el
-sistema los indexa solo.
+Hasta hace una semana había **cero documentos cargados** y el asistente respondía «no lo
+sé» a cualquier pregunta. Hoy hay **46 fragmentos indexados** y responde citando la fuente.
+Esa era la función más visible del sistema y no se podía demostrar; ahora sí.
 
 ---
 
-## 15.4 Lo que está verificado
+## 15.4 Lo único que bloquea: las fotos
 
-No todo es incertidumbre. Esto sí está comprobado:
+Los ocho árboles de diagnóstico piden **17 imágenes distintas** y **no existe ninguna**.
+Las seis que hay en el banco son de demostración y no corresponden a los equipos reales.
+
+| Clave que espera el sistema | Qué foto hace falta |
+|---|---|
+| `computer_power` | Botón de encendido del AIO |
+| `power_strip` | Regleta del aula con su interruptor |
+| `projector_leds` | Luces indicadoras del proyector |
+| `projector_power` | Llave de pared del proyector |
+| `projector_remote` | El control, con los botones visibles |
+| `remote_batteries` | Compartimento de pilas abierto |
+| `projector_no_signal` | La pared mostrando «Sin señal» |
+| `hdmi_port` | Puerto HDMI de la computadora |
+| `win_p` | El menú de Windows + P |
+| `screen_switch` | Interruptor de pared del ecran |
+| `screen` | El ecran bajado |
+| `volume_icon` | El ícono de volumen de Windows |
+| `speaker` | Parlante del aula y su perilla |
+| `audio_jack` | Cable verde de audio conectado |
+| `usb_port` | Puertos USB de la computadora |
+| `mouse_batteries` | Pilas del mouse |
+| `keyboard_leds` | Luces del teclado |
+
+**El diagnóstico funciona sin ellas**: ningún docente se queda atascado. Pero «revisa el
+cable HDMI» no significa nada para quien no sabe cuál es, y la imagen es exactamente lo
+que convierte el procedimiento en algo seguible. Es también una variable de la
+investigación: el sistema registra qué imágenes se mostraron en cada paso para poder
+responder si ayudan.
+
+---
+
+## 15.5 Lo que está verificado
 
 | Verificado | Cómo |
 |---|---|
-| El flujo completo del docente funciona | Prueba de extremo a extremo, más comprobación manual en navegador |
-| El modelo clasifica vocabulario peruano | 10 de 10 en los casos de prueba, contra el modelo real |
-| El asistente no inventa | Sondas de alucinación: se le hacen preguntas sin respaldo y no responde |
-| No hay fuga temporal en el modelo de riesgo | Suite dedicada de pruebas |
-| El sistema funciona con la IA apagada | Las 442 pruebas corren sin Ollama |
-| Los datos de demostración se purgan por completo | Prueba de ciclo de vida |
-| Las cabeceras de seguridad son correctas | Prueba específica |
-| Los permisos se respetan | Cada ruta del panel tiene su prueba de permiso |
+| El flujo completo del docente, con datos reales | Recorrido manual en navegador desde el QR hasta el ticket |
+| La pantalla única de ubicación filtra bien | Probado con pabellón G: sótano y pisos 1 a 8, solo los que existen |
+| Los tres atajos del checklist | C201-A sin parlante, G802 sin ecran, C305 directo a soporte |
+| El árbol de HDMI resuelve y escala | Los cuatro pasos recorridos en navegador |
+| El asistente responde citando fuentes | Probado contra el modelo real con las guías cargadas |
+| El asistente escala ante preguntas ajenas | Dos de tres sondas. Ver 15.7 |
+| El modelo clasifica vocabulario peruano | «cañón», «compu», «no jala» |
+| No hay fuga temporal en el modelo de riesgo | Suite dedicada |
+| El sistema funciona con la IA apagada | Las 460 pruebas corren sin Ollama |
+| La comparación de texto no depende de la máquina | Prueba que cambia la codificación interna de PHP |
 
 ---
 
-## 15.5 Los ocho supuestos sin confirmar
+## 15.6 Los supuestos, revisados
 
-Estos son supuestos que se tomaron para poder avanzar y que **hay que confirmar con la
-universidad**. Están listados en orden de impacto si resultan falsos.
+Cuatro de los ocho supuestos originales quedaron **confirmados o corregidos** por el
+checklist real:
+
+| # | Supuesto original | Qué pasó |
+|---|---|---|
+| 2 | Pabellones C, D, E, G, H, I, J | ❌ **Falso.** Son diez: también B, K y L |
+| 3 | Cinco pisos por pabellón | ❌ **Falso.** G llega al 8, H al 9, y hay sótano |
+| 6 | Hay manuales de los equipos | ❌ **Falso.** No existían. Se escribieron ocho guías propias |
+| — | Todas las aulas son iguales | ❌ **Falso.** 14 HYFLEX, 30 sin parlante, 3 sin ecran |
+
+Los que **siguen sin confirmar**, y son los que importan:
 
 | # | Supuesto | Impacto si es falso |
 |---|---|---|
-| 1 | Se autoriza pegar un cartel con QR en las aulas | **Bloqueante.** Sin QR no hay canal |
-| 2 | Los pabellones del piloto son C, D, E, G, H, I, J | Cambia toda la carga de datos |
-| 3 | Cada pabellón tiene 5 pisos y 3–4 aulas por piso | Cambia el volumen esperado |
+| 1 | Se autoriza poner el QR en las aulas | **Bloqueante.** Sin QR no hay canal |
 | 4 | Existe personal de soporte que atenderá los tickets | **Bloqueante.** Sin soporte no hay ciclo |
-| 5 | Se puede instalar el sistema en una computadora de la universidad | Se resuelve con un equipo propio |
-| 6 | Hay manuales de los equipos disponibles | Sin ellos hay que escribir los procedimientos desde cero |
-| 7 | Los docentes tienen celular con cámara y datos | Muy probable, pero no verificado |
-| 8 | La red del aula permite llegar al servidor | Depende de dónde se instale |
-
-Los supuestos 1 y 4 son los que hay que confirmar primero: sin ellos no hay piloto.
+| 5 | Se puede instalar en una computadora de la universidad | Se resuelve con un equipo propio |
+| 7 | Los docentes tienen celular con cámara y datos | Muy probable, no verificado |
+| 8 | La red del aula llega al servidor | Depende de dónde se instale |
 
 ---
 
-## 15.6 Los parámetros sin calibrar
+## 15.7 Lo que se sabe que falla
 
-Varios números del sistema están deliberadamente **sin fijar**, y el sistema opera mientras
-tanto en modo conservador.
+Esto es lo que un jurado preguntaría, y conviene tenerlo escrito antes.
 
-| Parámetro | Estado hoy | Cómo se va a fijar |
+### El asistente todavía responde a una pregunta ajena de cada tres
+
+Se probó con tres preguntas fuera del dominio. Dos escalan correctamente; **«dónde queda
+la biblioteca» todavía obtiene respuesta**, porque coincide con un encabezado de las guías
+que dice «Dónde está saliendo el sonido».
+
+**Por qué no se arregló subiendo el umbral:** se midió, y las bandas se solapan. Las
+preguntas ajenas al dominio dieron similitudes de hasta 0,602; las legítimas, desde 0,582.
+Ningún umbral único las separa, porque el modelo de vectores comprime las similitudes en
+una banda estrecha.
+
+Lo que sí funcionó fue exigir que **las dos búsquedas coincidan**: en las preguntas
+legítimas el mejor fragmento estaba arriba en el ranking léxico y en el semántico; en las
+ajenas, el que ganaba por léxico caía al puesto 22 o más en el semántico.
+
+Los dos umbrales actuales salen de **cinco preguntas de prueba, no de un conjunto
+etiquetado**. Afinarlos más sería ajustar números a ejemplos inventados. Es exactamente el
+trabajo que resuelve el conjunto etiquetado del piloto.
+
+### Las guías no son normativa institucional
+
+Las escribió el equipo del proyecto porque soporte no tenía procedimientos. El contenido
+es técnicamente correcto y verificable —revisar un cable HDMI se hace igual en cualquier
+aula— pero **nadie de la universidad las ha aprobado**. Cada archivo lo dice en su primera
+línea, y esa advertencia viaja dentro del texto porque el archivo se puede descargar.
+
+### Dos defectos que la integración continua y las pruebas reales encontraron
+
+Vale la pena citarlos porque demuestran que el proceso funciona:
+
+| Defecto | Cómo apareció |
+|---|---|
+| La comparación de palabras dependía de la configuración de PHP | La integración continua, en su primera ejecución. 436 pruebas en verde sobre Windows no lo habían visto |
+| El asistente buscaba en versiones obsoletas de las guías | Al recargar las guías y ver que los fragmentos se duplicaban |
+
+---
+
+## 15.8 Los parámetros sin calibrar
+
+| Parámetro | Valor hoy | Cómo se fija |
 |---|---|---|
-| **Umbral de confianza alto** | Vacío → usa 0,75 | Con un conjunto de preguntas etiquetadas por soporte |
-| **Umbral de confianza bajo** | Vacío → usa 0,45 | Igual |
-| Ventana de duplicado (15 min) | Provisional | Observando la tabla de rechazos en la primera semana |
-| Máximo activo por aula (3) | Provisional | Igual |
-| Máximo por dispositivo/hora (3) | Provisional | Igual |
-| Máximo por red/hora (30) | Provisional | Igual |
-| Bandas de riesgo (0,33 / 0,66) | Provisional | Con la distribución real de scores |
+| Umbral de confianza alto | Vacío → usa 0,75 | Conjunto de preguntas etiquetadas |
+| Umbral de confianza bajo | Vacío → usa 0,45 | Igual |
+| **Piso de relevancia** | 0,65 | Igual. Medido con 5 preguntas, no calibrado |
+| **Acuerdo entre rankings** | Posición 10 | Igual |
+| Ventana de duplicado | 15 min | Observando los rechazos la primera semana |
+| Máximo activo por aula | 3 | Igual |
+| Máximo por dispositivo/hora | 3 | Igual |
+| Máximo por red/hora | 30 | Igual |
+| Bandas de riesgo | 0,33 / 0,66 | Con la distribución real de scores |
 
-### Por qué se dejaron vacíos en vez de poner un número
-
-Porque **inventar un número aquí sería fingir precisión**.
-
-Un umbral de confianza es una decisión que solo tiene sentido contra datos observados. Si
-se pusiera 0,7 «porque suena razonable» y luego el sistema se comportara mal, no habría
-forma de saber si el problema es el umbral, el modelo o el corpus.
-
-Dejarlo vacío y documentar el valor conservador que se usa mientras tanto es más honesto y
-más útil.
-
-### Cuando se calibre, hay que documentarlo
-
-Cambiar un umbral sin dejar constancia hace que **los datos de antes y después dejen de ser
-comparables**. Cada ajuste debe registrar: qué se cambió, cuándo, con qué evidencia y qué
-se esperaba conseguir.
+**Todos están elegidos del lado conservador**: el sistema prefiere escalar de más. Esa
+asimetría es deliberada y está documentada en [07](07-inteligencia-artificial.md).
 
 ---
 
-## 15.7 Lo que no existe todavía
+## 15.9 Lo que no existe todavía
 
 | Falta | Para qué haría falta | Prioridad |
 |---|---|---|
-| **Conjunto de preguntas etiquetado** | Calibrar los umbrales de confianza y medir el acierto del asistente | Alta |
+| **Las 17 fotos de los equipos** | Que el diagnóstico se entienda | **Bloqueante** |
 | **Línea base pre-sistema** | Poder afirmar que el sistema mejoró algo | **Crítica** |
-| **Procedimientos institucionales reales** | Que el diagnóstico sirva | Alta |
-| **Inventario real de equipos** | Que el técnico sepa a qué va | Alta |
-| **Fotos de los equipos reales** | Que el diagnóstico se entienda | Alta |
-| **Aprobación ética / institucional** | Recoger datos de personas | Depende de la universidad |
+| **Conjunto de preguntas etiquetado** | Calibrar los umbrales y medir el acierto | Alta |
+| **Aprobación institucional del QR** | Sin ella no hay canal | **Bloqueante** |
+| **Revisión de las guías por soporte** | Convertirlas en normativa | Media |
+| **Aprobación ética** | Recoger datos de personas | Depende de la universidad |
 
-### La línea base es la más crítica y la más olvidada
+### La línea base sigue siendo lo más crítico y lo más olvidado
 
-Sin saber cuánto tardaba el proceso **antes**, la pregunta «¿el sistema redujo el tiempo de
-interrupción?» no tiene respuesta posible. No hay con qué comparar.
-
-Hay tres formas de conseguirla, en orden de calidad:
-
-1. Registros históricos de la mesa de ayuda, si existen.
-2. Una encuesta a docentes sobre cuánto tardaban y qué hacían.
-3. Un periodo de observación previo al despliegue.
-
-**Conviene resolverlo antes de encender el sistema**, porque después ya no se puede
-observar el proceso anterior.
+Sin saber cuánto tardaba el proceso **antes**, «¿el sistema redujo el tiempo de
+interrupción?» no tiene respuesta posible. Y hay que hacerla **antes de encender el
+sistema**: después ya no se puede observar el proceso anterior.
 
 ---
 
-## 15.8 Los riesgos del piloto
+## 15.10 Qué se puede afirmar hoy
 
-| # | Riesgo | Probabilidad | Impacto | Mitigación |
-|---|---|---|---|---|
-| R1 | No hay volumen suficiente para el modelo predictivo | **Alta** | Medio | Ya asumido: el modelo de línea base funciona desde la primera incidencia y se declara como ordenamiento, no como predicción |
-| R2 | Los docentes no usan el QR y siguen con WhatsApp | Media | **Alto** | Comunicación institucional; el sistema mide el abandono para detectarlo |
-| R3 | Soporte no responde por el sistema | Media | **Alto** | Depende de un compromiso institucional, no del software |
-| R4 | No hay manuales de los equipos | Media | Medio | Escribir procedimientos propios; el sistema los admite en Markdown |
-| R5 | El modelo local es demasiado lento en la máquina disponible | Baja | Bajo | El sistema funciona sin él |
-| R6 | Los umbrales antiabuso bloquean docentes legítimos | Media | Medio | Se observa la tabla de rechazos desde el primer día |
-| R7 | La fricción del QR genérico es mayor de lo esperado | Media | Medio | Se mide explícitamente; si sale alto es un hallazgo, no un fracaso |
-| R8 | Se pierden los datos del piloto | Baja | **Crítico** | Respaldo diario mientras dure la recolección |
+### Sí
 
----
+- Que existe un sistema funcional que cubre el ciclo completo de la incidencia con el
+  **catálogo real de 212 aulas y 1 551 equipos** de la sede Huancayo.
+- Que el sistema solo ofrece al docente los equipos que su aula tiene registrados, y que
+  por tanto es imposible abrir un ticket contra un equipo inexistente.
+- Que el asistente responde citando fuentes verificables y escala cuando no las tiene.
+- Que la arquitectura opera con y sin modelo de lenguaje.
+- Que el módulo predictivo no incurre en fuga temporal, verificado por pruebas.
 
-## 15.9 Qué se puede afirmar hoy, y qué no
-
-### Sí se puede afirmar
-
-- Que existe un sistema funcional que cubre el ciclo completo de la incidencia.
-- Que la arquitectura permite operar con y sin modelo de lenguaje.
-- Que el asistente no inventa procedimientos, y que eso está verificado por pruebas.
-- Que el módulo predictivo no incurre en fuga temporal, y que eso está verificado.
-- Que el sistema está instrumentado para responder las preguntas de investigación
-  planteadas.
-
-### **No** se puede afirmar todavía
+### **No**
 
 - Que el sistema reduce el tiempo de interrupción de clase. *(No hay línea base ni piloto.)*
 - Que los docentes lo prefieren al canal informal. *(No se ha usado en producción.)*
-- Que el asistente resuelve un porcentaje X de consultas. *(No hay corpus cargado.)*
-- Que la señal de riesgo anticipa incidencias. *(No hay historial suficiente.)*
-- Ninguna cifra de resultado. *(Las 4 incidencias existentes son de prueba.)*
+- Que el asistente resuelve un porcentaje X de consultas. *(No hay conjunto etiquetado.)*
+- Que la señal de riesgo anticipa incidencias. *(Cero incidencias registradas.)*
+- **Ninguna cifra de resultado.** El contador está a cero.
 
 ---
 
-## 15.10 Cómo pasar de aquí al piloto
+## 15.11 Qué falta para arrancar el piloto
 
 ```mermaid
 flowchart TD
-    A["Confirmar los supuestos 1 y 4<br/>con la universidad"] --> B["Instalar en la<br/>computadora definitiva"]
-    B --> C["Purgar los datos<br/>de demostración"]
-    C --> D["Cargar aulas y<br/>equipos reales"]
-    D --> E["Escribir procedimientos<br/>y tomar fotos"]
-    E --> F["Cargar manuales<br/>para la IA"]
-    F --> G["Levantar la<br/>línea base"]
-    G --> H["Imprimir y pegar<br/>los carteles QR"]
-    H --> I["Formar a soporte"]
-    I --> J["Semana 1:<br/>observar rechazos<br/>y calibrar umbrales"]
-    J --> K["Piloto"]
+    A["Tomar las 17 fotos"] --> B["Cargarlas y<br/>conectarlas a los pasos"]
+    C["Confirmar QR y<br/>compromiso de soporte"] --> D["Levantar la<br/>línea base"]
+    B --> E["Imprimir y colocar<br/>los carteles"]
+    D --> E
+    E --> F["Formar a soporte<br/>en el panel"]
+    F --> G["Semana 1:<br/>observar rechazos<br/>y calibrar"]
+    G --> H["Piloto"]
 ```
 
 | # | Paso | Quién |
 |---|---|---|
-| 1 | Confirmar autorización del QR y compromiso de soporte | Investigador + universidad |
-| 2 | Instalar en la computadora definitiva | Soporte TI |
-| 3 | Purgar los datos de demostración | Soporte TI |
-| 4 | Cargar aulas y equipos reales | Soporte TI |
-| 5 | Escribir procedimientos y tomar fotos | Soporte TI |
-| 6 | Cargar manuales | Soporte TI |
-| 7 | Levantar la línea base | Investigador |
-| 8 | Imprimir y pegar carteles | Investigador |
-| 9 | Formar a soporte en el panel | Investigador |
-| 10 | Primera semana: observar y calibrar | Investigador |
+| 1 | Tomar las 17 fotos de los equipos | Investigador + soporte |
+| 2 | Cargarlas y conectarlas a los pasos | Investigador |
+| 3 | Confirmar autorización del QR y compromiso de soporte | Universidad |
+| 4 | Levantar la línea base | Investigador |
+| 5 | Imprimir y colocar los carteles | Investigador |
+| 6 | Formar a soporte en el panel | Investigador |
+| 7 | Primera semana: observar y calibrar | Investigador |
+
+Los pasos 1-2 y 3-4 son independientes y se pueden hacer en paralelo.
 
 ---
 
-## 15.11 Resumen para citar en la tesis
+## 15.12 Resumen para citar en la tesis
 
-> A la fecha de este informe, el desarrollo del sistema se encuentra concluido y
-> verificado: la totalidad de los casos de uso especificados está implementada y cubierta
-> por 442 pruebas automatizadas, con análisis estático sin observaciones. La instancia
-> operativa contiene exclusivamente datos sintéticos, marcados como tales y eliminables en
-> bloque, por lo que ninguna cifra de resultado puede reportarse en esta etapa. Los
-> parámetros que requieren calibración empírica —umbrales de confianza del asistente y
-> umbrales de los controles antiabuso— se mantienen deliberadamente sin fijar, operando el
-> sistema con valores conservadores documentados, en tanto la asignación de valores
-> arbitrarios constituiría una precisión no sustentada. El trabajo pendiente para el inicio
-> del piloto es de naturaleza institucional y de recolección de información, no de
-> desarrollo.
+> A la fecha de este informe, el desarrollo del sistema se encuentra concluido y verificado:
+> la totalidad de los casos de uso especificados está implementada y cubierta por 460
+> pruebas automatizadas, con análisis estático sin observaciones. El catálogo institucional
+> se encuentra cargado con datos reales —212 ambientes y 1 551 equipos de la sede
+> Huancayo— obtenidos del inventario de soporte técnico, y el corpus documental del
+> asistente comprende ocho guías técnicas con 46 fragmentos indexados. No se dispone aún
+> del material fotográfico de los equipos, requisito para la comprensibilidad del
+> diagnóstico guiado. La instancia no contiene incidencias registradas, por lo que ninguna
+> cifra de resultado puede reportarse en esta etapa. Los parámetros que requieren
+> calibración empírica se mantienen en valores conservadores documentados, en tanto su
+> asignación definitiva requiere el conjunto de consultas etiquetadas que producirá el
+> piloto.
