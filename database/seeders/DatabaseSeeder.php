@@ -15,6 +15,12 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
         $this->call(CatalogSeeder::class);
 
+        // Los arboles de diagnostico reales tambien son estructura
+        // operativa: sin ellos, en el servidor, el docente elige su
+        // problema y el sistema le contesta que no hay procedimiento.
+        // Van despues del catalogo porque se enlazan a sus categorias.
+        $this->call(PilotDiagnosticsSeeder::class);
+
         // Datos DEMO: bloqueados en produccion salvo bandera explicita
         // (plan 21). Sembrar aulas ficticias en el servidor del piloto
         // contaminaria los datos de la investigacion, que es exactamente
@@ -28,9 +34,12 @@ class DatabaseSeeder extends Seeder
         $this->call(DemoUsersSeeder::class);
         $this->call(DemoLocationsSeeder::class);
 
-        // El banco visual va ANTES de los arboles: los pasos se enlazan a
-        // las imagenes por su clave de componente.
+        // Las imagenes se resuelven por su clave de componente al mostrar
+        // cada paso, asi que no importa que lleguen despues de los arboles.
+        //
+        // DemoDiagnosticsSeeder ya no se llama: escribia arboles DEMO sobre
+        // Proyector y Parlante y pisaba a los reales. Sigue existiendo
+        // porque las pruebas lo usan como escenario controlado.
         $this->call(DemoMediaSeeder::class);
-        $this->call(DemoDiagnosticsSeeder::class);
     }
 }

@@ -141,7 +141,7 @@ class LoadKnowledgeGuides extends Command
             // La indexacion va en cola porque vectorizar tarda. Si nadie la
             // ejecuta, los documentos se quedan en "pendiente" y el asistente
             // no los encuentra: no da error, solo silencio.
-            $this->comment('Ejecuta «php artisan queue:work» para que se indexen.');
+            $this->comment('La tarea programada las indexa en el próximo minuto. Para hacerlo ya: php artisan queue:work --stop-when-empty');
         }
 
         return self::SUCCESS;

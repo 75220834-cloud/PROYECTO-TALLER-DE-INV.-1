@@ -64,6 +64,13 @@ jobs:
           npm ci
           npm run build
 
+      # Todas las dependencias de npm son de compilacion y no llegan al
+      # servidor. Igual se auditan: corren en la maquina de quien instala.
+      # Desde "high": las de severidad baja en herramientas de compilacion
+      # bloquearian el CI sin riesgo real para nadie.
+      - name: Vulnerabilidades en dependencias de compilacion
+        run: npm audit --audit-level=high
+
       # La salida se copia al resumen de la ejecucion. Descargar los logs
       # de Actions exige permisos de administrador del repositorio; el
       # resumen lo ve cualquiera, incluido quien revisa el trabajo.

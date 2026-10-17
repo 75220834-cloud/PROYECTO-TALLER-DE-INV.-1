@@ -11,50 +11,66 @@
 ```mermaid
 graph TB
     subgraph "Obligatorios"
-        A["Servidor web<br/>Apache o php artisan serve"]
+        A["Servidor web<br/>Apache :8080"]
         B["MariaDB"]
+        D["Programador de tareas<br/>schedule:run cada minuto"]
     end
-    subgraph "Recomendados"
-        C["Trabajador de cola<br/>queue:work"]
-        D["Programador de tareas<br/>schedule:work"]
+    subgraph "Para el acceso desde internet"
+        T["Túnel<br/>cloudflared o proxy de TI"]
     end
     subgraph "Opcional"
         E["Ollama"]
     end
     A --> B
-    C --> B
     D --> B
+    T --> A
     A -.-> E
 ```
 
 | Proceso | ¿Obligatorio? | Qué pasa si no está |
 |---|---|---|
-| Servidor web | **Sí** | No hay sistema |
+| Servidor web (Apache) | **Sí** | No hay sistema |
 | MariaDB | **Sí** | No hay sistema |
-| Trabajador de cola | Recomendado | Los documentos subidos no se indexan nunca |
-| Programador de tareas | Recomendado | No se purgan borradores, no se calculan riesgos ni agregados |
+| Programador de tareas | **Sí** | Los documentos no se indexan, no hay copias de seguridad, no se calculan riesgos ni agregados |
+| Túnel o proxy | Para docentes con datos móviles | El sistema solo se alcanza desde la red interna |
 | Ollama | Opcional | El sistema funciona en modo determinista |
+
+**El servidor web es Apache, no `php artisan serve`.** En Windows, `artisan serve` atiende una
+petición a la vez: si un docente espera una respuesta de la IA, que puede tardar hasta 30
+segundos, todos los demás esperan detrás. `artisan serve` sirve para desarrollar, no para
+atender un piloto.
+
+**La cola ya no es un proceso aparte.** El programador la procesa cada minuto
+(`queue:work --stop-when-empty`), de modo que en la PC de soporte basta **una** tarea
+programada de Windows en lugar de dos procesos que alguien tiene que mantener vivos.
 
 ---
 
 ## 13.2 Puesta en marcha
 
-La guía completa paso a paso, con lo que tiene que salir en pantalla en cada punto, está
-en [`docs/instalar-en-otra-pc.md`](../instalar-en-otra-pc.md).
+Hay dos instalaciones distintas, con guías distintas:
 
-Resumen de la secuencia:
+- **Para atender a docentes reales**, en la PC de soporte:
+  [`docs/despliegue/`](../despliegue/). Apache, arranque automático con Windows, tarea
+  programada, copias de seguridad y publicación en internet.
+- **Para trabajar en el código:** [`docs/instalar-en-otra-pc.md`](../instalar-en-otra-pc.md).
+
+Resumen de la instalación en la PC de soporte:
 
 | # | Qué |
 |---|---|
-| 1 | XAMPP con PHP 8.2, en `C:\xampp` |
-| 2 | Composer y Node.js (LTS) |
-| 3 | Crear `incidencias` e `incidencias_test` con cotejamiento `utf8mb4_unicode_ci` |
-| 4 | Copiar `.env.example` a `.env`, instalar dependencias, generar la clave |
-| 5 | `php artisan migrate --seed` y `npm run build` |
-| 6 | `php artisan serve` |
-| 7 | Ollama con los dos modelos (opcional) |
-| 8 | `php artisan test` — tiene que decir 442 |
-| 9 | `php artisan demo:purge --force` antes de cargar datos reales |
+| 1 | XAMPP con PHP 8.2, en `C:\xampp`; la base de datos cerrada a la red (`bind-address`) |
+| 2 | Base `incidencias` y usuario `incidencias` con permisos solo sobre ella |
+| 3 | Composer, Node.js (LTS) y Git; el sistema clonado en `C:\incidencias` |
+| 4 | `.env` desde `.env.produccion.example`; `composer install --no-dev`, `npm ci`, `npm run build` |
+| 5 | `php artisan migrate --seed --force`: roles, categorías y los ocho procedimientos reales |
+| 6 | `import:checklist` con el checklist de soporte |
+| 7 | Ollama con los dos modelos (opcional) y `conocimiento:cargar` |
+| 8 | `usuarios:crear-admin`: la primera cuenta, con contraseña escrita por quien la usará |
+| 9 | Apache en el puerto 8080; Apache y MySQL como servicios de Windows |
+| 10 | La tarea programada, con `scripts\windows\registrar-tarea-programada.bat` |
+| 11 | `php artisan optimize` |
+| 12 | Publicación: dominio propio con túnel de Cloudflare, o proxy de TI |
 
 ### La trampa que más tiempo hace perder
 
@@ -77,8 +93,12 @@ inexplicables.
 
 | Comando | Qué hace | Cuándo se ejecuta |
 |---|---|---|
-| `import:checklist <archivo>` | **Carga las aulas y sus equipos desde el checklist de soporte.** Sin `--confirmar` solo simula | A mano, cuando cambia el inventario |
+| `import:checklist <archivo>` | **Carga las aulas y sus equipos desde el checklist de soporte.** Sin `--confirmar` solo simula. Con `--sede` y `--nombre-sede` carga otra sede | A mano, cuando cambia el inventario |
 | `conocimiento:cargar` | Carga las guías técnicas del proyecto y las manda a indexar | A mano, cuando cambian las guías |
+| `conocimiento:reindexar` | Vuelve a indexar todos los documentos publicados | Al activar o cambiar la IA |
+| `usuarios:crear-admin` | Crea una cuenta de administrador pidiendo los datos por teclado | Una vez, al instalar |
+| `qr:generar` | Genera el QR en archivos y dice a qué dirección apunta | Al publicar o cambiar la dirección |
+| `respaldo:crear` | Copia de seguridad de la base de datos; conserva las 14 últimas | Automático, 01:30; y a mano antes de actualizar |
 | `pruebas:reiniciar --force` | **Borra la actividad de prueba y conserva aulas, equipos, guías y procedimientos** | Entre una prueba y otra |
 | `piloto:sembrar` | Siembra una estructura aproximada. **Obsoleto**: se usaba antes de tener el checklist real | — |
 | `demo:purge --force` | Elimina **todos** los datos de demostración | A mano, antes de cargar datos reales |
@@ -117,7 +137,9 @@ Antes preguntaba de forma interactiva. Se cambió por dos motivos:
 
 | Hora | Tarea | Por qué a esa hora |
 |---|---|---|
+| Cada minuto | Procesar la cola (indexación de documentos) | Un minuto de espera no se nota; a cambio no hace falta un proceso aparte |
 | Cada hora | Purgar borradores abandonados | Los borradores se acumulan durante el día |
+| 01:30 | Copia de seguridad de la base de datos | La primera de la noche: si otra tarea falla a medias, la copia ya está hecha |
 | 02:30 | Agregados de métricas | Antes del cálculo de riesgo, que los usa |
 | 03:00 | Cálculo de riesgo | De madrugada, sin usuarios y sin competir por recursos |
 
@@ -129,8 +151,8 @@ En desarrollo:
 php artisan schedule:work
 ```
 
-En una instalación permanente, se configura una tarea del sistema operativo que ejecute
-cada minuto:
+En la PC de soporte, `scripts\windows\registrar-tarea-programada.bat` crea una tarea de
+Windows que ejecuta cada minuto, como `SYSTEM`, aunque nadie haya iniciado sesión:
 
 ```bash
 php artisan schedule:run
@@ -143,10 +165,11 @@ php artisan schedule:run
 
 ## 13.5 La cola de trabajos
 
-Se usa para la indexación de documentos, que puede tardar minutos.
+Se usa para la indexación de documentos, que puede tardar minutos. La procesa el
+programador cada minuto; para procesarla en el momento:
 
 ```bash
-php artisan queue:work
+php artisan queue:work --stop-when-empty
 ```
 
 ### Qué pasa si no está corriendo
@@ -246,11 +269,20 @@ mostrar, no al guardar.
 
 ## 13.9 Respaldos
 
+**La base de datos se respalda sola**, cada día a la 01:30, con `respaldo:crear`. Conserva las
+14 últimas copias en `storage/app/respaldos` o en la carpeta de `RESPALDO_CARPETA`. El ciclo
+completo —copia y restauración— se probó contra la base real: 212 aulas, 1 551 equipos y el
+resto de las tablas volvieron idénticos.
+
+La contraseña de la base nunca va en la línea de órdenes: se pasa a `mysqldump` en un archivo
+temporal que se borra al terminar, también si falla. Escribirla como argumento la dejaría a la
+vista en la lista de procesos de Windows.
+
 Lo que hay que respaldar:
 
 | Qué | Dónde | Por qué |
 |---|---|---|
-| Base de datos completa | `mysqldump` | Es todo el dato del piloto |
+| Base de datos completa | `respaldo:crear`, automático | Es todo el dato del piloto |
 | Carpeta de almacenamiento | `storage/app` | Documentos e imágenes subidos |
 | Archivo `.env` | Aparte, **nunca en el repositorio** | Lleva las claves |
 
@@ -259,8 +291,11 @@ regeneran.
 
 ### Recomendación para el piloto
 
-Respaldo diario de la base de datos mientras dure la recolección. Perder los datos del
-piloto significa perder el semestre, y no hay forma de reconstruirlos.
+Que `RESPALDO_CARPETA` apunte a **otro disco**: una copia en el mismo disco que la base
+protege de un error humano, no de una avería. Y una vez por semana, una copia fuera de la PC.
+Perder los datos del piloto significa perder el semestre, y no hay forma de reconstruirlos.
+
+Cómo restaurar: [`docs/despliegue/06-actualizar-y-mantener.md`](../despliegue/06-actualizar-y-mantener.md).
 
 ---
 

@@ -4,6 +4,13 @@
 @section('subheading', 'Un único código para todas las aulas')
 
 @section('content')
+@if ($printWarning)
+    <div class="mb-6 max-w-4xl rounded-lg border-2 border-danger bg-danger-container p-4" role="alert">
+        <p class="font-semibold text-on-danger-container">Este código todavía no sirve para imprimir</p>
+        <p class="mt-1 text-sm text-on-danger-container">{{ $printWarning }}</p>
+    </div>
+@endif
+
 <div class="grid max-w-4xl gap-6 md:grid-cols-2">
 
     <div class="glass p-6 text-center">
@@ -45,9 +52,9 @@
         <div>
             <p class="font-semibold text-on-surface">Si cambia la dirección del servidor</p>
             <p class="mt-1">
-                El código se genera a partir de <code class="rounded bg-surface-mid px-1">APP_URL</code>.
-                Si el sistema se muda a otro servidor, hay que <strong>volver a imprimir los carteles</strong>:
-                los que ya estén pegados dejarán de funcionar.
+                El código se genera a partir de <code class="rounded bg-surface-mid px-1">PUBLIC_URL</code>,
+                la dirección por la que los docentes entran desde internet. Si esa dirección cambia, hay que
+                <strong>volver a imprimir los carteles</strong>: los que ya estén pegados dejarán de funcionar.
             </p>
         </div>
 

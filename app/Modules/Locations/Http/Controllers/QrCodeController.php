@@ -19,6 +19,7 @@ class QrCodeController extends Controller
         return view('admin.qr.show', [
             'targetUrl' => $qr->targetUrl(),
             'pngDataUri' => $qr->pngDataUri(320),
+            'printWarning' => $qr->printWarning(),
         ]);
     }
 
@@ -28,6 +29,7 @@ class QrCodeController extends Controller
         return view('admin.qr.poster', [
             'targetUrl' => $qr->targetUrl(),
             'svg' => $qr->svg(520),
+            'printWarning' => $qr->printWarning(),
         ]);
     }
 

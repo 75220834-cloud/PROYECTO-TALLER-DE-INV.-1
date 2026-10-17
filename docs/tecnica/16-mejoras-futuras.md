@@ -298,9 +298,11 @@ Cosas que funcionan pero que convendría revisar:
 | 3 | 🔍 Los estilos incrustados están permitidos en la política de seguridad | Es una excepción declarada por el cartel imprimible | Medio |
 | 4 | 🔍 La tabla de sesiones guarda la IP en claro | Es del framework; está declarado como excepción conocida | Bajo |
 | 5 | 🔍 El estimador de tokens es aproximado | Solo decide dónde cortar; no afecta a nada crítico | Bajo |
-| 6 | 🔍 No hay respaldo automático configurado | Perder los datos del piloto sería perder el semestre | Bajo |
+| 6 | ✅ ~~No hay respaldo automático configurado~~ | **Resuelto el 16-10-2026:** copia diaria a la 01:30, se conservan 14, ciclo de copia y restauración probado contra la base real | — |
 
-**El 6 es el más urgente de todos**, y el más barato.
+El 6 era el más urgente de todos y ya está resuelto. Queda una parte que no es de software:
+que la carpeta de copias esté en **otro disco** y que una vez por semana se saque una copia
+fuera de la PC.
 
 ---
 
@@ -314,10 +316,11 @@ Si hubiera que elegir, este es el conjunto que produce una tesis más sólida:
 | 2 | **Ejecutar el piloto y recoger datos** | Es el objeto del trabajo |
 | 3 | **Conjunto etiquetado y calibración de umbrales** | Convierte el asistente en algo medible |
 | 4 | **Evaluación del modelo de riesgo** | Cierra el componente predictivo |
-| 5 | **Respaldo automático** | Barato y evita un desastre |
-| 6 | **Sugerencia de solución al técnico** | Barato, ya está casi hecho, y aporta valor visible |
+| 5 | **Sugerencia de solución al técnico** | Barato, ya está casi hecho, y aporta valor visible |
 
-Lo demás es mejora de producto, no de investigación. Un trabajo con esos seis puntos
+El respaldo automático, que figuraba en esta lista, ya está hecho.
+
+Lo demás es mejora de producto, no de investigación. Un trabajo con esos cinco puntos
 resueltos tiene resultados, método verificable y una contribución defendible.
 
 ---

@@ -41,7 +41,24 @@
         .url { margin-top: 26px; font-family: ui-monospace, monospace; font-size: 12px; color: #94a3b8; word-break: break-all; }
 
         .foot { margin-top: 10px; font-size: 14px; color: #64748b; }
+
+        /* El aviso SI se imprime. Si alguien imprime igual, el cartel sale
+           marcado y nadie lo pega por error en un aula. */
+        .warning {
+            margin: 0 auto 24px;
+            max-width: 560px;
+            padding: 14px 18px;
+            border: 3px solid #b91c1c;
+            border-radius: 10px;
+            background: #fef2f2;
+            color: #7f1d1d;
+            font-size: 16px;
+            text-align: left;
+        }
+        .warning strong { display: block; margin-bottom: 4px; font-size: 20px; }
     </style>
+    {{-- Sin el script, el boton Imprimir no hacia nada. --}}
+    @vite(['resources/js/app.js'])
 </head>
 <body>
 
@@ -52,6 +69,13 @@
     </button>
     <p style="font-size:13px;color:#64748b">Este mismo cartel sirve para todas las aulas del piloto.</p>
 </div>
+
+@if ($printWarning)
+    <div class="warning" role="alert">
+        <strong>NO PEGAR ESTE CARTEL EN UN AULA</strong>
+        {{ $printWarning }}
+    </div>
+@endif
 
 <h1>¿Problemas con el equipo del aula?</h1>
 <p class="sub">Escanea este código con tu celular</p>

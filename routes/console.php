@@ -25,3 +25,18 @@ Schedule::command('incidents:purge-drafts')->hourly();
 Schedule::command('metrics:snapshot')->dailyAt('02:30');
 
 Schedule::command('risk:compute')->dailyAt('03:00');
+
+// Antes que las demas: si alguna falla a medias, la copia ya esta hecha.
+Schedule::command('respaldo:crear')->dailyAt('01:30');
+
+// La cola, procesada por el mismo programador. Solo la usa la indexacion
+// de documentos, que no tiene prisa: un minuto de espera no se nota. A
+// cambio, en la PC de soporte basta UNA tarea programada de Windows en
+// lugar de dos procesos que alguien tiene que mantener vivos.
+//
+// --stop-when-empty: termina al vaciar la cola, y el minuto siguiente
+// vuelve a empezar. withoutOverlapping: si indexar un documento largo
+// dura mas de un minuto, no se lanza un segundo trabajador encima.
+Schedule::command('queue:work --stop-when-empty')
+    ->everyMinute()
+    ->withoutOverlapping(15);

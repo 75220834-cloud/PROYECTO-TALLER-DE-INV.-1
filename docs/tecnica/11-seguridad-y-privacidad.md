@@ -277,6 +277,71 @@ leerla.
 
 ---
 
+## 11.8.bis La exposición a internet
+
+Los docentes entran con sus datos móviles, así que el sistema tiene que ser alcanzable desde
+internet. Se publica con un túnel —Cloudflare— o con el proxy de TI, sin abrir ningún puerto de
+la PC hacia afuera. Eso trae cuatro riesgos que en desarrollo no existían, y cada uno tiene su
+control.
+
+### El panel no existe desde internet
+
+Desde internet solo se puede llegar a la parte del docente. Todo lo demás —el panel, la pantalla
+de inicio de sesión, la administración— responde **404**, como si no existiera. No hay
+contraseña que adivinar porque no hay formulario donde escribirla.
+
+Se implementa como **lista de permitidos**, no de prohibidos: se enumeran las rutas del docente
+(`/reportar`, `/imagen`, `/salud`, `/up` y la raíz) y todo lo demás se cierra. Al revés, cada
+pantalla nueva del panel nacería expuesta hasta que alguien recordara añadirla.
+
+Una petición se considera **externa** si cumple cualquiera de estas condiciones:
+
+| Señal | Por qué |
+|---|---|
+| Trae cabeceras de reenvío (`CF-Connecting-IP`, `X-Forwarded-For`, `Forwarded`…) | El túnel entrega las peticiones desde `127.0.0.1`: la IP de conexión sola haría parecer que todo internet está sentado frente al servidor |
+| Va dirigida a la dirección pública (`PUBLIC_URL`) | Cubre un proxy que no añadiera cabeceras |
+| Llega desde una IP fuera de las redes internas configuradas | Cubre una publicación por redirección de puertos |
+
+Las cabeceras de reenvío las añade el túnel en su extremo: un visitante no puede quitarlas.
+Alguien de la red interna sí podría añadirlas, pero con eso solo consigue cerrarse la puerta a sí
+mismo.
+
+### Las IP de los docentes detrás del túnel
+
+Sin configuración, todas las peticiones del túnel llegan desde `127.0.0.1`, y el límite
+antiabuso de **treinta reportes por red y hora** trataría a la universidad entera como un solo
+usuario. El sistema confía en las cabeceras de reenvío **solo** cuando vienen del propio equipo
+—donde corre el túnel— o de la IP del proxy de TI (`TRUSTED_PROXIES`). Un visitante que se
+conecte directamente no puede hacerse pasar por otra IP escribiendo la cabecera.
+
+### La base de datos de XAMPP
+
+XAMPP viene con la base de datos escuchando en **toda la red** y el usuario `root` **sin
+contraseña**. En la red de una universidad, cualquiera en el mismo WiFi podría leerla entera. La
+guía de instalación la cierra a la propia PC (`bind-address="127.0.0.1"`) y crea un usuario
+`incidencias` con permisos **solo** sobre su base, sin `root`.
+
+### El QR que apunta a donde no debe
+
+El QR se genera desde el panel, y el panel se abre como `http://localhost`. Tomar la dirección de
+la petición produciría un cartel que en el celular del docente no abre nada. Por eso la dirección
+del QR sale de `PUBLIC_URL`, y el panel avisa en rojo —y el cartel impreso sale marcado con «NO
+PEGAR»— cuando apunta a `localhost`, a una IP interna o a un túnel temporal.
+
+### Dependencias
+
+Al preparar la publicación se encontraron **cinco avisos de seguridad** en dependencias de PHP,
+publicados después de la última verificación. El relevante para un sistema expuesto era una
+denegación de servicio en `symfony/http-foundation` a través de la cabecera `Cache-Control`:
+cualquier visitante podía provocarla. Se actualizaron los paquetes afectados a sus versiones
+corregidas, se auditan también las dependencias de npm, y la integración continua comprueba
+ambas en cada envío.
+
+Se eliminó además **Livewire**, instalado y sin usar: registraba nueve rutas propias, una de
+ellas para **subir archivos**, que habrían quedado expuestas.
+
+---
+
 ## 11.9 Lo que este sistema NO protege
 
 Declararlo es parte del trabajo de seguridad:
@@ -286,7 +351,8 @@ Declararlo es parte del trabajo de seguridad:
 | **Contra un docente que reporta un problema falso** | No hay autenticación. Se detecta por patrón (repetición, ráfagas), no por identidad. |
 | **Contra alguien dentro de la institución con credenciales robadas** | Se mitiga con auditoría, no se evita. |
 | **Contra el acceso físico a la computadora servidor** | Fuera del alcance del software. |
-| **Contra la denegación de servicio a nivel de red** | Fuera del alcance; los límites son por aplicación. |
+| **Contra la denegación de servicio a nivel de red** | Fuera del alcance; los límites son por aplicación. Con el túnel de Cloudflare, la red de Cloudflare absorbe parte de ese tráfico. |
+| **Contra una PC apagada o sin internet** | Si la PC de soporte se apaga, ningún QR funciona. Es un riesgo operativo, no de software. |
 | **No cifra la base de datos en reposo** | Depende de la infraestructura donde se despliegue. |
 
 ---

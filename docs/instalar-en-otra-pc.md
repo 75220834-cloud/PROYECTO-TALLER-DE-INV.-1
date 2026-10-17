@@ -1,4 +1,8 @@
-# Instalar el sistema en otra computadora
+# Instalar el sistema en otra computadora (desarrollo)
+
+> **Esta guía es para trabajar en el código.** Para dejar el sistema funcionando en la PC de soporte,
+> atendiendo a docentes reales, usa **[docs/despliegue/](despliegue/)**: allí se configura Apache,
+> el arranque automático, las copias de seguridad y el acceso desde internet.
 
 Guía paso a paso. Si sigues las instrucciones en orden y no te saltas nada, funciona.
 
@@ -139,7 +143,13 @@ php artisan key:generate
 php artisan migrate --seed
 ```
 
-**Qué tiene que salirte:** una lista larga de líneas terminadas en `DONE`.
+**Qué tiene que salirte:** una lista larga de líneas terminadas en `DONE`. Además de los usuarios
+de demostración, carga los roles, las categorías y los **ocho procedimientos de diagnóstico
+reales**.
+
+> **Si actualizas desde GitHub** un proyecto que ya tenías instalado, después del `git pull`
+> ejecuta `php artisan optimize:clear`. Si no, pueden quedar guardadas páginas compiladas con la
+> versión anterior y aparecer errores sobre clases que «no existen».
 
 ```bash
 npm run build

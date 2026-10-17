@@ -394,10 +394,18 @@ class PilotDiagnosticsSeeder extends Seeder
             ['name' => $name, 'is_active' => true],
         );
 
-        // Version nueva en cada siembra en lugar de editar la anterior: las
-        // incidencias ya registradas siguen apuntando a la version que
-        // ejecutaron de verdad, y sin eso el analisis compararia respuestas
-        // dadas a preguntas distintas.
+        // Si el arbol publicado ya es este, no se toca. Sin esta guarda,
+        // cada `db:seed` publicaria una version nueva identica a la
+        // anterior, y el historial diria que el procedimiento cambio
+        // cuando no cambio nada.
+        if ($this->isCurrent($flow, $steps)) {
+            return;
+        }
+
+        // Version nueva cuando el contenido cambia, en lugar de editar la
+        // anterior: las incidencias ya registradas siguen apuntando a la
+        // version que ejecutaron de verdad, y sin eso el analisis
+        // compararia respuestas dadas a preguntas distintas.
         $nextVersion = ((int) $flow->versions()->max('version')) + 1;
 
         $version = DiagnosticFlowVersion::create([
@@ -448,5 +456,47 @@ class PilotDiagnosticsSeeder extends Seeder
                 'terminal_outcome' => $outcome,
             ]);
         }
+    }
+
+    /**
+     * El arbol publicado mas reciente coincide paso a paso con esta definicion.
+     *
+     * @param  list<array<string, mixed>>  $steps
+     */
+    private function isCurrent(DiagnosticFlow $flow, array $steps): bool
+    {
+        $latest = $flow->versions()->orderByDesc('version')->first();
+
+        if ($latest === null) {
+            return false;
+        }
+
+        $published = DiagnosticStep::query()
+            ->where('flow_version_id', $latest->id)
+            ->where('is_terminal', false)
+            ->orderBy('sort_order')
+            ->get()
+            ->map(fn (DiagnosticStep $step): array => [
+                'key' => $step->step_key,
+                'text' => $step->prompt_text,
+                'help' => $step->help_text,
+                'options' => $step->answer_options,
+                'next' => $step->next_step_map,
+                'component' => $step->component_key,
+            ])
+            ->all();
+
+        $wanted = array_map(fn (array $step): array => [
+            'key' => $step['key'],
+            'text' => $step['text'],
+            'help' => $step['help'],
+            'options' => $step['options'],
+            'next' => $step['next'],
+            'component' => $step['component'],
+        ], $steps);
+
+        // == y no ===: compara claves y valores sin exigir el mismo orden de
+        // claves, que el JSON guardado en la base no garantiza.
+        return $published == $wanted;
     }
 }

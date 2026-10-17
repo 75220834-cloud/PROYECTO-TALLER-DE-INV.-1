@@ -30,6 +30,67 @@ return [
 
     /*
     |----------------------------------------------------------------------
+    | Direccion publica y acceso desde internet
+    |----------------------------------------------------------------------
+    | El sistema tiene dos puertas con publicos distintos. El docente entra
+    | desde su celular por la direccion publica, con datos moviles o con
+    | cualquier red. El personal de soporte entra por la red interna.
+    |
+    | PUBLIC_URL es la direccion que va DENTRO DEL QR. No se deduce de la
+    | peticion a proposito: el QR se genera desde el panel, y el panel se
+    | abre en la PC de soporte como http://localhost. Deducirla produciria
+    | un cartel que apunta a localhost, que en el celular del docente no
+    | abre nada, y eso se descubriria con los carteles ya pegados.
+    */
+    'public_url' => env('PUBLIC_URL'),
+
+    // Quien puede reenviar peticiones en nombre de otro. Por defecto, solo
+    // el propio equipo: es por donde entra el tunel. Sin esto, todos los
+    // docentes llegarian con la IP 127.0.0.1 y los limites antiabuso por
+    // red tratarian a la universidad entera como un solo usuario.
+    'trusted_proxies' => array_values(array_filter(array_map(
+        'trim',
+        explode(',', (string) (env('TRUSTED_PROXIES') ?: '127.0.0.1,::1')),
+    ))),
+
+    /*
+    |----------------------------------------------------------------------
+    | Copias de seguridad
+    |----------------------------------------------------------------------
+    | Diarias. Conviene que la carpeta este en OTRO disco o en una unidad de
+    | red: una copia en el mismo disco que la base no sobrevive a su averia.
+    */
+    // `?:` y no el valor por defecto de env(): una linea `RESPALDO_CARPETA=`
+    // vacia en el .env llega como texto vacio, no como ausente, y la copia
+    // acabaria en la carpeta desde la que se ejecuto el comando.
+    'respaldo' => [
+        'carpeta' => env('RESPALDO_CARPETA') ?: storage_path('app'.DIRECTORY_SEPARATOR.'respaldos'),
+        'conservar' => (int) (env('RESPALDO_CONSERVAR') ?: 14),
+        'mysqldump' => env('RESPALDO_MYSQLDUMP') ?: (PHP_OS_FAMILY === 'Windows'
+            ? 'C:\\xampp\\mysql\\bin\\mysqldump.exe'
+            : 'mysqldump'),
+    ],
+
+    'panel' => [
+        // El panel de soporte solo se abre desde la red interna. Desde
+        // internet solo existe la parte del docente; el resto responde 404,
+        // como si no existiera, incluida la pantalla de inicio de sesion.
+        'solo_red_interna' => (bool) env('PANEL_SOLO_RED_INTERNA', true),
+
+        // Redes desde las que se considera que alguien esta "dentro". Por
+        // defecto, el propio equipo y los rangos privados. Soporte puede
+        // estrecharlo a su subred, o dejar solo 127.0.0.1 para que el panel
+        // se abra unicamente en la PC del servidor.
+        'redes' => array_values(array_filter(array_map(
+            'trim',
+            // Vacio no significa "ninguna red": eso cerraria el panel tambien
+            // en la propia PC y nadie podria entrar a corregirlo.
+            explode(',', (string) (env('PANEL_REDES') ?: '127.0.0.1/32,::1/128,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16')),
+        ))),
+    ],
+
+    /*
+    |----------------------------------------------------------------------
     | Asistente
     |----------------------------------------------------------------------
     | Los umbrales de confianza se CALIBRAN contra un conjunto etiquetado

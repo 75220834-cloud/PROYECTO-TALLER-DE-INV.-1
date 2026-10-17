@@ -22,6 +22,7 @@ use App\Modules\Retrieval\Providers\HashEmbeddingProvider;
 use App\Modules\Retrieval\Providers\OllamaEmbeddingProvider;
 use App\Modules\Risk\Contracts\RiskModel;
 use App\Modules\Risk\Services\BaselineRecencyModel;
+use Illuminate\Http\Middleware\TrustProxies;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
@@ -104,5 +105,20 @@ class AppServiceProvider extends ServiceProvider
          * barato mientras esten todos declarados en un unico sitio visible.
          */
         Event::listen(IncidentEscalated::class, NotifySupportOfEscalation::class);
+
+        /*
+         * Proxies de confianza.
+         *
+         * Se fijan aqui y no en bootstrap/app.php porque alli la
+         * configuracion todavia no existe, y con la configuracion cacheada
+         * env() devuelve null: el valor del .env se ignoraria en silencio en
+         * el servidor, que es justo donde importa.
+         *
+         * Con el tunel, cada peticion llega desde 127.0.0.1 y trae la IP real
+         * del docente y el https original en cabeceras. Confiar en el equipo
+         * local hace que la aplicacion las lea: los limites antiabuso cuentan
+         * por docente y no por tunel, y los enlaces se generan con https.
+         */
+        TrustProxies::at(config('incidencias.trusted_proxies'));
     }
 }

@@ -5,7 +5,12 @@ Taller de Investigación 1 · Ingeniería de Sistemas e Informática
 
 **Equipo:** Ítalo (arquitectura e investigación) · Brayan (soporte TI y conocimiento operativo) · Dickmar (desarrollo, pruebas y documentación)
 
-> ⚠️ El sistema opera actualmente con **datos DEMO**. Nada de lo que contiene describe aulas, equipos ni procedimientos reales de la Universidad.
+> ⚠️ **Este repositorio no contiene datos de la universidad.** Las aulas y los equipos reales se
+> cargan desde el checklist de soporte, que se mantiene **fuera de GitHub** a propósito: el
+> repositorio es público. Los procedimientos y guías los redactó el proyecto y están pendientes de
+> revisión por soporte.
+
+**¿Vas a instalarlo en la PC de soporte?** Empieza por **[docs/despliegue/](docs/despliegue/)**.
 
 ---
 
@@ -115,7 +120,12 @@ sistema, cómo lo hace y por qué está hecho así: arquitectura, modelo de dato
 inteligencia artificial y su búsqueda por recuperación, el modelo de riesgo, seguridad,
 pruebas, métricas, el estado real del piloto y las mejoras futuras.
 
-Guías prácticas: [instalación en otra PC](docs/instalar-en-otra-pc.md) ·
+**[docs/despliegue/](docs/despliegue/)** — seis guías para dejarlo funcionando en la PC de
+soporte y accesible desde los celulares de los docentes: instalación desde cero, prueba con túnel
+temporal, publicación con dominio propio o con TI de la universidad, lista completa de pruebas, y
+mantenimiento con copias de seguridad.
+
+Otras guías: [instalación para desarrollo](docs/instalar-en-otra-pc.md) ·
 [carga de datos](docs/carga-de-datos.md) ·
 [endurecimiento y operación](docs/endurecimiento-y-operacion.md)
 
@@ -267,6 +277,9 @@ Guía paso a paso, pensada para seguir sin saber nada del proyecto:
 
 ### Accesos de demostración
 
+**Solo existen en desarrollo.** En la PC de soporte (`APP_ENV=production`) no se crea ningún usuario
+de demostración: la primera cuenta se crea con `php artisan usuarios:crear-admin`.
+
 **La contraseña es la misma para todos** y se define en `DEMO_USER_PASSWORD` dentro de `.env`.
 Por defecto: `demo_local_2026`. Si dejas esa variable vacía, el seeder genera una aleatoria y la
 muestra una sola vez en consola.
@@ -290,6 +303,7 @@ El plan maestro completo está fuera del repositorio, en el archivo de planifica
 Nada de esto es opcional:
 
 - Verificar **en un aula real** que un celular alcanza el servidor (riesgo R2 del plan — puede invalidar el piloto entero).
+  La lista completa está en **[docs/despliegue/05-probar-todo.md](docs/despliegue/05-probar-todo.md)**.
 - Obtener autorización institucional para el piloto y para fotografiar los equipos.
 - Seguir la lista completa de **[docs/endurecimiento-y-operacion.md](docs/endurecimiento-y-operacion.md)**:
   `APP_DEBUG=false`, `DocumentRoot` en `public/` (verificado con `curl /.env` → 404), phpMyAdmin

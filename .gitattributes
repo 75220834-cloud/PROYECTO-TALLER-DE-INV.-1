@@ -1,5 +1,10 @@
 * text=auto eol=lf
 
+# Los scripts de Windows necesitan CRLF: con LF, cmd.exe interpreta mal las
+# etiquetas y los bloques entre parentesis, y el fallo no da un error claro.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
 *.blade.php diff=html
 *.css diff=css
 *.html diff=html

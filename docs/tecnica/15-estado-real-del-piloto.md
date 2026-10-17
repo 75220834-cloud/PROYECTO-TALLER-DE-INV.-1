@@ -24,7 +24,7 @@ rehízo entero en lugar de parchearse.
 
 | Dimensión | Estado |
 |---|---|
-| **Código** | ✅ Terminado. 134 rutas, 460 pruebas en verde, análisis estático limpio |
+| **Código** | ✅ Terminado. 132 rutas, 498 pruebas en verde, análisis estático limpio |
 | **Catálogo de aulas y equipos** | ✅ **Cargado y real** |
 | **Procedimientos de diagnóstico** | ✅ **Ocho árboles publicados** |
 | **Corpus para la IA** | ✅ **Ocho guías, 46 fragmentos indexados** |
@@ -108,7 +108,7 @@ responder si ayudan.
 | El asistente escala ante preguntas ajenas | Dos de tres sondas. Ver 15.7 |
 | El modelo clasifica vocabulario peruano | «cañón», «compu», «no jala» |
 | No hay fuga temporal en el modelo de riesgo | Suite dedicada |
-| El sistema funciona con la IA apagada | Las 460 pruebas corren sin Ollama |
+| El sistema funciona con la IA apagada | Las 498 pruebas corren sin Ollama |
 | La comparación de texto no depende de la máquina | Prueba que cambia la codificación interna de PHP |
 
 ---
@@ -268,7 +268,7 @@ Los pasos 1-2 y 3-4 son independientes y se pueden hacer en paralelo.
 ## 15.12 Resumen para citar en la tesis
 
 > A la fecha de este informe, el desarrollo del sistema se encuentra concluido y verificado:
-> la totalidad de los casos de uso especificados está implementada y cubierta por 460
+> la totalidad de los casos de uso especificados está implementada y cubierta por 498
 > pruebas automatizadas, con análisis estático sin observaciones. El catálogo institucional
 > se encuentra cargado con datos reales —212 ambientes y 1 551 equipos de la sede
 > Huancayo— obtenidos del inventario de soporte técnico, y el corpus documental del

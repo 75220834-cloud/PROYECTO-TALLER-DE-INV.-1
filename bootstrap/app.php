@@ -3,6 +3,7 @@
 use App\Console\Commands\ImportCatalog;
 use App\Console\Commands\PurgeDemoData;
 use App\Console\Commands\SeedPilotStructure;
+use App\Http\Middleware\RestrictPanelToInternalNetwork;
 use App\Http\Middleware\SecurityHeaders;
 use App\Modules\Analytics\Console\BuildSnapshotsCommand;
 use App\Modules\Incidents\Console\PurgeAbandonedDrafts;
@@ -29,6 +30,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // En TODAS las respuestas, no solo en el panel: la parte publica es la
         // que recibe entrada de un usuario sin autenticar (plan 16.2).
         $middleware->append(SecurityHeaders::class);
+
+        // Antes del enrutado: desde internet, lo que no es del docente no
+        // existe, ni siquiera para decir que no existe.
+        $middleware->append(RestrictPanelToInternalNetwork::class);
 
         /*
          * A donde va alguien YA autenticado que abre /entrar.
