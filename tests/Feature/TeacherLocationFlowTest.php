@@ -52,21 +52,24 @@ it('pregunta las cuatro cosas en una sola pantalla', function () {
         ->assertSee('¿En qué aula estás?');
 });
 
-it('pregunta la sede aunque solo haya una', function () {
-    // Cuesta un toque y hace que el dia que exista una segunda sede la
-    // pantalla ya funcione sin tocar nada. Es una decision explicita: la
-    // alternativa —darla por elegida— habria dejado el sistema atado a una
-    // sola sede sin que nadie lo notara hasta ampliarlo.
+it('con una sola sede no la pregunta: ya viene elegida', function () {
+    // Una unica opcion no es una decision. Antes se preguntaba igual, y
+    // costaba un toque a alguien con la clase esperando. La sede viaja en el
+    // formulario aunque no se vea, asi que el servidor la sigue validando.
     $this->get('/reportar')
         ->assertOk()
-        ->assertSee('Huancayo');
+        ->assertSee('data-sede-unica', false)
+        ->assertSee('value="'.$this->site->id.'" selected', false);
 });
 
 it('ofrece todas las sedes cuando hay mas de una', function () {
+    // Y en cuanto existe una segunda, la pregunta aparece sola: nada queda
+    // atado a la sede del piloto.
     Site::create(['code' => 'OTRA', 'name' => 'Otra sede', 'is_active' => true]);
 
     $this->get('/reportar')
         ->assertOk()
+        ->assertDontSee('data-sede-unica', false)
         ->assertSee('Huancayo')
         ->assertSee('Otra sede');
 });

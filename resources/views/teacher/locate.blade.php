@@ -22,9 +22,13 @@
     <form method="POST" action="{{ route('teacher.locate') }}" data-cascade class="space-y-5">
         @csrf
 
-        {{-- SEDE. Se pregunta aunque hoy solo haya una: el día que exista
-             una segunda, esta pantalla ya funciona sin tocar nada. --}}
-        <div>
+        {{-- SEDE. Con una sola, ya viene elegida y la pregunta no se muestra:
+             una única opción no es una decisión, y el docente tiene la clase
+             esperando. Es la misma regla que aplica la cascada a pabellones,
+             pisos y aulas. El día que exista una segunda sede, la pregunta
+             aparece sola: no hay nada atado a una sede. --}}
+        @php($sedeUnica = $sites->count() === 1)
+        <div @if ($sedeUnica) hidden data-sede-unica @endif>
             <label for="site_id" class="mb-2 block text-lg font-semibold">
                 ¿En qué sede estás?
             </label>
@@ -32,7 +36,7 @@
                     class="focus-ring min-h-[60px] w-full rounded-xl border-2 border-outline-variant bg-surface-lowest px-4 text-lg">
                 <option value="">Elige tu sede…</option>
                 @foreach ($sites as $site)
-                    <option value="{{ $site->id }}" @selected(old('site_id') == $site->id)>{{ $site->name }}</option>
+                    <option value="{{ $site->id }}" @selected($sedeUnica || old('site_id') == $site->id)>{{ $site->name }}</option>
                 @endforeach
             </select>
             @error('site_id')
