@@ -378,3 +378,15 @@ it('el comando acepta la sede por opcion', function () {
 
     expect(Site::where('code', 'AQP')->first()?->name)->toBe('Arequipa');
 });
+
+it('la etiqueta del aula no repite la palabra pabellon', function () {
+    // El importador nombra los pabellones «Pabellón E». La etiqueta le
+    // anteponia otro «Pabellon», y el docente leia «Pabellon Pabellón E» en
+    // su pantalla de seguimiento.
+    $ruta = ($this->csv)([['E', 'E102', 'AULA', 'AIO', 'OK', 'OK', 'OK', 'OK', 'OK', 'OK', 'OK', '']]);
+
+    app(ChecklistImporter::class)->import($ruta, dryRun: false);
+
+    expect(Room::where('code', 'E102')->first()->fullPath())
+        ->toBe('Aula E102 - Pabellón E - Piso 1');
+});

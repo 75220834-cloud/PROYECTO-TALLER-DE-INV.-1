@@ -121,7 +121,9 @@
 
                             @if ($event->event_type === 'status_changed')
                                 <p class="text-on-surface-variant">
-                                    {{ $event->from_value['status'] ?? '?' }} → {{ $event->to_value['status'] ?? '?' }}
+                                    @php($desde = $event->from_value['status'] ?? null)
+                                    @php($hacia = $event->to_value['status'] ?? null)
+                                    {{ $statusNames[$desde] ?? $desde ?? '?' }} → {{ $statusNames[$hacia] ?? $hacia ?? '?' }}
                                 </p>
                             @endif
 
@@ -192,7 +194,13 @@
                     <form method="POST" action="{{ route('support.incidents.resolve', $incident) }}" class="space-y-3">
                         @csrf
 
+                        {{-- Sin opción elegida de antemano, a propósito. Antes venía
+                             marcada «Resuelta por asistencia»: un técnico que atendía en
+                             el aula y no la cambiaba registraba el caso como resuelto SIN
+                             intervención presencial, que es el indicador central del
+                             estudio. Que el técnico elija es lo que hace fiable el dato. --}}
                         <select name="resolution_type" required class="block w-full rounded-md border-outline-variant px-3 py-2 text-sm">
+                            <option value="" disabled selected>¿Cómo se resolvió? (obligatorio)</option>
                             @foreach ($resolutionTypes as $type)
                                 @continue($type === \App\Shared\Enums\ResolutionType::None)
                                 <option value="{{ $type->value }}">{{ $type->label() }}</option>

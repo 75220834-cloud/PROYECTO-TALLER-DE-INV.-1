@@ -77,6 +77,9 @@ class SupportIncidentController extends Controller
             'technicians' => $this->technicians(),
             'resolutionTypes' => ResolutionType::cases(),
             'additionalReports' => Incident::where('merged_into_id', $incident->id)->count(),
+            // El historial guarda codigos (NEW, IN_PROGRESS); el tecnico lee
+            // el nombre del catalogo. Antes veia «NEW → IN_PROGRESS».
+            'statusNames' => StatusModel::query()->pluck('name', 'code'),
         ]);
     }
 

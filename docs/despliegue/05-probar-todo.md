@@ -16,7 +16,7 @@ de la investigación.
 
 - [ ] <http://localhost:8080/salud> en la PC responde `"status":"ok"`.
 - [ ] Si usas IA: en esa misma respuesta, `"llm":"ok"`.
-- [ ] En el panel, **Conocimiento**: las ocho guías **publicadas** e **indexadas**.
+- [ ] En el panel, **Conocimiento**: las ocho guías con procesamiento **«Listo»** y estado **«Publicado»**.
 
 ---
 
@@ -46,8 +46,10 @@ escaneando el QR.
 
 - [ ] Elegir **«El proyector no prende»** muestra pasos cortos, uno por pantalla.
 - [ ] Ningún paso pide abrir un equipo ni tocar un tablero eléctrico.
-- [ ] Responder **«Sí, se solucionó»** en cualquier paso cierra el reporte con un mensaje de éxito.
-- [ ] Llegar al final sin solución ofrece **pedir ayuda a soporte**.
+- [ ] El último paso pregunta si ya funciona. **«Sí, ya funciona»** lleva a confirmar, y **«Sí,
+      funciona correctamente»** cierra el reporte con **«Problema resuelto»**.
+- [ ] **«No, sigue igual»** en el último paso ofrece **pedir ayuda a soporte**.
+- [ ] Al terminar, aparece **«¿Te resultó fácil de usar?»** del 1 al 5. Es opcional.
 
 ### Riesgo físico
 
@@ -58,7 +60,8 @@ escaneando el QR.
 
 - [ ] Escribir con palabras propias, por ejemplo **«no se ve nada en la pizarra»**, lleva a la
       categoría correcta (proyector o HDMI).
-- [ ] Escribir **«el cañón no prende»** lleva a **proyector**, no a computadora.
+- [ ] Escribir **«el cañón no prende»** lleva a **proyector**, no a computadora. La IA puede
+      tardar unos segundos en responder: no vuelvas a pulsar.
 - [ ] En **Preguntar**, «¿cómo cambio la entrada del proyector a HDMI?» responde **y dice de qué guía
       sacó la respuesta**.
 - [ ] Preguntar algo ajeno, como **«cuánto cuesta la matrícula»**, **no** inventa una respuesta: dice
@@ -66,7 +69,8 @@ escaneando el QR.
 
 ### Pedir ayuda a soporte
 
-- [ ] El formulario pide **solo** si el problema impide seguir con la clase.
+- [ ] El formulario pide si el problema impide seguir con la clase y que se marque **«Confirmo
+      que necesito que un técnico venga al aula»**. Nada más es obligatorio.
 - [ ] **Adjuntar una foto** con la cámara del celular funciona.
 - [ ] **No** adjuntar foto también funciona: la foto es opcional.
 - [ ] Al enviar, aparece un **enlace de seguimiento**.
@@ -100,9 +104,10 @@ Entrando por <http://localhost:8080/entrar>.
       docente ya probó con sus respuestas**.
 - [ ] El reporte de **humo** aparece con la **prioridad más alta** y una advertencia de riesgo.
 - [ ] **Tomar** un reporte lo asigna al técnico que lo toma.
-- [ ] **Cerrar** un reporte **exige** elegir cómo se resolvió y escribir qué se hizo.
+- [ ] **Resolver** un reporte **exige** elegir cómo se resolvió —no viene ninguna opción marcada— y
+      escribir qué se hizo.
+- [ ] El historial del reporte dice los estados por su nombre: «Nuevo → En atención».
 - [ ] En el celular, el enlace de seguimiento muestra el cambio de estado.
-- [ ] Al cerrar, el celular pide la valoración de 1 a 5.
 
 ### Historial y reportes
 

@@ -37,8 +37,8 @@ class CatalogSeeder extends Seeder
             ['code' => 'LOW', 'name' => 'Baja', 'level' => 1, 'color' => '#6b7280', 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
             ['code' => 'MEDIUM', 'name' => 'Media', 'level' => 2, 'color' => '#2563eb', 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
             ['code' => 'HIGH', 'name' => 'Alta', 'level' => 3, 'color' => '#ea580c', 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
-            ['code' => 'CRITICAL', 'name' => 'Critica', 'level' => 4, 'color' => '#dc2626', 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
-        ], ['code'], ['level', 'color', 'is_active', 'updated_at']);
+            ['code' => 'CRITICAL', 'name' => 'Crítica', 'level' => 4, 'color' => '#dc2626', 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
+        ], ['code'], ['name', 'level', 'color', 'is_active', 'updated_at']);
 
         // ---- Estados ----------------------------------------------------
         // is_open marca lo que cuenta como abierto: es lo que consulta el
@@ -47,14 +47,14 @@ class CatalogSeeder extends Seeder
         // abandonos, no para movilizar a nadie (plan 7.1).
         DB::table('incident_statuses')->upsert([
             ['code' => 'DRAFT', 'name' => 'Borrador', 'is_open' => true, 'is_terminal' => false, 'is_resolved' => false, 'sort_order' => 0, 'color' => '#9ca3af', 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
-            ['code' => 'DIAGNOSING', 'name' => 'En diagnostico', 'is_open' => true, 'is_terminal' => false, 'is_resolved' => false, 'sort_order' => 1, 'color' => '#8b5cf6', 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
+            ['code' => 'DIAGNOSING', 'name' => 'En diagnóstico', 'is_open' => true, 'is_terminal' => false, 'is_resolved' => false, 'sort_order' => 1, 'color' => '#8b5cf6', 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
             ['code' => 'NEW', 'name' => 'Nuevo', 'is_open' => true, 'is_terminal' => false, 'is_resolved' => false, 'sort_order' => 2, 'color' => '#2563eb', 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
-            ['code' => 'IN_PROGRESS', 'name' => 'En atencion', 'is_open' => true, 'is_terminal' => false, 'is_resolved' => false, 'sort_order' => 3, 'color' => '#ea580c', 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
+            ['code' => 'IN_PROGRESS', 'name' => 'En atención', 'is_open' => true, 'is_terminal' => false, 'is_resolved' => false, 'sort_order' => 3, 'color' => '#ea580c', 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
             ['code' => 'ESCALATED', 'name' => 'Escalado', 'is_open' => true, 'is_terminal' => false, 'is_resolved' => false, 'sort_order' => 4, 'color' => '#dc2626', 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
             ['code' => 'RESOLVED', 'name' => 'Resuelta', 'is_open' => false, 'is_terminal' => false, 'is_resolved' => true, 'sort_order' => 5, 'color' => '#16a34a', 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
             ['code' => 'CLOSED', 'name' => 'Cerrada', 'is_open' => false, 'is_terminal' => true, 'is_resolved' => true, 'sort_order' => 6, 'color' => '#166534', 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
             ['code' => 'CANCELLED', 'name' => 'Cancelada', 'is_open' => false, 'is_terminal' => true, 'is_resolved' => false, 'sort_order' => 7, 'color' => '#6b7280', 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
-        ], ['code'], ['is_open', 'is_terminal', 'is_resolved', 'sort_order', 'color', 'is_active', 'updated_at']);
+        ], ['code'], ['name', 'is_open', 'is_terminal', 'is_resolved', 'sort_order', 'color', 'is_active', 'updated_at']);
 
         $priorities = DB::table('incident_priorities')->pluck('id', 'code');
 

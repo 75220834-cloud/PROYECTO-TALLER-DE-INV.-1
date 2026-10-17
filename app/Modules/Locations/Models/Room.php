@@ -56,7 +56,7 @@ class Room extends Model
 
     /**
      * Ruta legible para la pantalla de confirmacion que exige el plan 7.1:
-     * "Aula C305 - Pabellon C - Piso 3".
+     * "Aula C305 - Pabellón C - Piso 3".
      *
      * Se construye leyendo el catalogo, nunca concatenando codigos para
      * inventar el nombre del aula.
@@ -71,12 +71,18 @@ class Room extends Model
         // si la cadena esta rota, y en ese caso CascadeValidator ya habria
         // impedido llegar hasta aqui: es una red de seguridad, no un caso
         // esperado.
-        $buildingLabel = $building === null
-            ? '?'
-            : ($building->name !== '' ? $building->name : $building->code);
+        //
+        // El nombre ya dice «Pabellón E»: los importadores lo cargan asi. Se
+        // usa tal cual. Antes se le anteponia otro «Pabellon», y el docente
+        // leia «Pabellon Pabellón E» en su pantalla de seguimiento.
+        $buildingLabel = match (true) {
+            $building === null => 'Pabellón ?',
+            $building->name !== '' => $building->name,
+            default => 'Pabellón '.$building->code,
+        };
 
         return sprintf(
-            'Aula %s - Pabellon %s - %s',
+            'Aula %s - %s - %s',
             $this->code,
             $buildingLabel,
             $floor === null ? '?' : $floor->label

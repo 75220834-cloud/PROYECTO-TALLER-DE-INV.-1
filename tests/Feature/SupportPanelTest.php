@@ -258,3 +258,41 @@ it('el historial registra QUIÉN hizo cada cosa', function () {
         'actor_type' => 'user',
     ]);
 });
+
+it('el formulario de cierre no trae el tipo de resolucion elegido de antemano', function () {
+    // Venia marcado «Resuelta por asistencia». Un tecnico que atendia en el
+    // aula y no lo cambiaba registraba el caso como resuelto SIN
+    // intervencion presencial: el indicador central del estudio, inflado sin
+    // que nadie lo notara.
+    $this->actingAs($this->tecnico)->post(route('support.incidents.take', $this->ticket));
+
+    $html = $this->actingAs($this->tecnico)
+        ->get(route('support.incidents.show', $this->ticket))
+        ->assertOk()
+        ->getContent();
+
+    expect($html)->toContain('<option value="" disabled selected>')
+        ->and($html)->not->toMatch('/<option value="assistant"[^>]*selected/');
+});
+
+it('EXIGE elegir como se resolvio', function () {
+    $this->actingAs($this->tecnico)->post(route('support.incidents.take', $this->ticket));
+
+    $this->actingAs($this->tecnico)
+        ->post(route('support.incidents.resolve', $this->ticket), [
+            'resolution_notes' => 'Se cambio el cable HDMI.',
+        ])
+        ->assertSessionHasErrors('resolution_type');
+
+    expect($this->ticket->fresh()->statusCode())->not->toBe(S::Resolved);
+});
+
+it('el historial dice los estados por su nombre, no por su codigo', function () {
+    $this->actingAs($this->tecnico)->post(route('support.incidents.take', $this->ticket));
+
+    $this->actingAs($this->tecnico)
+        ->get(route('support.incidents.show', $this->ticket))
+        ->assertOk()
+        ->assertSee('Nuevo → En atención')
+        ->assertDontSee('NEW → IN_PROGRESS');
+});

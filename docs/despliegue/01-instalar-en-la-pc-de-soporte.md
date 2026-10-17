@@ -438,8 +438,8 @@ php artisan optimize
 
    **Qué tiene que salirte:** el panel de soporte.
 
-4. En el panel, ve a **Conocimiento**. Las ocho guías tienen que aparecer **publicadas** y con
-   estado **indexada**.
+4. En el panel, ve a **Conocimiento**. Las ocho guías tienen que aparecer con procesamiento
+   **«Listo»** y estado **«Publicado»**.
 
 Si todo eso salió bien, el sistema está instalado. Ahora:
 

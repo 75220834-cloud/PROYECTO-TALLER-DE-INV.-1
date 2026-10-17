@@ -444,3 +444,23 @@ describe('detras del tunel', function () {
             ->assertDontSee('1.2.3.4');
     });
 });
+
+it('todo evento que se registra tiene un nombre legible en el historial', function () {
+    // Encontrado en la instalacion desde cero: el historial del ticket de
+    // riesgo mostraba al tecnico el codigo interno
+    // «incident-events.hazard_detected» en lugar de una frase. Se recorren
+    // los eventos que el codigo registra y se exige su traduccion.
+    $registrados = [];
+
+    foreach (File::allFiles(app_path()) as $archivo) {
+        $codigo = File::get($archivo->getPathname());
+        preg_match_all('/record\(\s*\$\w+\s*,\s*\'([a-z_]+)\'/', $codigo, $m);
+        $registrados = array_merge($registrados, $m[1]);
+    }
+
+    $registrados = array_values(array_unique($registrados));
+    $traducidos = array_keys(require lang_path('es/incident-events.php'));
+
+    expect($registrados)->not->toBeEmpty()
+        ->and(array_values(array_diff($registrados, $traducidos)))->toBe([]);
+});

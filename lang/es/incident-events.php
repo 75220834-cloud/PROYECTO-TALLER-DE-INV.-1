@@ -15,6 +15,7 @@ declare(strict_types=1);
 return [
     'location_confirmed' => 'El docente confirmó la ubicación',
     'problem_reported' => 'El docente indicó el problema',
+    'hazard_detected' => 'Se detectó riesgo físico: se le indicó no tocar el equipo',
     'status_changed' => 'Cambio de estado',
     'resolved_by_assistant' => 'Resuelto por el propio docente',
     'escalated_to_support' => 'Se solicitó apoyo presencial',
