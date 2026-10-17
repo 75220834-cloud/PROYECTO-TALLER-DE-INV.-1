@@ -50,7 +50,21 @@ final class OllamaEmbeddingProvider implements EmbeddingProvider
         // Es lento, y por eso la ingesta corre EN COLA y no en la petición
         // web: un manual de 80 páginas puede tardar varios minutos y nadie
         // debería quedarse mirando un formulario mientras tanto.
-        return array_map(fn (string $text): ?array => $this->embed($text), $texts);
+        $vectors = array_map(fn (string $text): ?array => $this->embed($text), $texts);
+
+        // Segunda pasada solo para los que fallaron. La primera peticion
+        // obliga a Ollama a cargar el modelo en memoria, y en una PC recien
+        // encendida eso supera el tiempo de espera: en la instalacion desde
+        // cero, los dos primeros fragmentos se quedaron sin vector y el
+        // documento figuraba como indexado. Al terminar la primera pasada el
+        // modelo ya esta cargado y el reintento responde en milisegundos.
+        foreach ($vectors as $i => $vector) {
+            if ($vector === null) {
+                $vectors[$i] = $this->embed($texts[$i]);
+            }
+        }
+
+        return $vectors;
     }
 
     public function dimensions(): int

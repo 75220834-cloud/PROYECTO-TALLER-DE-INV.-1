@@ -160,9 +160,20 @@ final class DocumentIngestionPipeline
         // Sin vectores el documento sigue siendo BUSCABLE por texto: se
         // indexa igual y se avisa. Es preferible a rechazarlo, pero hay que
         // saberlo porque la búsqueda semántica no funcionará sobre él.
-        if (count(array_filter($vectors)) === 0) {
+        $missing = count($chunks) - count(array_filter($vectors));
+
+        if ($missing === count($chunks)) {
             Log::warning('Documento indexado SIN vectores; solo será buscable por texto.', [
                 'version_id' => $version->id,
+            ]);
+        } elseif ($missing > 0) {
+            // El caso a medias tambien se avisa: esos fragmentos no aparecen
+            // en la busqueda semantica, y sin aviso nadie sabria que hay que
+            // ejecutar conocimiento:reindexar.
+            Log::warning('Documento indexado con fragmentos SIN vector; ejecutar conocimiento:reindexar.', [
+                'version_id' => $version->id,
+                'sin_vector' => $missing,
+                'total' => count($chunks),
             ]);
         }
     }

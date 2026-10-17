@@ -7,12 +7,14 @@ use App\Modules\Diagnostics\Models\DiagnosticFlow;
 use App\Modules\Diagnostics\Models\DiagnosticFlowVersion;
 use App\Modules\Knowledge\Jobs\ProcessDocumentVersion;
 use App\Modules\Locations\Services\QrCodeService;
+use App\Modules\Retrieval\Providers\OllamaEmbeddingProvider;
 use Database\Seeders\CatalogSeeder;
 use Database\Seeders\DatabaseSeeder;
 use Database\Seeders\PilotDiagnosticsSeeder;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Route;
@@ -221,6 +223,28 @@ describe('respaldo:crear', function () {
                 'incidencias-2026-01-05_010000.sql',
             ]);
     });
+});
+
+it('reintenta los vectores que fallaron mientras el modelo se cargaba', function () {
+    // Lo que paso en la instalacion desde cero: la primera peticion obliga a
+    // Ollama a cargar el modelo y supera el tiempo de espera. Sin reintento,
+    // ese fragmento se queda sin vector y el documento figura como indexado.
+    config([
+        'incidencias.llm.base_url' => 'http://ollama.test',
+        'incidencias.llm.embedding_model' => 'nomic-embed-text',
+    ]);
+
+    Http::fake([
+        'ollama.test/api/embeddings' => Http::sequence()
+            ->pushFailedConnection()
+            ->push(['embedding' => [0.1, 0.2]])
+            ->push(['embedding' => [0.3, 0.4]]),
+    ]);
+
+    $vectores = (new OllamaEmbeddingProvider)->embedBatch(['primero', 'segundo']);
+
+    expect($vectores)->toBe([[0.3, 0.4], [0.1, 0.2]]);
+    Http::assertSentCount(3);
 });
 
 it('reindexa todas las guias de una vez al activar la IA', function () {

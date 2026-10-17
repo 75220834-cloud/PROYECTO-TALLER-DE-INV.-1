@@ -200,7 +200,9 @@ npm run build
 
 - `composer install`: termina sin la palabra `error`. Puede decir que hay paquetes buscando
   financiamiento: eso no es un problema.
-- `key:generate`: `Application key set successfully`.
+- `key:generate`: `Application key set successfully`. Se ejecuta **una sola vez**. Si lo
+  repites, pregunta si quieres reemplazar la clave: responde **no**. Reemplazarla cierra todas las
+  sesiones abiertas.
 - `npm ci`: `found 0 vulnerabilities`.
 - `npm run build`: `built in` y unos archivos listados.
 
@@ -215,7 +217,7 @@ php artisan migrate --seed --force
 **Qué tiene que salirte:** una lista de migraciones marcadas `DONE`, y al final:
 
 ```
-  Roles: 5 | Permisos: 23
+  Roles: 5 | Permisos: 21
   ...
   Datos DEMO omitidos: entorno de produccion.
 ```
@@ -411,14 +413,32 @@ php artisan optimize
 
 1. Abre <http://localhost:8080/salud> en el navegador de la PC.
 
-   **Qué tiene que salirte:** un texto que empieza por `{"status":"ok"` y dentro
-   `"database":true`. Si usas IA, también `"llm":true`.
+   **Qué tiene que salirte:** un texto como este:
 
-2. Abre <http://localhost:8080/entrar> y entra con la cuenta del paso 12.
+   ```
+   {"status":"ok","checks":{"database":true,"queue":"ok","llm":"ok","storage":"ok"}, ...}
+   ```
+
+   Sin IA, en lugar de `"llm":"ok"` dice que está desactivada: es lo esperado.
+
+2. Comprueba que las herramientas de XAMPP **no** se ven por el puerto del sistema. Las tres tienen
+   que dar **«Not Found»**:
+
+   - <http://localhost:8080/phpmyadmin/>
+   - <http://localhost:8080/cgi-bin/printenv.pl>
+   - <http://localhost:8080/php-cgi/php-cgi.exe>
+
+   > **Por qué importa.** XAMPP publica phpMyAdmin y otras herramientas para todo el servidor, y las
+   > protege con «solo desde esta PC». Pero todo lo que entra por el túnel llega **desde esta PC**:
+   > sin este cierre, con el túnel prendido, cualquiera en internet podría abrir phpMyAdmin. El archivo
+   > `scripts/apache/incidencias.conf` las cierra en el puerto 8080. Si alguna de las tres abre algo,
+   > **no publiques el sistema**: revisa que la línea `Include` del paso 13 esté bien escrita.
+
+3. Abre <http://localhost:8080/entrar> y entra con la cuenta del paso 12.
 
    **Qué tiene que salirte:** el panel de soporte.
 
-3. En el panel, ve a **Conocimiento**. Las ocho guías tienen que aparecer **publicadas** y con
+4. En el panel, ve a **Conocimiento**. Las ocho guías tienen que aparecer **publicadas** y con
    estado **indexada**.
 
 Si todo eso salió bien, el sistema está instalado. Ahora:

@@ -321,6 +321,35 @@ contraseña**. En la red de una universidad, cualquiera en el mismo WiFi podría
 guía de instalación la cierra a la propia PC (`bind-address="127.0.0.1"`) y crea un usuario
 `incidencias` con permisos **solo** sobre su base, sin `root`.
 
+### Las herramientas de XAMPP detrás del túnel
+
+Encontrado al instalar desde cero y comprobar qué responde el puerto del sistema: XAMPP define
+rutas para **todo el servidor** —`/phpmyadmin`, `/php-cgi`, los scripts de ejemplo de
+`/cgi-bin`— y esas rutas respondían también en el puerto 8080. XAMPP las protege con «solo
+desde esta PC» (`Require local`). El problema es que **todo lo que entra por el túnel llega desde
+esta PC**: con el túnel prendido, phpMyAdmin quedaba abierto a internet, con `root` sin
+contraseña. `/cgi-bin/printenv.pl` mostraba además las variables internas del servidor.
+
+La protección del panel no lo cubría, porque estas rutas las sirve Apache directamente y nunca
+llegan al sistema. Se cierran en la configuración del sitio (`scripts/apache/incidencias.conf`)
+con una regla de reescritura, que en ese contexto se evalúa **antes** que los alias de XAMPP, y
+de nuevo con un bloque de denegación por si alguien desactiva la reescritura. phpMyAdmin sigue
+disponible en el puerto 80 para uso local, que el túnel no alcanza.
+
+La guía de instalación incluye comprobar las tres rutas antes de publicar.
+
+### Versiones antiguas de XAMPP
+
+XAMPP trae Apache 2.4.58 y PHP 8.2.12, ambos de 2023, con avisos de seguridad publicados desde
+entonces. Se mitiga, sin resolverse:
+
+- Ya no se anuncian las versiones en las respuestas (`ServerTokens Prod`, sin `X-Powered-By`).
+- Desde internet solo se alcanza el sitio del puerto 8080, y en él solo la parte del docente.
+- Con el túnel de Cloudflare, las peticiones pasan por su red antes de llegar a la PC.
+
+**Queda como riesgo declarado.** La solución de fondo es reemplazar el PHP y el Apache de XAMPP
+por versiones mantenidas; se recomienda antes de un despliegue que dure más que el piloto.
+
 ### El QR que apunta a donde no debe
 
 El QR se genera desde el panel, y el panel se abre como `http://localhost`. Tomar la dirección de

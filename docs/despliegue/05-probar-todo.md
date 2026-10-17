@@ -15,7 +15,7 @@ de la investigación.
 ## Antes de empezar
 
 - [ ] <http://localhost:8080/salud> en la PC responde `"status":"ok"`.
-- [ ] Si usas IA: en esa misma respuesta, `"llm":true`.
+- [ ] Si usas IA: en esa misma respuesta, `"llm":"ok"`.
 - [ ] En el panel, **Conocimiento**: las ocho guías **publicadas** e **indexadas**.
 
 ---
@@ -82,6 +82,8 @@ escaneando el QR.
 
 - [ ] La dirección pública con **`/entrar`** al final responde **«No encontrado» (404)**.
 - [ ] La dirección pública con **`/panel`** al final responde **«No encontrado» (404)**.
+- [ ] La dirección pública con **`/phpmyadmin/`** al final responde **«No encontrado» (404)**.
+- [ ] La dirección pública con **`/cgi-bin/printenv.pl`** al final responde **«No encontrado» (404)**.
 
 ---
 
