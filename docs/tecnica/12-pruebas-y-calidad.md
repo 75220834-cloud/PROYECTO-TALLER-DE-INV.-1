@@ -9,8 +9,8 @@
 
 | Métrica | Valor |
 |---|---|
-| Pruebas automáticas | **498** |
-| Aserciones | 1 322 |
+| Pruebas automáticas | **504** |
+| Aserciones | 1 338 |
 | Archivos de prueba | 38 |
 | Suites | 7 |
 | Duración de la suite completa | ~8 minutos |
@@ -226,7 +226,7 @@ flowchart LR
     D --> E[PHPStan: tipos]
     E --> F[composer audit:<br/>vulnerabilidades conocidas]
     F --> G[npm run build]
-    G --> H[498 pruebas]
+    G --> H[504 pruebas]
     H --> I{¿Todo verde?}
     I -->|Sí| J[✅]
     I -->|No| K[❌ y dice cuál falló]
@@ -265,7 +265,7 @@ codificación interna de PHP para comprobar que el resultado no varía.
 
 Para que **el estado del proyecto sea verificable por alguien que no lo ejecutó**. El
 profesor, el jurado o un colaborador ven en GitHub una marca verde que significa: en esta
-versión concreta del código, las 498 pruebas pasaban, el análisis estático estaba limpio y
+versión concreta del código, las 504 pruebas pasaban, el análisis estático estaba limpio y
 el proyecto compilaba.
 
 Eso es una afirmación mucho más fuerte que «a mí me funciona».

@@ -23,7 +23,7 @@ final class GenerateQr extends Command
 
     public function handle(QrCodeService $qr): int
     {
-        $dir = storage_path('app/qr');
+        $dir = storage_path('app'.DIRECTORY_SEPARATOR.'qr');
         File::ensureDirectoryExists($dir);
 
         File::put("{$dir}/qr-acceso.png", $qr->png(600));

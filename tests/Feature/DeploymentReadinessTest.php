@@ -320,8 +320,8 @@ describe('QR con direccion publica', function () {
             ->expectsOutputToContain('https://incidencias.ejemplo.test/reportar')
             ->assertSuccessful();
 
-        expect(storage_path('app/qr/qr-acceso.png'))->toBeFile()
-            ->and(storage_path('app/qr/qr-acceso.svg'))->toBeFile();
+        expect(storage_path('app'.DIRECTORY_SEPARATOR.'qr'.DIRECTORY_SEPARATOR.'qr-acceso.png'))->toBeFile()
+            ->and(storage_path('app'.DIRECTORY_SEPARATOR.'qr'.DIRECTORY_SEPARATOR.'qr-acceso.svg'))->toBeFile();
     });
 });
 
