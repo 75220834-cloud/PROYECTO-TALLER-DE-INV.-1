@@ -199,25 +199,37 @@ puede contestar.
 
 ## 9.9 Los ocho árboles del piloto
 
-Hay un árbol publicado por cada equipo del checklist. Todos siguen la misma forma: **tres
-preguntas de diagnóstico y una de comprobación**, cuatro pantallas como máximo.
+Hay un árbol publicado por cada equipo del checklist. Todos siguen la misma forma: **cuatro o
+cinco soluciones reales por camino**, ordenadas de la más probable a la menos, y en **cada paso**
+el docente puede terminar con «Listo, ya funciona».
 
-| Categoría | Qué recorre |
-|---|---|
-| Computadora | Luz encendida → regleta o reinicio → comprobar |
-| Proyector | Color de la luz → corriente o control → comprobar |
-| HDMI | Qué se ve en la pared → reconectar → Windows + P → comprobar |
-| Control del proyector | Apuntar bien → pilas → comprobar |
-| Ecran | Interruptor → obstáculo → comprobar |
-| Parlante | Volumen de Windows → parlantes → cable verde → comprobar |
-| Mouse | Conexión → pilas → superficie → comprobar |
-| Teclado | Conexión → luz de Bloq Num → pilas → comprobar |
+| Categoría | Pregunta inicial | Soluciones, en orden |
+|---|---|---|
+| Computadora | ¿Sin luz, pantalla negra o trabada? | Sin luz: botón → regleta → cable de corriente → otro enchufe → descargar energía. Pantalla negra: despertar → monitor aparte → cable de video → reinicio forzado. Trabada: esperar → cerrar el programa → mouse y teclado → reinicio forzado |
+| Proyector | ¿Cómo está la luz? | Sin luz: interruptor de pared → regleta → control → esperar. Roja: control → botón del proyector → pilas → esperar. Parpadea: esperar → control → pilas → botón. Verde sin imagen: Blank → Source → HDMI → Windows + P |
+| HDMI | ¿Qué se ve en la pared? | Windows + P → reconectar HDMI → entrada IN/OUT → Source → reiniciar con el cable puesto. Imagen deforme: Windows + P → Auto → reconectar → enfoque |
+| Control del proyector | — | Apuntar al frente → acercarse → pilas en su lugar → pilas nuevas → botones del proyector |
+| Ecran | ¿Interruptor o manual? | Interruptor: mantener presionado → Stop → botón contrario → obstáculos. Manual: jalar del centro → destrabar → obstáculos → proyectar en la pared |
+| Parlante | — | Silencio → salida de sonido (no el proyector) → parlantes y perilla → cable verde → volumen del programa |
+| Mouse | ¿Con cable o inalámbrico? | Cable: reconectar → otra entrada USB → superficie → reiniciar con el teclado. Inalámbrico: interruptor ON → receptor → pilas → superficie |
+| Teclado | ¿No escribe o fallan algunas teclas? | No escribe: clic donde escribir → reconectar → otra entrada → pilas → reiniciar. Algunas teclas: Bloq Num → Bloq Mayús → idioma ESP → reconectar |
 
-### El límite de cuatro pantallas no es técnico
+### Por qué cuatro o cinco, y no tres
 
-Un docente de pie, con cuarenta personas esperando, abandona antes del quinto paso.
-Alargar el árbol no resuelve más casos: solo hace que se vaya por el canal informal, que
-es exactamente lo que el piloto mide.
+La primera versión tenía dos o tres pasos y escalaba en cuanto algo «estaba bien»: si la regleta
+estaba prendida, mandaba a soporte sin probar nada más. Se alargó a pedido del responsable del
+proyecto, con una condición que evita el abandono: **cada paso deja terminar**. Quien resuelve en
+el primero sale en el primero; solo recorre el camino entero quien tiene un problema difícil, y a
+ese le conviene haber probado todo antes de esperar a un técnico.
+
+Donde la solución depende del equipo —un mouse con cable o inalámbrico, un ecran con interruptor o
+manual— se **pregunta primero**. El checklist no lo registra, y suponerlo daría instrucciones para
+un equipo que no está.
+
+Una prueba automática recorre cada árbol publicado y exige: entre tres y cinco soluciones por
+camino, «ya funciona» en cada solución, que toda rama lleve a un paso que existe, que ningún
+recorrido supere el límite de pasos del sistema, y que ningún texto pida abrir equipos, subirse a
+algo o tocar instalaciones.
 
 ### Hasta dónde llega la mano del docente
 
@@ -228,7 +240,9 @@ El responsable del proyecto fijó el límite y **ningún paso lo cruza**:
 | Prender y apagar equipos | Abrir ningún equipo |
 | Usar el control remoto | Tocar tableros eléctricos |
 | Reconectar cables sueltos (HDMI, USB, audio, corriente) | Desarmar nada |
-| Prender la regleta y cambiar de tomacorriente | |
+| Prender la regleta y cambiar de tomacorriente | Subirse a sillas o mesas |
+| Abrir la tapa de pilas del control o del mouse | |
+| Usar el teclado y la configuración normal de Windows | |
 
 ### Quién escribió estos árboles
 

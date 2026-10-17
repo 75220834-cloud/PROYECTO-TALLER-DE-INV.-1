@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Cobertura visual')
-@section('heading', 'Pasos sin imagen')
-@section('subheading', 'Pasos que mencionan una pieza física y no la enseñan')
+@section('heading', 'Pasos sin foto real')
+@section('subheading', 'Pasos que mencionan una pieza física y todavía no tienen su foto')
 
 @section('content')
 
@@ -19,24 +19,27 @@
                 <p class="mt-1 text-sm text-on-warn-container">
                     {{ $step->category ?? 'Sin categoría' }} · paso <code class="font-mono">{{ $step->key }}</code>
                 </p>
+                @if ($step->provisional)
+                    <p class="mt-1 text-sm text-on-warn-container">Mientras tanto se muestra la ilustración provisional.</p>
+                @endif
             </div>
 
             <div class="text-right">
-                <p class="text-xs uppercase tracking-wide text-warn">Falta la imagen de</p>
+                <p class="text-xs uppercase tracking-wide text-warn">Falta la foto de</p>
                 <p class="font-mono text-sm font-semibold text-on-warn-container">{{ $step->component_key }}</p>
             </div>
         </div>
 
-        <a href="{{ route('admin.media.create') }}"
+        <a href="{{ route('admin.media.create', ['clave' => $step->component_key]) }}"
            class="mt-3 inline-block rounded-md border border-warn bg-surface-lowest px-3 py-1.5 text-sm font-medium text-on-warn-container">
-            Subir imagen para «{{ $step->component_key }}»
+            Subir la foto de «{{ $step->component_key }}»
         </a>
     </div>
 @empty
     <div class="glass border-ok/60 bg-ok-container/60 px-5 py-6 text-center">
         <p class="text-lg font-semibold text-on-ok-container">Cobertura completa</p>
         <p class="mt-1 text-sm text-on-ok-container">
-            Todos los pasos que mencionan una pieza física la muestran.
+            Todos los pasos que mencionan una pieza física tienen su foto real.
         </p>
     </div>
 @endforelse

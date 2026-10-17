@@ -9,9 +9,9 @@
 
 | Métrica | Valor |
 |---|---|
-| Pruebas automáticas | **504** |
-| Aserciones | 1 338 |
-| Archivos de prueba | 38 |
+| Pruebas automáticas | **553** |
+| Aserciones | 2 109 |
+| Archivos de prueba | 39 |
 | Suites | 7 |
 | Duración de la suite completa | ~8 minutos |
 | Nivel de PHPStan | 5, sin errores |
@@ -24,7 +24,7 @@
 ```mermaid
 graph TB
     U["Unit<br/>2 archivos"] --> D["Lógica pura,<br/>sin base de datos"]
-    F["Feature<br/>28 archivos"] --> E["Flujos completos<br/>por HTTP"]
+    F["Feature<br/>29 archivos"] --> E["Flujos completos<br/>por HTTP"]
     A["Ai<br/>4 archivos"] --> G["Comportamiento<br/>del modelo"]
     R["Retrieval<br/>1 archivo"] --> H["Búsqueda híbrida"]
     RI["Risk<br/>2 archivos"] --> I["Modelo predictivo<br/>y fuga temporal"]
@@ -51,13 +51,14 @@ Es la única suite que corre sin base de datos, y por eso es instantánea.
 
 ### Feature — los flujos completos
 
-Veintiséis archivos. Los más significativos:
+Veintinueve archivos. Los más significativos:
 
 | Archivo | Qué verifica |
 |---|---|
 | `EndToEndFlowTest` | El recorrido completo del docente: del QR al ticket |
 | `TeacherLocationFlowTest` | La cascada de ubicación |
 | `TeacherReportFlowTest` | Clasificación, diagnóstico y escalamiento |
+| `PilotDiagnosticTreesTest` | Que cada árbol real ofrezca de tres a cinco soluciones por camino, sin ciclos ni ramas rotas, y que la foto real gane a la ilustración provisional |
 | `AbuseGuardTest` | Los seis controles antiabuso, uno por uno |
 | `SecurityHardeningTest` | Que las cabeceras de seguridad estén presentes y sean correctas |
 | `SupportPanelTest` | El panel completo y sus permisos |
@@ -226,7 +227,7 @@ flowchart LR
     D --> E[PHPStan: tipos]
     E --> F[composer audit:<br/>vulnerabilidades conocidas]
     F --> G[npm run build]
-    G --> H[504 pruebas]
+    G --> H[553 pruebas]
     H --> I{¿Todo verde?}
     I -->|Sí| J[✅]
     I -->|No| K[❌ y dice cuál falló]
@@ -265,7 +266,7 @@ codificación interna de PHP para comprobar que el resultado no varía.
 
 Para que **el estado del proyecto sea verificable por alguien que no lo ejecutó**. El
 profesor, el jurado o un colaborador ven en GitHub una marca verde que significa: en esta
-versión concreta del código, las 504 pruebas pasaban, el análisis estático estaba limpio y
+versión concreta del código, las 553 pruebas pasaban, el análisis estático estaba limpio y
 el proyecto compilaba.
 
 Eso es una afirmación mucho más fuerte que «a mí me funciona».

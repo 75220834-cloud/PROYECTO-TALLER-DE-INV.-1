@@ -44,9 +44,8 @@ class MediaController extends Controller
         return response($disk->get($path), SymfonyResponse::HTTP_OK, [
             'Content-Type' => $asset->mime_type ?? 'application/octet-stream',
 
-            // Cache larga: el contenido de un activo no cambia. Si se
-            // reemplaza la imagen se crea un archivo con nombre nuevo, asi
-            // que no hay riesgo de servir una version obsoleta.
+            // Cache larga: al reemplazar la imagen cambia la «v» de su
+            // direccion (MediaAsset::url), asi que el celular pide la nueva.
             'Cache-Control' => 'public, max-age=604800',
 
             // El navegador no debe adivinar el tipo: con un SVG servido

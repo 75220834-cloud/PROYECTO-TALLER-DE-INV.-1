@@ -81,16 +81,25 @@ class MediaAsset extends Model
         return $this->mime_type === 'image/svg+xml';
     }
 
+    /**
+     * La imagen se sirve con una semana de cache. Al reemplazar la foto, el
+     * id no cambia; sin la «v» el celular seguiria mostrando la anterior.
+     */
     public function url(): string
     {
-        return route('media.show', ['asset' => $this->id]);
+        return route('media.show', ['asset' => $this->id, 'v' => $this->version()]);
     }
 
     public function thumbnailUrl(): string
     {
         return $this->thumbnail_path !== null
-            ? route('media.show', ['asset' => $this->id, 'thumb' => 1])
+            ? route('media.show', ['asset' => $this->id, 'thumb' => 1, 'v' => $this->version()])
             : $this->url();
+    }
+
+    private function version(): string
+    {
+        return substr(md5($this->file_path.'|'.$this->updated_at?->getTimestamp()), 0, 8);
     }
 
     /** Peso en KB, para vigilar el presupuesto del plan (150 KB). */

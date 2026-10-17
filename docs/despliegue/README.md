@@ -14,6 +14,7 @@ soporte lo administre desde esa misma PC.
 | 4 | [Publicar con TI de la universidad](04-publicar-con-ti-de-la-universidad.md) | Dirección fija en un subdominio de la universidad | Despliegue real, opción E |
 | 5 | [Probar todo](05-probar-todo.md) | Lista de comprobación completa antes de imprimir los QR | Después de 1 y de 3 o 4 |
 | 6 | [Actualizar y mantener](06-actualizar-y-mantener.md) | Traer cambios de GitHub, copias de seguridad, problemas frecuentes | Durante la operación |
+| 7 | [Fotos de los equipos](07-fotos-de-los-equipos.md) | Qué fotos tomar, con qué clave subirlas, e ilustraciones provisionales | Antes del piloto |
 
 Las guías 3 y 4 son **alternativas**: se elige una de las dos.
 

@@ -46,9 +46,13 @@ escaneando el QR.
 
 - [ ] Elegir **«El proyector no prende»** muestra pasos cortos, uno por pantalla.
 - [ ] Ningún paso pide abrir un equipo ni tocar un tablero eléctrico.
-- [ ] El último paso pregunta si ya funciona. **«Sí, ya funciona»** lleva a confirmar, y **«Sí,
-      funciona correctamente»** cierra el reporte con **«Problema resuelto»**.
-- [ ] **«No, sigue igual»** en el último paso ofrece **pedir ayuda a soporte**.
+- [ ] Cada problema ofrece **cuatro o cinco soluciones**, una por pantalla, cada una con una imagen.
+- [ ] En **cualquier** paso, **«Listo, ya funciona»** lleva a confirmar, y **«Sí, funciona
+      correctamente»** cierra el reporte con **«Problema resuelto»**.
+- [ ] **«Lo hice y sigue igual»** pasa a la siguiente solución. Después de la última, ofrece
+      **pedir ayuda a soporte**.
+- [ ] En el ecran y en el mouse, el primer paso **pregunta cómo es el equipo** (interruptor o manual;
+      con cable o inalámbrico) y las soluciones cambian según la respuesta.
 - [ ] Al terminar, aparece **«¿Te resultó fácil de usar?»** del 1 al 5. Es opcional.
 
 ### Riesgo físico

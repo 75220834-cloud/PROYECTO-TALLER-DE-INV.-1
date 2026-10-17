@@ -310,6 +310,18 @@ cada minuto, así que más adelante no hará falta ejecutarlo a mano.
 > el asistente no encuentra las guías, que quedaron preparadas para el modo sin IA, y no da ningún
 > error: simplemente escala todo.
 
+### Opcional: ilustraciones provisionales
+
+Mientras soporte no tome las fotos reales, los pasos se ven solo con texto. Para que muestren un
+dibujo que orienta al docente:
+
+```powershell
+php artisan imagenes:provisionales
+```
+
+Cada foto real que se suba después las reemplaza sola. Detalles en la guía
+[7 · Fotos de los equipos](07-fotos-de-los-equipos.md).
+
 ---
 
 ## Paso 12 · Crear tu cuenta de administrador

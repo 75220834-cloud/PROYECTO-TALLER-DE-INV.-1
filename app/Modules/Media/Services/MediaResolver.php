@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Media\Services;
 
 use App\Modules\Media\Models\MediaAsset;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 /**
@@ -16,6 +17,10 @@ use Illuminate\Support\Collection;
  *   2. Imagen del componente        (scope component + component_key)
  *   3. Imagen del tipo de equipo    (scope equipment_type)
  *   4. Sin imagen  ->  el paso se muestra solo con texto
+ *
+ * Dentro de cada escalon, la foto real gana a la provisional y la mas
+ * reciente a la anterior. Sin ese orden, subir la foto real no servia de
+ * nada: la consulta devolvia la primera fila, que era la provisional.
  *
  * El ultimo escalon es tan importante como los otros: el sistema NUNCA
  * falla por ausencia de imagen ni muestra un hueco roto. Degrada a texto,
@@ -46,11 +51,7 @@ final class MediaResolver
 
         // 2. Por componente.
         if ($componentKey !== null) {
-            $byComponent = MediaAsset::query()
-                ->active()
-                ->where('scope_type', 'component')
-                ->where('scope_key', $componentKey)
-                ->first();
+            $byComponent = $this->byComponent($componentKey)->first();
 
             if ($byComponent !== null) {
                 return $byComponent;
@@ -77,10 +78,23 @@ final class MediaResolver
      * @param  Collection<int, MediaAsset>  $stepAssets
      * @return Collection<int, MediaAsset>
      */
-    public function alternatesFor(Collection $stepAssets, ?MediaAsset $primary): Collection
+    public function alternatesFor(Collection $stepAssets, ?MediaAsset $primary, ?string $componentKey = null): Collection
     {
+        // Ademas de las asignadas al paso, las otras fotos del mismo
+        // componente: el boton de encendido de una «todo en uno», de una
+        // torre y de un NUC se suben con la misma clave, y el docente ve la
+        // de su equipo en «Ver otra vista». Las provisionales no se mezclan
+        // con las reales: si ya hay una foto real, sobran.
+        $sameComponent = $componentKey === null
+            ? collect()
+            : $this->byComponent($componentKey)
+                ->when($primary !== null && ! $primary->is_demo, fn ($q) => $q->where('is_demo', false))
+                ->get();
+
         return $stepAssets
+            ->merge($sameComponent)
             ->filter(fn (MediaAsset $a) => $a->is_active && $a->id !== $primary?->id)
+            ->unique('id')
             ->values();
     }
 
@@ -96,12 +110,23 @@ final class MediaResolver
             return null;
         }
 
+        return $this->byComponent($componentKey)->first();
+    }
+
+    /**
+     * Imagenes activas de un componente: primero las reales, luego la mas
+     * reciente.
+     *
+     * @return Builder<MediaAsset>
+     */
+    private function byComponent(string $componentKey): Builder
+    {
         return MediaAsset::query()
             ->active()
             ->where('scope_type', 'component')
             ->where('scope_key', $componentKey)
-            ->orderByRaw("CASE WHEN type = 'diagram' THEN 0 ELSE 1 END")
-            ->first();
+            ->orderBy('is_demo')
+            ->orderByDesc('id');
     }
 
     /**

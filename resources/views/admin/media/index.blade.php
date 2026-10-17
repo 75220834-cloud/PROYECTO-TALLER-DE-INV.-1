@@ -63,7 +63,7 @@
     @forelse ($assets as $asset)
         <div class="overflow-hidden glass {{ $asset->is_active ? '' : 'opacity-60' }}">
             <div class="flex aspect-video items-center justify-center bg-surface-mid">
-                <img src="{{ route('media.show', $asset) }}" alt="{{ $asset->alt_text }}"
+                <img src="{{ $asset->url() }}" alt="{{ $asset->alt_text }}"
                      loading="lazy" class="max-h-full max-w-full object-contain">
             </div>
 

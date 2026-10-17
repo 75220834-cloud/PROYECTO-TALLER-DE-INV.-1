@@ -162,7 +162,7 @@ final class DiagnosticEngine
 
         return [
             'primary' => $primary,
-            'alternates' => $this->media->alternatesFor($assets, $primary),
+            'alternates' => $this->media->alternatesFor($assets, $primary, $step->component_key),
             'reference' => $this->media->componentReference($step->component_key),
         ];
     }

@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Modules\Audit\Services\AuditLogger;
 use App\Modules\Media\Models\MediaAsset;
 use App\Modules\Media\Processors\ImageProcessor;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -147,7 +148,7 @@ class MediaLibraryController extends Controller
     /** @return array{total: int, covered: int, percent: int} */
     private function coverage(): array
     {
-        $total = DB::table('diagnostic_steps')->whereNotNull('component_key')->count();
+        $total = $this->currentSteps()->count();
         $pending = count($this->uncoveredSteps());
 
         return [
@@ -169,25 +170,49 @@ class MediaLibraryController extends Controller
      */
     private function uncoveredSteps(): array
     {
-        return DB::table('diagnostic_steps as s')
-            ->join('diagnostic_flow_versions as v', 'v.id', '=', 's.flow_version_id')
-            ->join('diagnostic_flows as f', 'f.id', '=', 'v.flow_id')
-            ->leftJoin('incident_categories as c', 'c.id', '=', 'f.category_id')
-            ->whereNotNull('s.component_key')
+        // Solo cuentan las fotos REALES. Una ilustracion provisional (is_demo)
+        // se muestra mientras tanto, pero no da el paso por cubierto: si no,
+        // tras cargarlas el reporte diria «cobertura completa» con todas las
+        // fotos todavia por tomar.
+        return $this->currentSteps()
             ->whereNotExists(fn ($q) => $q->select(DB::raw(1))
                 ->from('diagnostic_step_media as m')
                 ->join('media_assets as a', 'a.id', '=', 'm.media_asset_id')
                 ->whereColumn('m.step_id', 's.id')
-                ->where('a.is_active', true))
+                ->where('a.is_active', true)
+                ->where('a.is_demo', false)
+                ->whereNull('a.deleted_at'))
             ->whereNotExists(fn ($q) => $q->select(DB::raw(1))
                 ->from('media_assets as a2')
                 ->where('a2.scope_type', 'component')
                 ->whereColumn('a2.scope_key', 's.component_key')
-                ->where('a2.is_active', true))
+                ->where('a2.is_active', true)
+                ->where('a2.is_demo', false)
+                ->whereNull('a2.deleted_at'))
             ->select('s.step_key as key', 's.prompt_text', 's.component_key', 'c.name as category')
+            ->selectRaw("exists (select 1 from media_assets a3 where a3.scope_type = 'component' and a3.scope_key = s.component_key and a3.is_active = 1 and a3.is_demo = 1 and a3.deleted_at is null) as provisional")
+            ->orderBy('s.component_key')
             ->orderBy('s.step_key')
             ->get()
             ->all();
+    }
+
+    /**
+     * Pasos con pieza fisica de la version VIGENTE de cada arbol activo.
+     *
+     * Las versiones anteriores se conservan para interpretar incidencias
+     * pasadas, pero ya no se le muestran a nadie: contarlas inflaba lo que
+     * faltaba por fotografiar con pasos que no existen.
+     */
+    private function currentSteps(): Builder
+    {
+        return DB::table('diagnostic_steps as s')
+            ->join('diagnostic_flow_versions as v', 'v.id', '=', 's.flow_version_id')
+            ->join('diagnostic_flows as f', 'f.id', '=', 'v.flow_id')
+            ->leftJoin('incident_categories as c', 'c.id', '=', 'f.category_id')
+            ->where('f.is_active', true)
+            ->whereRaw('v.version = (select max(v2.version) from diagnostic_flow_versions v2 where v2.flow_id = f.id)')
+            ->whereNotNull('s.component_key');
     }
 
     /**

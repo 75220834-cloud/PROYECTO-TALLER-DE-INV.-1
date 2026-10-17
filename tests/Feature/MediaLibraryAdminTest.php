@@ -3,10 +3,12 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use App\Modules\Diagnostics\Models\DiagnosticStep;
 use App\Modules\Media\Models\MediaAsset;
 use Database\Seeders\CatalogSeeder;
 use Database\Seeders\DemoDiagnosticsSeeder;
 use Database\Seeders\DemoMediaSeeder;
+use Database\Seeders\PilotDiagnosticsSeeder;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -96,6 +98,24 @@ it('reprocesa la imagen en lugar de servir el archivo original', function () {
         ->and($asset->mime_type)->toBe('image/webp');
 });
 
+it('al reemplazar la foto cambia su dirección, para que el celular no muestre la vieja', function () {
+    // La imagen se sirve con una semana de caché. Si la dirección siguiera
+    // igual, el docente vería la foto anterior durante días.
+    $this->actingAs($this->gestor)->post(route('admin.media.store'), $this->campos + [
+        'image' => UploadedFile::fake()->image('a.jpg'),
+    ]);
+    $antes = MediaAsset::firstOrFail()->url();
+
+    $this->actingAs($this->gestor)->put(route('admin.media.update', MediaAsset::firstOrFail()), $this->campos + [
+        'image' => UploadedFile::fake()->image('b.jpg'),
+    ])->assertRedirect(route('admin.media.index'));
+
+    $despues = MediaAsset::firstOrFail()->url();
+
+    expect($despues)->not->toBe($antes);
+    $this->get($despues)->assertOk();
+});
+
 it('no permite dos imágenes con el mismo código', function () {
     $this->actingAs($this->gestor)->post(route('admin.media.store'), $this->campos + [
         'image' => UploadedFile::fake()->image('a.jpg'),
@@ -145,7 +165,7 @@ it('el informe de cobertura enseña los pasos que no muestran su pieza', functio
 
     $this->actingAs($this->gestor)->get(route('admin.media.coverage'))
         ->assertOk()
-        ->assertSee('Falta la imagen de');
+        ->assertSee('Falta la foto de');
 });
 
 it('cuenta como cubierto un paso que hereda la imagen del componente', function () {
@@ -158,4 +178,36 @@ it('cuenta como cubierto un paso que hereda la imagen del componente', function 
     $this->actingAs($this->gestor)->get(route('admin.media.index'))
         ->assertOk()
         ->assertSee('Cobertura visual');
+});
+
+it('una ilustracion provisional no da el paso por cubierto', function () {
+    // Tras cargar las provisionales, el reporte decia «cobertura completa»
+    // con todas las fotos reales todavia por tomar.
+    $this->seed(PilotDiagnosticsSeeder::class);
+    $this->artisan('imagenes:provisionales')->assertSuccessful();
+
+    $this->actingAs($this->gestor)->get(route('admin.media.coverage'))
+        ->assertOk()
+        ->assertSee('Falta la foto de')
+        ->assertSee('Mientras tanto se muestra la ilustración provisional.')
+        ->assertDontSee('Cobertura completa');
+});
+
+it('el reporte solo mira la version vigente de cada arbol', function () {
+    // Volver a publicar un arbol no puede duplicar lo que falta por
+    // fotografiar con pasos de versiones que ya no se muestran.
+    $this->seed(PilotDiagnosticsSeeder::class);
+    $antes = substr_count($this->actingAs($this->gestor)->get(route('admin.media.coverage'))->getContent(), 'Falta la foto de');
+
+    $paso = DiagnosticStep::whereNotNull('component_key')->first();
+    $version = $paso->version;
+    $nueva = $version->replicate()->fill(['version' => $version->version + 1]);
+    $nueva->save();
+    foreach ($version->steps as $s) {
+        $s->replicate()->fill(['flow_version_id' => $nueva->id])->save();
+    }
+
+    $despues = substr_count($this->actingAs($this->gestor)->get(route('admin.media.coverage'))->getContent(), 'Falta la foto de');
+
+    expect($despues)->toBe($antes)->and($antes)->toBeGreaterThan(0);
 });

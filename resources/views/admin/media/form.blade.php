@@ -24,7 +24,7 @@
         </label>
 
         @if ($asset->exists)
-            <img src="{{ route('media.show', $asset) }}" alt="{{ $asset->alt_text }}"
+            <img src="{{ $asset->url() }}" alt="{{ $asset->alt_text }}"
                  class="mt-2 max-h-48 rounded border border-outline-variant">
         @endif
 
@@ -128,7 +128,7 @@
 
         <div>
             <label class="block text-sm font-medium text-on-surface-variant">Clave</label>
-            <input type="text" name="scope_key" value="{{ old('scope_key', $asset->scope_key) }}"
+            <input type="text" name="scope_key" value="{{ old('scope_key', $asset->scope_key ?? request('clave')) }}"
                    placeholder="hdmi_port"
                    class="mt-1 block w-full rounded-md border-outline-variant font-mono text-sm">
         </div>
