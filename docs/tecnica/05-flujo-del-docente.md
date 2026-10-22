@@ -23,8 +23,9 @@ flowchart TD
     HZ -->|Sí| STOP[⚠️ No toques el equipo<br/>Escalado inmediato]
     HZ -->|No| DG[Diagnóstico guiado<br/>paso a paso con fotos]
 
-    DG --> RES{¿Se resolvió?}
-    RES -->|Sí| OK[Cerrado por el docente]
+    DG -->|«Listo, ya funciona»<br/>en cualquier paso| OK[Cerrado por el docente]
+    DG -->|probó todo<br/>y sigue igual| RES{¿Se resolvió?}
+    RES -->|Sí| OK
     RES -->|No| PREG{¿Quiere preguntar<br/>algo más?}
 
     PREG -->|Sí| ASK[Asistente responde<br/>citando fuentes]
@@ -53,7 +54,7 @@ El docente escanea un QR que lleva a `/reportar`. El mismo QR está en todas las
 
 | Pregunta | Qué muestra |
 |---|---|
-| ¿En qué sede estás? | Huancayo. Se pregunta aunque hoy sea la única |
+| ¿En qué sede estás? | Solo aparece si hay más de una. Hoy hay una sola (Huancayo) y se da por elegida |
 | ¿En qué pabellón estás? | Los diez pabellones de la sede |
 | ¿En qué piso estás? | Solo los de ese pabellón. En G: sótano y pisos 1 a 8 |
 | ¿En qué aula estás? | Solo las de ese piso |
@@ -82,11 +83,11 @@ El catálogo entero pesa menos que una sola de las fotos que se muestran despué
 listas; la cadena sede-pabellón-piso-aula se revalida contra el catálogo al continuar,
 porque ese envío es alcanzable sin pasar por la pantalla.
 
-### Por qué se pregunta la sede habiendo una sola
+### Por qué no se pregunta la sede habiendo una sola
 
-Cuesta un toque y hace que el día que exista una segunda sede la pantalla ya funcione sin
-tocar nada. Es una decisión explícita del responsable del proyecto: darla por elegida
-habría atado el sistema a una sola sede sin que nadie lo notara hasta intentar ampliarlo.
+Una única opción no es una decisión y le costaba un toque al docente. La pregunta sigue en
+la página, oculta: **el día que se cargue una segunda sede vuelve a aparecer sola**, sin
+tocar código. Así el sistema no queda atado a una sede.
 
 ### La búsqueda directa
 
@@ -212,6 +213,7 @@ equipo real.
 | Foto del equipo real | «Revisa el cable HDMI» no significa nada para quien no sabe cuál es. La foto sí. |
 | Botones grandes | Se usa de pie, con una mano, en un celular. |
 | Opción de saltar | Si el docente ya lo intentó, obligarlo a repetirlo lo hace abandonar el canal. |
+| «Listo, ya funciona» en cada paso | Quien lo resuelve al primer intento sale en el primer intento. |
 
 **Si no hay árbol cargado para esa categoría**, el sistema lo dice y ofrece reportar
 directamente. Es un caso **normal**, no un error: mientras soporte no haya cargado los
@@ -236,8 +238,15 @@ El detalle está en
 
 ## 5.7 Paso 5A · Se resolvió solo
 
-El docente marca que el problema se resolvió. El ticket se cierra con tipo de resolución
+El docente marca que el problema se resolvió. El caso se cierra con tipo de resolución
 `assistant`.
+
+Hay dos momentos para hacerlo:
+
+- **En cualquier paso del diagnóstico**, con «Listo, ya funciona». El caso se cierra ahí
+  mismo, **sin volver a preguntar** «¿se solucionó?»: el docente acaba de decirlo.
+- **En la pantalla final**, si recorrió todas las soluciones. Ahí elige entre «Sí, funciona
+  correctamente», pedir soporte o hacer otra consulta.
 
 **Este es el indicador central de la investigación:** qué proporción de problemas se
 resuelven sin que soporte se mueva.

@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Modules\Diagnostics\Engine\DiagnosticEngine;
 use App\Modules\Incidents\Http\Controllers\TeacherIncidentController;
 use App\Modules\Incidents\Models\Incident;
+use App\Modules\Incidents\Services\IncidentService;
 use App\Modules\Media\Services\MediaResolver;
 use App\Shared\Enums\IncidentStatus as S;
 use Illuminate\Http\RedirectResponse;
@@ -27,7 +28,10 @@ use Illuminate\View\View;
  */
 class TeacherDiagnosticController extends Controller
 {
-    public function __construct(private readonly DiagnosticEngine $engine) {}
+    public function __construct(
+        private readonly DiagnosticEngine $engine,
+        private readonly IncidentService $incidents,
+    ) {}
 
     /** Muestra el paso actual. */
     public function show(Request $request): View|RedirectResponse
@@ -119,10 +123,14 @@ class TeacherDiagnosticController extends Controller
         }
 
         if ($outcome->isResolved()) {
-            // El arbol declara que aqui el problema queda resuelto. Aun asi
-            // se PREGUNTA al docente antes de cerrar: el procedimiento puede
-            // dar por bueno algo que en el aula no funciono (plan 12).
-            return redirect()->route('teacher.outcome');
+            // A RESUELTO solo se llega con la respuesta en la que el propio
+            // docente dice que ya funciona («Listo, ya funciona»). Volver a
+            // preguntarle «¿se soluciono?» era hacerle confirmar dos veces
+            // lo mismo: se cierra aqui.
+            $this->incidents->resolveByAssistant($incident);
+            $request->session()->forget(TeacherIncidentController::sessionKey());
+
+            return redirect()->route('teacher.done', ['uuid' => $incident->uuid]);
         }
 
         if ($outcome->shouldEscalate()) {

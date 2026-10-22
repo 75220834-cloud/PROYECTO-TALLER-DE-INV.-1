@@ -119,6 +119,10 @@
                     Dar por resuelto
                 </option>
             </select>
+            <p class="mt-1 text-xs text-on-surface-variant">
+                «Dar por resuelto» cierra el caso sin volver a preguntar. Llévalo solo desde una respuesta
+                en la que el docente dice que ya funciona, como «Listo, ya funciona».
+            </p>
         </div>
     </div>
 

@@ -215,19 +215,36 @@ it('recorre el arbol completo hasta resolver', function () {
     foreach ($camino as $key => $answer) {
         $step = $version->stepByKey($key);
 
-        $this->post(route('teacher.diagnostic.answer'), [
+        $ultima = $this->post(route('teacher.diagnostic.answer'), [
             'step_id' => (string) $step->id,
             'answer' => $answer,
         ])->assertRedirect();
     }
 
-    expect(DiagnosticAnswer::count())->toBe(count($camino));
+    $incident = Incident::latest('id')->first();
 
-    // Y aun asi se PREGUNTA antes de cerrar: el procedimiento puede dar por
-    // bueno algo que en el aula no funciono (plan 12).
+    // La respuesta que lleva a RESUELTO ya es el docente diciendo que
+    // funciona: volver a preguntarle «¿se solucionó?» era repetirle lo mismo.
+    $ultima->assertRedirect(route('teacher.done', ['uuid' => $incident->uuid]));
+
+    expect(DiagnosticAnswer::count())->toBe(count($camino))
+        ->and($incident->fresh()->hasStatus(S::Resolved))->toBeTrue();
+});
+
+it('al escalar el arbol si pregunta antes de pedir soporte', function () {
+    // Al agotar las soluciones no se manda a soporte sin mas: el docente
+    // elige entre pedir soporte o consultar una duda distinta.
+    startDiagnosisFor($this->projector);
+    $version = $this->engine->flowFor($this->projector->id);
+
+    $this->post(route('teacher.diagnostic.answer'), [
+        'step_id' => (string) $version->stepByKey('final_check')->id,
+        'answer' => 'no',
+    ])->assertRedirect(route('teacher.outcome'));
+
     $this->get(route('teacher.outcome'))
         ->assertOk()
-        ->assertSee('¿El problema ya se solucionó?');
+        ->assertSee('No, necesito soporte técnico');
 });
 
 it('ofrece la ayuda "cual es esa pieza" cuando hay imagen del componente', function () {

@@ -115,8 +115,9 @@ class TeacherIncidentController extends Controller
      * fijadas por el plan (12): resuelto, sigue el problema, necesito
      * soporte.
      *
-     * En la Fase 4 el diagnostico guiado se intercala antes de esta
-     * pantalla; el desenlace seguira siendo este.
+     * Tras el diagnostico guiado se llega aqui cuando se agotaron las
+     * soluciones o la categoria no tiene procedimiento. Si el docente ya
+     * dijo «Listo, ya funciona», el caso se cierra sin pasar por aqui.
      */
     public function outcome(Request $request, DiagnosticEngine $engine): View|RedirectResponse
     {

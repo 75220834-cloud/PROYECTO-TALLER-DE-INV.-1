@@ -101,9 +101,16 @@ Cuando el docente responde, el motor devuelve uno de exactamente cuatro resultad
 | Desenlace | Qué significa |
 |---|---|
 | **Siguiente paso** | Hay otro paso que mostrar |
-| **Resuelto** | El árbol declara que aquí el problema queda resuelto |
-| **Escalar** | Se acabaron los pasos conocidos: toca soporte presencial |
+| **Resuelto** | El docente respondió que ya funciona: el caso se cierra ahí, sin volver a preguntar |
+| **Escalar** | Se acabaron los pasos conocidos: el docente elige entre pedir soporte o hacer otra consulta |
 | **Respuesta inválida** | Lo que llegó no es una de las opciones del paso |
+
+**Por qué «Resuelto» no vuelve a preguntar.** La primera versión mostraba después la pantalla
+«¿El problema ya se solucionó?», por si el procedimiento daba por bueno algo que en el aula no
+funcionaba. Con los árboles actuales eso no puede pasar: a «Resuelto» solo se llega con una
+respuesta en la que **el propio docente** dice que funciona, y preguntárselo otra vez era hacerle
+confirmar lo mismo dos veces. El editor de pasos lo advierte: «Dar por resuelto» solo debe
+salir de una respuesta así.
 
 **Por qué exactamente cuatro y modelados como un objeto:** la alternativa habitual sería
 devolver «el siguiente paso, o `null`, o `false`, o un texto». Eso obliga a quien llame a
