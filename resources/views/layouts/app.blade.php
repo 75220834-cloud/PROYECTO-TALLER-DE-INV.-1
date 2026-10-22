@@ -142,7 +142,7 @@
 
         <div class="border-t border-[var(--glass-stroke)] px-5 py-4 text-xs">
             <p class="font-medium text-on-surface">{{ auth()->user()?->name }}</p>
-            <p class="label-tech mt-0.5 text-on-surface-variant">{{ auth()->user()?->getRoleNames()->first() }}</p>
+            <p class="label-tech mt-0.5 text-on-surface-variant">{{ auth()->user()?->roleName() }}</p>
             <form method="POST" action="{{ route('logout') }}" class="mt-2">
                 @csrf
                 <button type="submit" class="focus-ring mt-2 text-on-surface-variant underline-offset-2 hover:text-on-surface hover:underline">

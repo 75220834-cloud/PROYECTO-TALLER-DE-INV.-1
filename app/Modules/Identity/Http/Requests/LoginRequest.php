@@ -48,8 +48,8 @@ class LoginRequest extends FormRequest
     {
         return [
             'email.required' => 'Ingresa tu correo.',
-            'email.email' => 'El correo no tiene un formato valido.',
-            'password.required' => 'Ingresa tu contrasena.',
+            'email.email' => 'El correo no tiene un formato válido.',
+            'password.required' => 'Ingresa tu contraseña.',
         ];
     }
 

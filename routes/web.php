@@ -256,19 +256,21 @@ Route::middleware('auth')->prefix('panel')->name('admin.')->group(function () {
         // El nombre del parametro debe coincidir con el de la firma del
         // controlador (Site $site, Room $room...): asi funciona el enlace
         // implicito de modelos de Laravel. Un {model} generico no enlazaria.
+        // La direccion va en espanol (se lee en el navegador); el nombre de
+        // la ruta queda como estaba, porque el codigo se refiere a el.
         foreach ([
-            'sites' => [SiteController::class, 'site'],
-            'buildings' => [BuildingController::class, 'building'],
-            'floors' => [FloorController::class, 'floor'],
-            'rooms' => [RoomController::class, 'room'],
-        ] as $slug => [$controller, $param]) {
-            Route::get("/{$slug}", [$controller, 'index'])->name("{$slug}.index");
-            Route::get("/{$slug}/nuevo", [$controller, 'create'])->name("{$slug}.create");
-            Route::post("/{$slug}", [$controller, 'store'])->name("{$slug}.store");
-            Route::get("/{$slug}/{{$param}}/editar", [$controller, 'edit'])->whereNumber($param)->name("{$slug}.edit");
-            Route::put("/{$slug}/{{$param}}", [$controller, 'update'])->whereNumber($param)->name("{$slug}.update");
-            Route::delete("/{$slug}/{{$param}}", [$controller, 'destroy'])->whereNumber($param)->name("{$slug}.destroy");
-            Route::patch("/{$slug}/{{$param}}/activar", [$controller, 'toggle'])->whereNumber($param)->name("{$slug}.toggle");
+            'sites' => ['sedes', SiteController::class, 'site'],
+            'buildings' => ['pabellones', BuildingController::class, 'building'],
+            'floors' => ['pisos', FloorController::class, 'floor'],
+            'rooms' => ['aulas', RoomController::class, 'room'],
+        ] as $slug => [$path, $controller, $param]) {
+            Route::get("/{$path}", [$controller, 'index'])->name("{$slug}.index");
+            Route::get("/{$path}/nuevo", [$controller, 'create'])->name("{$slug}.create");
+            Route::post("/{$path}", [$controller, 'store'])->name("{$slug}.store");
+            Route::get("/{$path}/{{$param}}/editar", [$controller, 'edit'])->whereNumber($param)->name("{$slug}.edit");
+            Route::put("/{$path}/{{$param}}", [$controller, 'update'])->whereNumber($param)->name("{$slug}.update");
+            Route::delete("/{$path}/{{$param}}", [$controller, 'destroy'])->whereNumber($param)->name("{$slug}.destroy");
+            Route::patch("/{$path}/{{$param}}/activar", [$controller, 'toggle'])->whereNumber($param)->name("{$slug}.toggle");
         }
 
         Route::get('/qr', [QrCodeController::class, 'show'])->name('qr.show');

@@ -70,7 +70,7 @@
                     <input type="radio" name="role" value="{{ $role }}" class="mt-1"
                            @checked(old('role', $user->getRoleNames()->first()) === $role)>
                     <span>
-                        <span class="block text-sm font-medium text-on-surface">{{ $role }}</span>
+                        <span class="block text-sm font-medium text-on-surface">{{ \App\Models\User::roleLabel($role) }}</span>
                         <span class="block text-xs text-on-surface-variant">{{ $descripciones[$role] ?? 'Rol personalizado.' }}</span>
                     </span>
                 </label>

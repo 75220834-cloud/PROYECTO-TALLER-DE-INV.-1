@@ -26,13 +26,14 @@
 
             <div class="text-right">
                 <p class="text-xs uppercase tracking-wide text-warn">Falta la foto de</p>
-                <p class="font-mono text-sm font-semibold text-on-warn-container">{{ $step->component_key }}</p>
+                <p class="text-sm font-semibold text-on-warn-container">{{ \App\Shared\Support\Label::for('components', $step->component_key) }}</p>
+                <p class="font-mono text-xs text-on-warn-container">clave {{ $step->component_key }}</p>
             </div>
         </div>
 
         <a href="{{ route('admin.media.create', ['clave' => $step->component_key]) }}"
            class="mt-3 inline-block rounded-md border border-warn bg-surface-lowest px-3 py-1.5 text-sm font-medium text-on-warn-container">
-            Subir la foto de «{{ $step->component_key }}»
+            Subir la foto de «{{ \App\Shared\Support\Label::for('components', $step->component_key) }}»
         </a>
     </div>
 @empty

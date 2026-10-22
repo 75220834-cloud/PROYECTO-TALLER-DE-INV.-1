@@ -9,7 +9,7 @@
     <select name="action" data-auto-submit class="rounded-md border-outline-variant px-3 py-2 text-sm">
         <option value="">Todas las acciones</option>
         @foreach ($actions as $option)
-            <option value="{{ $option }}" @selected($action === $option)>{{ $option }}</option>
+            <option value="{{ $option }}" @selected($action === $option)>{{ \App\Modules\Audit\Support\AuditText::action($option) }}</option>
         @endforeach
     </select>
 </form>
@@ -32,16 +32,16 @@
                         {{ \Illuminate\Support\Carbon::parse($log->created_at)->timezone(config('incidencias.display_timezone'))->format('d/m/Y H:i') }}
                     </td>
                     <td class="px-4 py-3">{{ $log->user_name ?? 'Sistema' }}</td>
-                    <td class="px-4 py-3 font-mono text-xs">{{ $log->action }}</td>
+                    <td class="px-4 py-3">{{ \App\Modules\Audit\Support\AuditText::action($log->action) }}</td>
                     <td class="px-4 py-3 text-on-surface-variant">
-                        {{ $log->auditable_type ? class_basename($log->auditable_type).' #'.$log->auditable_id : '—' }}
+                        {{ \App\Modules\Audit\Support\AuditText::subject($log->auditable_type, $log->auditable_id) }}
                     </td>
                     <td class="max-w-md px-4 py-3">
                         @if ($log->changes)
                             {{-- El diff se muestra como texto plano: es contenido
                                  guardado, no marcado, y renderizarlo como HTML
                                  sería abrir una vía de inyección. --}}
-                            <code class="block truncate text-xs text-on-surface-variant">{{ $log->changes }}</code>
+                            <span class="block text-xs text-on-surface-variant">{{ \App\Modules\Audit\Support\AuditText::changes($log->changes) }}</span>
                         @else
                             <span class="text-outline">—</span>
                         @endif

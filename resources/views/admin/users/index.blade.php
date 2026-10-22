@@ -33,7 +33,7 @@
                     <td class="px-4 py-3 text-on-surface-variant">{{ $user->email }}</td>
                     <td class="px-4 py-3">
                         <span class="chip bg-surface-high text-on-surface-variant">
-                            {{ $user->getRoleNames()->first() ?? 'sin rol' }}
+                            {{ $user->roleName() }}
                         </span>
                     </td>
                     <td class="px-4 py-3 text-right">

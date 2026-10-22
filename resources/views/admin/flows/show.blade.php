@@ -39,14 +39,16 @@
     </div>
 @endif
 
+@php $numeroDe = $steps->pluck('sort_order', 'step_key'); @endphp
+
 @forelse ($steps as $step)
     <div class="mb-3 glass p-5">
         <div class="flex flex-wrap items-start justify-between gap-3">
             <div class="min-w-0 flex-1">
                 <p class="font-mono text-xs text-on-surface-variant">
-                    {{ $step->sort_order }} · {{ $step->step_key }}
+                    {{ $step->sort_order }} · {{ $step->is_terminal ? 'final' : $step->step_key }}
                     @if ($step->component_key)
-                        · muestra <span class="font-semibold">{{ $step->component_key }}</span>
+                        · muestra <span class="font-semibold">{{ \App\Shared\Support\Label::for('components', $step->component_key) }}</span>
                     @endif
                 </p>
 
@@ -67,8 +69,14 @@
                             @php $destino = ($step->next_step_map ?? [])[$opcion['value']] ?? null; @endphp
                             <li class="text-on-surface-variant">
                                 · {{ $opcion['label'] }}
-                                <span class="font-mono text-xs">
-                                    → {{ $destino ?? '¿se solucionó?' }}
+                                <span class="text-xs">
+                                    → {{ match (true) {
+                                        $destino === null => '¿se solucionó?',
+                                        $destino === 'END_RESOLVED' => 'termina: resuelto',
+                                        $destino === 'END_ESCALATE' => 'termina: avisa a soporte',
+                                        $numeroDe->has($destino) => 'paso '.$numeroDe[$destino],
+                                        default => $destino,
+                                    } }}
                                 </span>
                             </li>
                         @endforeach

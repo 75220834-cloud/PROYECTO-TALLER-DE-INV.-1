@@ -83,8 +83,14 @@
 
     <dl class="grid gap-2 text-sm sm:grid-cols-2">
         @foreach ($thresholds as $key => $value)
-            <div class="flex justify-between border-b border-surface-mid py-1">
-                <dt class="font-mono text-xs text-on-surface-variant">{{ $key }}</dt>
+            @php [$etiqueta, $variable] = (array) \App\Shared\Support\Label::for('abuse-thresholds', $key) + [1 => null]; @endphp
+            <div class="flex items-center justify-between gap-3 border-b border-surface-mid py-1.5">
+                <dt class="text-xs text-on-surface-variant">
+                    {{ $etiqueta }}
+                    @if ($variable)
+                        <span class="mt-0.5 block font-mono text-[10px] text-outline">{{ $variable }}</span>
+                    @endif
+                </dt>
                 <dd class="font-medium">{{ is_bool($value) ? ($value ? 'sí' : 'no') : $value }}</dd>
             </div>
         @endforeach

@@ -62,13 +62,13 @@ final class QrCodeService
 
         if ($host === '' || $host === 'localhost' || str_ends_with($host, '.localhost')) {
             return 'Este código apunta a «localhost»: solo abre en esta misma computadora. '
-                .'En el celular de un docente no abre nada. Define PUBLIC_URL antes de imprimir.';
+                .'En el celular de un docente no abre nada. Antes de imprimir, escribe la dirección pública del sistema en PUBLIC_URL, dentro del archivo .env (guía de despliegue 3 o 4).';
         }
 
         if (filter_var($host, FILTER_VALIDATE_IP) !== false
             && filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false) {
             return "Este código apunta a una dirección de red interna ({$host}). Solo abre desde esa misma red: "
-                .'un docente con datos móviles no podrá entrar. Define PUBLIC_URL antes de imprimir.';
+                .'un docente con datos móviles no podrá entrar. Antes de imprimir, escribe la dirección pública del sistema en PUBLIC_URL, dentro del archivo .env (guía de despliegue 3 o 4).';
         }
 
         if (str_ends_with($host, '.trycloudflare.com')) {

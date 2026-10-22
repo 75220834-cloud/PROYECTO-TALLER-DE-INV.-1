@@ -72,7 +72,7 @@
                 <p class="mt-0.5 truncate text-sm font-medium">{{ $asset->title }}</p>
 
                 <p class="mt-1 text-xs text-on-surface-variant">
-                    {{ $asset->scope_type }}@if ($asset->scope_key) · {{ $asset->scope_key }}@endif
+                    {{ \App\Shared\Support\Label::for('media-scopes', $asset->scope_type) }}@if ($asset->scope_key) · {{ \App\Shared\Support\Label::for('components', $asset->scope_key) }} <span class="font-mono">({{ $asset->scope_key }})</span>@endif
                 </p>
 
                 <div class="mt-3 flex items-center gap-3 text-sm">

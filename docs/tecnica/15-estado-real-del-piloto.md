@@ -24,7 +24,7 @@ rehízo entero en lugar de parchearse.
 
 | Dimensión | Estado |
 |---|---|
-| **Código** | ✅ Terminado. 132 rutas, 554 pruebas en verde, análisis estático limpio |
+| **Código** | ✅ Terminado. 132 rutas, 560 pruebas en verde, análisis estático limpio |
 | **Catálogo de aulas y equipos** | ✅ **Cargado y real** |
 | **Procedimientos de diagnóstico** | ✅ **Ocho árboles publicados** |
 | **Corpus para la IA** | ✅ **Ocho guías, 46 fragmentos indexados** |
@@ -108,7 +108,7 @@ responder si ayudan.
 | El asistente escala ante preguntas ajenas | Dos de tres sondas. Ver 15.7 |
 | El modelo clasifica vocabulario peruano | «cañón», «compu», «no jala» |
 | No hay fuga temporal en el modelo de riesgo | Suite dedicada |
-| El sistema funciona con la IA apagada | Las 554 pruebas corren sin Ollama |
+| El sistema funciona con la IA apagada | Las 560 pruebas corren sin Ollama |
 | La comparación de texto no depende de la máquina | Prueba que cambia la codificación interna de PHP |
 
 ---

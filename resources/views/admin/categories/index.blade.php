@@ -22,8 +22,7 @@
         <thead class="border-b border-outline-variant bg-surface-low text-left label-tech text-on-surface-variant">
             <tr>
                 <th class="px-4 py-3">Orden</th>
-                <th class="px-4 py-3">Código</th>
-                <th class="px-4 py-3">Nombre interno</th>
+                <th class="px-4 py-3">Nombre</th>
                 <th class="px-4 py-3">Lo que lee el docente</th>
                 <th class="px-4 py-3">Prioridad base</th>
                 <th class="px-4 py-3"></th>
@@ -33,7 +32,6 @@
             @foreach ($categories as $category)
                 <tr class="border-b border-outline-variant last:border-0 {{ $category->is_active ? '' : 'opacity-50' }}">
                     <td class="px-4 py-3 text-on-surface-variant">{{ $category->sort_order }}</td>
-                    <td class="px-4 py-3 font-mono text-xs">{{ $category->code }}</td>
                     <td class="px-4 py-3 font-medium">{{ $category->name }}</td>
                     <td class="px-4 py-3 text-on-surface-variant">{{ $category->teacherText() }}</td>
                     <td class="px-4 py-3 text-on-surface-variant">{{ $category->defaultPriority?->name ?? '—' }}</td>

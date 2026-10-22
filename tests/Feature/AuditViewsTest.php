@@ -94,9 +94,12 @@ it('explica que muchos rechazos por red significan umbral mal puesto', function 
 });
 
 it('muestra los umbrales vigentes para no tener que abrir el .env', function () {
+    // En palabras, y con la variable del .env que lo cambia.
     $this->actingAs($this->coordinador)->get(route('admin.audit.rejections'))
         ->assertOk()
-        ->assertSee('max_active_per_room');
+        ->assertSee('Solicitudes abiertas como máximo por aula')
+        ->assertSee('ABUSE_MAX_ACTIVE_PER_ROOM')
+        ->assertDontSee('max_active_per_room');
 });
 
 it('acota el periodo consultable', function () {

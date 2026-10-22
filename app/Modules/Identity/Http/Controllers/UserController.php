@@ -65,7 +65,7 @@ class UserController extends Controller
         $this->audit->record('user.created', $user, ['role' => $data['role']]);
 
         return redirect()->route('admin.users.index')
-            ->with('status', "Usuario «{$user->name}» creado con el rol {$data['role']}.");
+            ->with('status', "Usuario «{$user->name}» creado con el rol de ".User::roleLabel($data['role']).'.');
     }
 
     public function edit(User $user): View

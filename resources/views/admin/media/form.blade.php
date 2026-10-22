@@ -120,7 +120,7 @@
         <div>
             <label class="block text-sm font-medium text-on-surface-variant">Ámbito</label>
             <select name="scope_type" class="mt-1 block w-full rounded-md border-outline-variant text-sm">
-                @foreach (['component' => 'Componente', 'category' => 'Categoría', 'equipment_type' => 'Tipo de equipo', 'generic' => 'Genérica'] as $v => $l)
+                @foreach (__('media-scopes') as $v => $l)
                     <option value="{{ $v }}" @selected(old('scope_type', $asset->scope_type ?? 'component') === $v)>{{ $l }}</option>
                 @endforeach
             </select>

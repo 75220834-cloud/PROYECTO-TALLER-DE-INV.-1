@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Shared\Support\Label;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -46,5 +47,16 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /** Nombre del rol en español; el código queda solo para los permisos. */
+    public static function roleLabel(?string $role): string
+    {
+        return $role === null ? 'Sin rol' : (string) Label::for('roles', $role);
+    }
+
+    public function roleName(): string
+    {
+        return self::roleLabel($this->getRoleNames()->first());
     }
 }

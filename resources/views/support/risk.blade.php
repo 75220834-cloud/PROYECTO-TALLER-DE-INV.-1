@@ -37,7 +37,7 @@
                 <div>
                     <p class="font-mono text-lg font-semibold">{{ $roomCodes[$score->scope_id] ?? 'Aula #' . $score->scope_id }}</p>
                     <p class="text-xs text-on-surface-variant">
-                        {{ $score->model_code }} v{{ $score->model_version }} ·
+                        {{ \App\Shared\Support\Label::for('risk-models', $score->model_code) }} v{{ $score->model_version }} ·
                         {{ $score->computed_at?->timezone(config('incidencias.display_timezone'))->format('d/m/Y H:i') }}
                     </p>
                 </div>
