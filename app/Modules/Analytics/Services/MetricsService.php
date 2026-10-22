@@ -48,6 +48,57 @@ final class MetricsService
             'topCategories' => $this->topCategories($from, $to),
             'visualAid' => $this->visualAidEffect($from, $to),
             'satisfaction' => $this->satisfaction($from, $to),
+            'ai' => $this->ai($from, $to),
+        ];
+    }
+
+    /**
+     * Lo que hizo la IA en el periodo.
+     *
+     * ACIERTO: de las veces que la IA propuso una categoría a partir del
+     * texto del docente, en cuántas el docente la aceptó. Se mide contra su
+     * corrección, no contra una opinión nuestra: si el docente eligió otra,
+     * la IA se equivocó.
+     *
+     * PREGUNTAS: cuántas respondió el asistente con las guías y cuántas
+     * terminó derivando a soporte por no tener respaldo. Derivar no es un
+     * fallo —es la política—, pero una tasa alta dice que faltan guías.
+     *
+     * @return array<string, int|float|null>
+     */
+    public function ai(Carbon $from, Carbon $to): array
+    {
+        $propuestas = DB::table('incident_events')
+            ->where('event_type', 'problem_reported')
+            ->whereBetween('occurred_at', [$from, $to])
+            ->whereRaw("JSON_EXTRACT(metadata, '$.ai_suggested') IS NOT NULL");
+
+        $proposed = $propuestas->clone()->count();
+        $accepted = $propuestas->clone()
+            ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(metadata, '$.classified_by')) = 'assistant'")
+            ->count();
+
+        $preguntas = DB::table('assistant_interactions')
+            ->whereBetween('created_at', [$from, $to])
+            ->get(['escalated', 'latency_ms']);
+
+        $questions = $preguntas->count();
+        $answered = $preguntas->where('escalated', false)->count();
+
+        // Mediana, como en los demás tiempos: una respuesta lenta por el
+        // arranque en frío del modelo no debe definir el «tiempo típico».
+        $latencias = $preguntas->pluck('latency_ms')->filter(fn ($ms) => $ms !== null)->sort()->values();
+        $mediana = $latencias->isEmpty() ? null : $latencias->median();
+
+        return [
+            'proposed' => $proposed,
+            'accepted' => $accepted,
+            'corrected' => $proposed - $accepted,
+            'accuracy' => $proposed > 0 ? round($accepted / $proposed * 100, 1) : null,
+            'questions' => $questions,
+            'answered' => $answered,
+            'answeredRate' => $questions > 0 ? round($answered / $questions * 100, 1) : null,
+            'medianSeconds' => $mediana === null ? null : round($mediana / 1000, 1),
         ];
     }
 

@@ -9,9 +9,9 @@
 
 | Métrica | Valor |
 |---|---|
-| Pruebas automáticas | **560** |
-| Aserciones | 2 180 |
-| Archivos de prueba | 40 |
+| Pruebas automáticas | **573** |
+| Aserciones | 2 221 |
+| Archivos de prueba | 42 |
 | Suites | 7 |
 | Duración de la suite completa | ~8 minutos |
 | Nivel de PHPStan | 5, sin errores |
@@ -24,9 +24,9 @@
 ```mermaid
 graph TB
     U["Unit<br/>2 archivos"] --> D["Lógica pura,<br/>sin base de datos"]
-    F["Feature<br/>30 archivos"] --> E["Flujos completos<br/>por HTTP"]
+    F["Feature<br/>31 archivos"] --> E["Flujos completos<br/>por HTTP"]
     A["Ai<br/>4 archivos"] --> G["Comportamiento<br/>del modelo"]
-    R["Retrieval<br/>1 archivo"] --> H["Búsqueda híbrida"]
+    R["Retrieval<br/>2 archivos"] --> H["Búsqueda híbrida"]
     RI["Risk<br/>2 archivos"] --> I["Modelo predictivo<br/>y fuga temporal"]
     IN["Integration<br/>1 archivo"] --> J["Agregados y<br/>tareas programadas"]
     B["Browser"] --> K["Reservada"]
@@ -51,7 +51,7 @@ Es la única suite que corre sin base de datos, y por eso es instantánea.
 
 ### Feature — los flujos completos
 
-Treinta archivos. Los más significativos:
+Treinta y un archivos. Los más significativos:
 
 | Archivo | Qué verifica |
 |---|---|
@@ -69,6 +69,7 @@ Treinta archivos. Los más significativos:
 | `CatalogImportTest` | Que la importación previsualice antes de escribir |
 | `KnowledgeIngestionTest` | Que un documento se extraiga, fragmente e indexe |
 | `AuthenticationTest`, `UserManagementTest`, `AuditViewsTest` | Identidad y trazabilidad |
+| `IncidentSuggestionsTest` | Las sugerencias de la IA en la ficha: casos parecidos ya resueltos, ventaja de la misma aula, permisos |
 | `InterfazEnEspanolTest` | Que ninguna pantalla del panel muestre códigos internos ni textos en inglés: recorre todas, con datos, como administrador |
 
 ### Ai — el comportamiento del modelo
@@ -228,7 +229,7 @@ flowchart LR
     D --> E[PHPStan: tipos]
     E --> F[composer audit:<br/>vulnerabilidades conocidas]
     F --> G[npm run build]
-    G --> H[560 pruebas]
+    G --> H[573 pruebas]
     H --> I{¿Todo verde?}
     I -->|Sí| J[✅]
     I -->|No| K[❌ y dice cuál falló]
@@ -267,7 +268,7 @@ codificación interna de PHP para comprobar que el resultado no varía.
 
 Para que **el estado del proyecto sea verificable por alguien que no lo ejecutó**. El
 profesor, el jurado o un colaborador ven en GitHub una marca verde que significa: en esta
-versión concreta del código, las 560 pruebas pasaban, el análisis estático estaba limpio y
+versión concreta del código, las 573 pruebas pasaban, el análisis estático estaba limpio y
 el proyecto compilaba.
 
 Eso es una afirmación mucho más fuerte que «a mí me funciona».

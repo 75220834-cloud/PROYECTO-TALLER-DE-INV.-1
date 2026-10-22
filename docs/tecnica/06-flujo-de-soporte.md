@@ -95,6 +95,16 @@ graph TD
 | **En palabras del docente** | Su descripción literal, sin reinterpretar. |
 | **Historial del ticket** | Cada evento con su hora, su autor y, cuando la decisión fue automática, **los factores que la explican**. |
 
+### Las sugerencias de la IA
+
+Debajo de lo que reportó el docente aparece la tarjeta «✦ IA · Sugerencias»: los **casos
+parecidos que ya se resolvieron, y cómo**, y la **guía que mejor habla del problema**. Se carga
+aparte, cuando la ficha ya está a la vista, para no esperar al modelo. El detalle está en
+[07 · Inteligencia artificial](07-inteligencia-artificial.md).
+
+Para que la tarjeta sirva, al cerrar una incidencia hay que **anotar lo que se hizo**: un caso
+sin solución escrita no aparece como sugerencia, porque no enseña nada.
+
 ### La explicación de la prioridad
 
 Cuando el sistema fijó una prioridad, el historial muestra la lista de razones: «El

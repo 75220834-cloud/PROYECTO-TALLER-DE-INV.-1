@@ -76,6 +76,34 @@ if (refrescable) {
 }
 
 /* ------------------------------------------------------------------------
+   Sugerencias de la IA en la ficha de la incidencia.
+
+   Se piden DESPUÉS de mostrar la ficha: el modelo puede tardar unos segundos
+   (más si está arrancando), y el técnico no tiene por qué esperar para leer
+   la incidencia. Lo que llega es HTML del propio servidor, ya escapado por
+   la plantilla.
+   ------------------------------------------------------------------------ */
+const sugerencias = document.querySelector('[data-sugerencias]');
+
+if (sugerencias) {
+    fetch(sugerencias.dataset.sugerencias, {
+        headers: { Accept: 'text/html', 'X-Requested-With': 'XMLHttpRequest' },
+        credentials: 'same-origin',
+    })
+        .then((respuesta) => (respuesta.ok ? respuesta.text() : Promise.reject(respuesta.status)))
+        .then((html) => {
+            sugerencias.innerHTML = html;
+        })
+        .catch(() => {
+            const estado = sugerencias.querySelector('[data-sugerencias-estado]');
+
+            if (estado) {
+                estado.textContent = 'No se pudieron cargar las sugerencias. Recarga la página para intentarlo otra vez.';
+            }
+        });
+}
+
+/* ------------------------------------------------------------------------
    Cascada de ubicación en una sola pantalla.
 
    El HTML llega con TODAS las opciones dentro: los 10 pabellones, los 47

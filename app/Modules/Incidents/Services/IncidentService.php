@@ -67,6 +67,7 @@ final class IncidentService
         ?string $description,
         string $classifiedBy = 'teacher',
         ?float $confidence = null,
+        ?string $aiSuggested = null,
     ): Incident {
         $this->transitionTo($incident, S::Diagnosing, 'teacher');
 
@@ -81,7 +82,7 @@ final class IncidentService
         $this->record($incident, 'problem_reported', 'teacher', metadata: [
             'category' => $category->code,
             'classified_by' => $classifiedBy,
-        ]);
+        ] + ($aiSuggested !== null ? ['ai_suggested' => $aiSuggested] : []));
 
         return $incident->refresh();
     }

@@ -39,6 +39,47 @@
 
 <div class="grid gap-6 lg:grid-cols-2">
 
+    {{-- Lo que hizo la IA, a la vista. Sin esta tarjeta el panel parecía un
+         sistema de tickets cualquiera: la IA trabajaba, pero nadie lo veía. --}}
+    @php $ia = $metrics['ai']; @endphp
+    <div class="glass ia-card p-5 lg:col-span-2">
+        <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
+            <div>
+                <span class="ia-badge"><span aria-hidden="true">✦</span> IA</span>
+                <h2 class="mt-1.5 text-lg font-semibold text-on-surface">Inteligencia artificial</h2>
+                <p class="text-xs text-outline">Corre en esta misma PC. Si se apaga, el sistema sigue funcionando sin ella.</p>
+            </div>
+        </div>
+
+        @if ($ia['proposed'] === 0 && $ia['questions'] === 0)
+            <p class="text-sm text-on-surface-variant">
+                Todavía no hay datos de la IA en este periodo. Aparecen cuando los docentes describen su
+                problema con sus palabras o le hacen una pregunta al asistente.
+            </p>
+        @else
+            <div class="grid gap-5 sm:grid-cols-2">
+                <div>
+                    <p class="text-sm text-on-surface-variant">Acierto al entender el problema</p>
+                    <p class="text-4xl font-bold text-gold-text">{{ $ia['accuracy'] !== null ? $ia['accuracy'] . '%' : '—' }}</p>
+                    <p class="mt-1 text-xs text-outline">
+                        {{ $ia['accepted'] }} de {{ $ia['proposed'] }} propuestas aceptadas por el docente
+                        · {{ $ia['corrected'] }} corregidas
+                    </p>
+                </div>
+                <div>
+                    <p class="text-sm text-on-surface-variant">Preguntas respondidas con las guías</p>
+                    <p class="text-4xl font-bold text-gold-text">{{ $ia['answeredRate'] !== null ? $ia['answeredRate'] . '%' : '—' }}</p>
+                    <p class="mt-1 text-xs text-outline">
+                        {{ $ia['answered'] }} de {{ $ia['questions'] }} sin derivar a soporte
+                        @if ($ia['medianSeconds'] !== null)
+                            · respuesta típica en {{ $ia['medianSeconds'] }} s
+                        @endif
+                    </p>
+                </div>
+            </div>
+        @endif
+    </div>
+
     {{-- El indicador central de la investigación. --}}
     <div class="glass p-5">
         <h2 class="mb-1 label-tech text-on-surface-variant">Autonomía de resolución</h2>

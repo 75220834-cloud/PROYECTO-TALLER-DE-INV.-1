@@ -100,6 +100,22 @@ fragmentos al modelo y le pide que responda **solo** con eso.
 El detalle completo está en
 [08 · Conocimiento y recuperación](08-conocimiento-y-recuperacion.md).
 
+### Además, en el panel: sugerencias al técnico
+
+En la ficha de cada incidencia aparece una tarjeta «✦ IA · Sugerencias» con dos cosas:
+
+1. **Casos parecidos que ya se resolvieron, y cómo.** Solo del mismo tipo de problema y con
+   lo que se hizo anotado. El parecido se mide **por significado**, con los vectores del
+   modelo de embeddings (`nomic-embed-text`); si Ollama no está, se mide por palabras en
+   común y la tarjeta lo dice. Los de la misma aula llevan ventaja: un aula que ya falló por
+   el cable suele volver a fallar por el cable.
+2. **La guía que mejor habla del problema**, con la misma búsqueda híbrida y el mismo piso de
+   relevancia que usa el asistente del docente (ver 7.7). Si ninguna guía sirve, lo dice.
+
+La tarjeta se carga **aparte**, después de mostrar la ficha: si el modelo tarda —por ejemplo
+al arrancar en frío—, el técnico ya está leyendo la incidencia. Son sugerencias: no cambian
+el estado, la prioridad ni nada del ticket.
+
 ### Lo que la IA nunca hace, y por qué
 
 | No hace | Por qué |
@@ -132,7 +148,7 @@ graph LR
 
 ### Qué gana el proyecto con esto
 
-1. **Las 560 pruebas corren sin tener Ollama instalado.** Eso permite integración continua
+1. **Las 573 pruebas corren sin tener Ollama instalado.** Eso permite integración continua
    en GitHub, donde no hay una GPU ni 6 GB para un modelo.
 2. **El sistema funciona completo con la IA apagada.** Si esto deja de ser cierto, es un
    defecto — y así está escrito en la configuración del proyecto.
@@ -370,8 +386,22 @@ Cada interacción con el asistente se guarda con:
 - qué fragmentos se citaron, con su puntuación,
 - qué proveedor respondió y cuánto tardó.
 
+Y cada clasificación (F1) queda con **qué categoría propuso la IA, con qué confianza, y si el
+docente la aceptó o la corrigió** (`classified_by` en la incidencia y `ai_suggested` en el
+evento `problem_reported`). La propuesta se guarda en el servidor junto con el texto exacto:
+un envío con otra descripción no hereda el acierto, y no se puede declarar desde el
+formulario.
+
+> **Corregido el 22-10-2026.** Hasta esa fecha la incidencia quedaba siempre como «elegida
+> por el docente», aunque hubiera aceptado la propuesta de la IA: el acierto del clasificador
+> salía cero. Los datos anteriores a esa fecha no sirven para medirlo.
+
 **Para qué sirve:** para que la política de escalamiento sea **auditable y recalibrable
 con datos reales**. Sin este registro, ajustar los umbrales sería adivinar.
+
+El tablero muestra el resumen en la tarjeta «Inteligencia artificial»: el **acierto** (de las
+propuestas de la IA, cuántas aceptó el docente) y las **preguntas respondidas con las guías**
+(cuántas no tuvieron que derivarse a soporte), con el tiempo típico de respuesta.
 
 ---
 

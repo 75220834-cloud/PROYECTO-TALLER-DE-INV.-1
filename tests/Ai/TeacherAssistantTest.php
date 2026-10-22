@@ -92,6 +92,83 @@ it('la categoría elegida tras la propuesta se guarda con la descripción', func
         ->and($incident->reported_description)->toBe('no se ve nada');
 });
 
+/*
+ * Quién clasificó. Es el dato que permite medir el acierto de la IA contra la
+ * corrección del docente, y antes se perdía: aunque el docente aceptara la
+ * propuesta, la incidencia quedaba como elegida por él. El acierto de la IA
+ * salía siempre cero.
+ */
+it('registra que la IA acertó cuando el docente acepta su propuesta', function () {
+    ($this->empezar)();
+
+    $sugerida = $this->post(route('teacher.classify'), ['description' => 'el proyector no enciende'])
+        ->viewData('suggested');
+    expect($sugerida)->not->toBeNull();
+
+    $this->post(route('teacher.category.store'), [
+        'category_id' => (string) $sugerida->id,
+        'description' => 'el proyector no enciende',
+    ])->assertRedirect();
+
+    $incident = Incident::first();
+    $evento = $incident->events()->where('event_type', 'problem_reported')->firstOrFail();
+
+    expect($incident->classified_by)->toBe('assistant')
+        ->and($incident->classification_confidence)->not->toBeNull()
+        ->and($evento->metadata['ai_suggested'])->toBe($sugerida->code);
+});
+
+it('registra la corrección cuando el docente elige otra categoría', function () {
+    ($this->empezar)();
+
+    $sugerida = $this->post(route('teacher.classify'), ['description' => 'el proyector no enciende'])
+        ->viewData('suggested');
+    $otra = IncidentCategory::where('id', '!=', $sugerida->id)->where('code', '!=', 'OTHER')->firstOrFail();
+
+    $this->post(route('teacher.category.store'), [
+        'category_id' => (string) $otra->id,
+        'description' => 'el proyector no enciende',
+    ]);
+
+    $incident = Incident::first();
+    $evento = $incident->events()->where('event_type', 'problem_reported')->firstOrFail();
+
+    // La IA propuso una cosa y el docente la corrigió: las dos quedan.
+    expect($incident->classified_by)->toBe('teacher')
+        ->and($incident->category_id)->toBe($otra->id)
+        ->and($evento->metadata['ai_suggested'])->toBe($sugerida->code);
+});
+
+it('sin pasar por la IA queda como elegido por el docente', function () {
+    ($this->empezar)();
+    $categoria = IncidentCategory::where('code', 'PROJECTOR')->firstOrFail();
+
+    $this->post(route('teacher.category.store'), ['category_id' => (string) $categoria->id]);
+
+    $incident = Incident::first();
+    $evento = $incident->events()->where('event_type', 'problem_reported')->firstOrFail();
+
+    expect($incident->classified_by)->toBe('teacher')
+        ->and($incident->classification_confidence)->toBeNull()
+        ->and($evento->metadata)->not->toHaveKey('ai_suggested');
+});
+
+it('la propuesta no se puede atribuir a otro texto', function () {
+    // La propuesta se guarda en el servidor, no en el formulario: un
+    // envío con otra descripción no hereda el acierto de la IA.
+    ($this->empezar)();
+
+    $sugerida = $this->post(route('teacher.classify'), ['description' => 'el proyector no enciende'])
+        ->viewData('suggested');
+
+    $this->post(route('teacher.category.store'), [
+        'category_id' => (string) $sugerida->id,
+        'description' => 'otro texto distinto',
+    ]);
+
+    expect(Incident::first()->classified_by)->toBe('teacher');
+});
+
 it('exige un texto mínimo antes de molestar al modelo', function () {
     ($this->empezar)();
 

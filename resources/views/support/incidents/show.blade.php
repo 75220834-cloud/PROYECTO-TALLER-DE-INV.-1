@@ -105,6 +105,21 @@
             @endif
         </div>
 
+        {{-- Sugerencias de la IA. Se piden aparte, al terminar de cargar la
+             ficha: si el modelo tarda, el técnico ya está leyendo. --}}
+        <div class="glass ia-card p-5">
+            <span class="ia-badge"><span aria-hidden="true">✦</span> IA</span>
+            <h2 class="mt-1.5 text-lg font-semibold text-on-surface">Sugerencias</h2>
+            <div class="mt-3" data-sugerencias="{{ route('support.incidents.suggestions', $incident) }}">
+                <p class="text-sm text-on-surface-variant" data-sugerencias-estado>
+                    La IA está buscando casos parecidos y la guía que mejor habla del problema…
+                </p>
+                <noscript>
+                    <a href="{{ route('support.incidents.suggestions', $incident) }}" class="text-sm underline">Ver las sugerencias</a>
+                </noscript>
+            </div>
+        </div>
+
         {{-- Historial completo: es lo que permite responder "por qué este
              ticket terminó aquí" sin preguntarle a nadie (plan §57). --}}
         <div class="glass p-5">

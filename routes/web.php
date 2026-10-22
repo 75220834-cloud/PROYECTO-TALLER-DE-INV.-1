@@ -6,6 +6,7 @@ use App\Http\Controllers\HealthController;
 use App\Modules\Analytics\Http\Controllers\DashboardController;
 use App\Modules\Analytics\Http\Controllers\ReportsController;
 use App\Modules\Analytics\Http\Controllers\RoomHistoryController;
+use App\Modules\Assistant\Http\Controllers\IncidentSuggestionsController;
 use App\Modules\Assistant\Http\Controllers\TeacherAssistantController;
 use App\Modules\Audit\Http\Controllers\AuditController;
 use App\Modules\Diagnostics\Http\Controllers\FlowController;
@@ -208,6 +209,12 @@ Route::middleware('auth')->prefix('panel')->name('support.')->group(function () 
         Route::get('/incidencias', [SupportIncidentController::class, 'index'])->name('incidents.index');
         Route::get('/incidencias/{incident}', [SupportIncidentController::class, 'show'])
             ->whereNumber('incident')->name('incidents.show');
+
+        // Sugerencias de la IA: casos parecidos ya resueltos y la guía que
+        // mejor habla del problema. La ficha las pide aparte (ver el
+        // controlador) para no esperar al modelo.
+        Route::get('/incidencias/{incident}/sugerencias', IncidentSuggestionsController::class)
+            ->whereNumber('incident')->name('incidents.suggestions');
 
         // La foto del docente se sirve por controlador y no desde public/:
         // puede mostrar cosas que nadie decidio publicar.

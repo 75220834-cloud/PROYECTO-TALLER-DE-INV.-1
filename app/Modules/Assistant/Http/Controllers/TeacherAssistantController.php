@@ -7,6 +7,7 @@ namespace App\Modules\Assistant\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\Assistant\Services\AssistantService;
 use App\Modules\Assistant\Services\IntentClassifier;
+use App\Modules\Incidents\Http\Controllers\TeacherIncidentController;
 use App\Modules\Incidents\Models\Incident;
 use App\Modules\Incidents\Models\IncidentCategory;
 use Illuminate\Http\RedirectResponse;
@@ -74,6 +75,16 @@ class TeacherAssistantController extends Controller
         $alternatives = IncidentCategory::active()
             ->whereIn('code', $classification->alternatives)
             ->get();
+
+        // Lo que propuso la IA queda en el servidor, con el texto exacto:
+        // al elegir la categoría se sabrá si el docente la aceptó o la
+        // corrigió, que es como se mide el acierto del clasificador.
+        $request->session()->put(TeacherIncidentController::suggestionKey(), [
+            'incident' => $incident->uuid,
+            'description' => $data['description'],
+            'category' => $suggested?->code,
+            'confidence' => $classification->confidence,
+        ]);
 
         return view('teacher.classify', [
             'incident' => $incident,

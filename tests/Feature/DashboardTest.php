@@ -3,10 +3,12 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use App\Modules\Analytics\Services\MetricsService;
 use App\Modules\Incidents\Models\AbuseRejection;
 use App\Modules\Incidents\Models\Incident;
 use App\Modules\Incidents\Models\IncidentCategory;
 use App\Modules\Incidents\Models\IncidentStatus as StatusModel;
+use App\Modules\Incidents\Services\IncidentService;
 use App\Modules\Locations\Models\Building;
 use App\Modules\Locations\Models\Floor;
 use App\Modules\Locations\Models\Room;
@@ -15,6 +17,7 @@ use App\Shared\Enums\IncidentStatus as S;
 use App\Shared\Enums\ResolutionType;
 use Database\Seeders\CatalogSeeder;
 use Database\Seeders\RoleSeeder;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Tablero y exportacion del conjunto de datos (plan 15, 26.bis, CU-A-12).
@@ -138,4 +141,66 @@ it('no incluye borradores abandonados en el conjunto de datos', function () {
     $response = $this->actingAs($this->investigador)->get(route('support.dashboard.export'))->assertOk();
 
     expect($response->streamedContent())->not->toContain('ESTE ES UN BORRADOR');
+});
+
+/* ------------------------------------------------------------------ */
+/* Inteligencia artificial */
+/* ------------------------------------------------------------------ */
+
+it('mide cuánto acierta la IA al entender el problema', function () {
+    // Cuatro propuestas de la IA: tres aceptadas y una corregida por el
+    // docente. Una quinta incidencia, elegida con botones, no cuenta.
+    $servicio = app(IncidentService::class);
+    $otra = IncidentCategory::where('code', 'SPEAKER')->firstOrFail();
+
+    foreach ([['assistant', 'PROJECTOR'], ['assistant', 'PROJECTOR'], ['assistant', 'PROJECTOR'], ['teacher', 'SPEAKER'], ['teacher', null]] as [$quien, $propuesta]) {
+        $borrador = ($this->make)([
+            'status_id' => StatusModel::idFor(S::Draft), 'is_draft' => true,
+            'resolution_type' => null, 'resolved_at' => null,
+        ]);
+        $servicio->startDiagnosis(
+            $borrador,
+            $quien === 'assistant' ? $this->category : $otra,
+            'texto del docente',
+            classifiedBy: $quien,
+            confidence: $propuesta !== null ? 0.9 : null,
+            // La IA propuso «proyector» en las cuatro; en la corregida, el
+            // docente eligió el parlante.
+            aiSuggested: $propuesta === null ? null : 'PROJECTOR',
+        );
+    }
+
+    $ia = app(MetricsService::class)->ai(now()->subDay(), now()->addDay());
+
+    expect($ia['proposed'])->toBe(4)
+        ->and($ia['accepted'])->toBe(3)
+        ->and($ia['corrected'])->toBe(1)
+        ->and($ia['accuracy'])->toBe(75.0);
+
+    $this->actingAs($this->tecnico)->get(route('support.dashboard'))
+        ->assertOk()
+        ->assertSee('Inteligencia artificial')
+        ->assertSee('75%');
+});
+
+it('mide cuántas preguntas respondió el asistente con las guías', function () {
+    foreach ([[false, 1200], [false, 800], [true, 3000]] as [$escalada, $ms]) {
+        DB::table('assistant_interactions')->insert([
+            'query' => '¿cómo cambio la entrada del proyector?', 'escalated' => $escalada,
+            'latency_ms' => $ms, 'created_at' => now(), 'updated_at' => now(),
+        ]);
+    }
+
+    $ia = app(MetricsService::class)->ai(now()->subDay(), now()->addDay());
+
+    expect($ia['questions'])->toBe(3)
+        ->and($ia['answered'])->toBe(2)
+        ->and($ia['answeredRate'])->toBe(66.7)
+        ->and($ia['medianSeconds'])->toBe(1.2);
+});
+
+it('sin uso de la IA lo dice en vez de mostrar ceros', function () {
+    $this->actingAs($this->tecnico)->get(route('support.dashboard'))
+        ->assertOk()
+        ->assertSee('Todavía no hay datos de la IA');
 });

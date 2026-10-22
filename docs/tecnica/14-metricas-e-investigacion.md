@@ -103,6 +103,18 @@ exactamente el tipo de dato que hace creíble un trabajo.
 hay que revisar los umbrales: probablemente se esté bloqueando a docentes legítimos que
 comparten la WiFi institucional.
 
+### Inteligencia artificial
+
+| Indicador | Qué responde |
+|---|---|
+| **Acierto al entender el problema** | De las categorías que propuso la IA a partir del texto del docente, cuántas aceptó el docente. Se mide contra **su** corrección, no contra un criterio nuestro |
+| Propuestas corregidas | Cuántas veces el docente eligió otra categoría |
+| **Preguntas respondidas con las guías** | Cuántas preguntas al asistente no tuvieron que derivarse a soporte. Una tasa baja dice que faltan guías, no que el asistente falle: derivar es la política |
+| Respuesta típica | Mediana del tiempo de respuesta del asistente, en segundos |
+
+El acierto solo es fiable desde el **22-10-2026**: antes, la incidencia quedaba siempre como
+elegida por el docente aunque hubiera aceptado la propuesta (ver 07, sección 7.9).
+
 ### Efecto de las imágenes
 
 | Indicador | Qué responde |

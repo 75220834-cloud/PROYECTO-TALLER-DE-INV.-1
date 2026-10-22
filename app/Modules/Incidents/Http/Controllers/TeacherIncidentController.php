@@ -37,6 +37,8 @@ class TeacherIncidentController extends Controller
 {
     private const SESSION_KEY = 'teacher.incident_uuid';
 
+    private const SUGGESTION_KEY = 'teacher.ai_suggestion';
+
     public function __construct(
         private readonly IncidentService $incidents,
         private readonly AbuseGuard $guard,
@@ -86,7 +88,31 @@ class TeacherIncidentController extends Controller
 
         $description = $data['description'] ?? null;
 
-        $this->incidents->startDiagnosis($incident, $category, $description);
+        /*
+         * ¿La categoría salió de la IA? Lo que propuso se guardó en el
+         * servidor al clasificar, junto con el texto exacto: así un envío con
+         * otra descripción no hereda el acierto, y nadie puede declararlo
+         * desde el formulario. Si el docente aceptó la propuesta, la clasificó
+         * la IA; si eligió otra, la corrigió. Las dos cosas quedan, porque el
+         * acierto del clasificador se mide justo contra esa corrección.
+         */
+        $propuesta = $request->session()->pull(self::SUGGESTION_KEY);
+        $propusoLaIa = is_array($propuesta)
+            && ($propuesta['incident'] ?? null) === $incident->uuid
+            && $description !== null
+            && ($propuesta['description'] ?? null) === $description
+            && ($propuesta['category'] ?? null) !== null;
+
+        $this->incidents->startDiagnosis(
+            $incident,
+            $category,
+            $description,
+            classifiedBy: $propusoLaIa && $propuesta['category'] === $category->code ? 'assistant' : 'teacher',
+            // La confianza se guarda también si el docente corrigió: una IA
+            // muy segura que se equivoca es justo lo que hay que calibrar.
+            confidence: $propusoLaIa ? (float) $propuesta['confidence'] : null,
+            aiSuggested: $propusoLaIa ? $propuesta['category'] : null,
+        );
 
         /*
          * RIESGO FISICO: se salta el diagnostico entero (plan 17.5).
@@ -356,5 +382,11 @@ class TeacherIncidentController extends Controller
     public static function sessionKey(): string
     {
         return self::SESSION_KEY;
+    }
+
+    /** Dónde queda, en la sesión, lo que propuso la IA para este reporte. */
+    public static function suggestionKey(): string
+    {
+        return self::SUGGESTION_KEY;
     }
 }
