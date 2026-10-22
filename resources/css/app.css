@@ -54,6 +54,14 @@
     --color-ok-container: var(--success-container);
     --color-on-ok-container: var(--on-success-container);
 
+    /* Oro: protagonista de las acciones (botón principal, distintivo de la
+       IA, marca). Nunca como texto suelto sobre fondo claro: no se lee. */
+    --color-gold: var(--gold);
+    --color-on-gold: var(--on-gold);
+    --color-gold-text: var(--gold-text);
+    --color-gold-container: var(--gold-container);
+    --color-on-gold-container: var(--on-gold-container);
+
     --color-warn: var(--warning);
     --color-warn-container: var(--warning-container);
     --color-on-warn-container: var(--on-warning-container);
@@ -65,43 +73,60 @@
 }
 
 /*
- * SISTEMA DE COLOR «Continental Prestige»
+ * SISTEMA DE COLOR «Violeta y oro»
  * ----------------------------------------------------------------------
- * Material 3 sobre morado profundo, con acento violeta para lo que exige
- * acción. La nomenclatura `X` / `on-X` es la de Material y conviene
- * respetarla: `on-X` es SIEMPRE el color del texto que va encima de `X`, y
- * cada par está calculado para cumplir el contraste AA que el plan exige
- * (§17.9). Combinar fuera de esos pares es lo que rompe la accesibilidad
- * sin que se note en el monitor de quien programa.
+ * Violeta como color de la marca (la franja de cabecera, los enlaces, el
+ * foco) y oro satinado como protagonista de lo que se toca: el botón
+ * principal, el distintivo de la IA, la marca. Elegido por el equipo el
+ * 22-10-2026 a partir de dos muestras: un violeta (#7B27BF) y un oro
+ * satinado (sombra #BB7518, brillo #FDE675).
  *
- * HAY TEMA CLARO aunque el diseño nació oscuro, y no es un capricho: un aula
- * con el proyector encendido está a media luz y el oscuro va perfecto, pero
- * un docente junto a la ventana con sol de frente no lee nada. Se ofrecen
- * los dos y decide quien mira la pantalla.
+ * La nomenclatura `X` / `on-X` es la de Material y conviene respetarla:
+ * `on-X` es SIEMPRE el color del texto que va encima de `X`, y cada par
+ * cumple el contraste AA que el plan exige (§17.9). El oro nunca va como
+ * texto sobre fondo claro (2,3:1): para eso existe `--gold-text`.
+ *
+ * HAY TEMA CLARO aunque el aula esté a media luz: un docente junto a la
+ * ventana con sol de frente no lee un tema oscuro. Se ofrecen los dos y
+ * decide quien mira la pantalla.
  */
 :root {
-    --surface: #faf7fd;
+    --surface: #fbf8fe;
     --surface-container-lowest: #ffffff;
-    --surface-container-low: #f5f0f9;
-    --surface-container: #efe9f4;
-    --surface-container-high: #e8e2ee;
-    --surface-container-highest: #e1dbe8;
+    --surface-container-low: #f6f0fc;
+    --surface-container: #efe7f8;
+    --surface-container-high: #e7ddf3;
+    --surface-container-highest: #dfd3ee;
 
-    --on-surface: #1c1a20;
-    --on-surface-variant: #4a4550;
-    --outline: #7a7484;
-    --outline-variant: #cbc4d0;
+    --on-surface: #1e1528;
+    --on-surface-variant: #5f5670;
+    --outline: #7f7690;
+    --outline-variant: #dccfea;
 
-    /* En claro el morado saturado pasa a ser el fondo del botón principal. */
-    --primary: #5b3f96;
+    /* El violeta de la muestra, tal cual: con texto blanco da 7,3:1. */
+    --primary: #7b27bf;
     --on-primary: #ffffff;
-    --primary-container: #ebddff;
-    --on-primary-container: #22084f;
+    --primary-container: #efe2fb;
+    --on-primary-container: #2e0a4f;
 
-    /* Violeta vibrante: se reserva para foco y estados activos. Usarlo de
-       relleno lo vuelve invisible justo cuando hace falta. */
-    --accent: #7c4dff;
+    /* Foco y estados activos. */
+    --accent: #8a3fd1;
     --on-accent: #ffffff;
+
+    /* Oro satinado: tres tonos para el brillo del degradado. */
+    --gold: #d9a84a;
+    --gold-light: #f3d57e;
+    --gold-deep: #c98a1e;
+    --on-gold: #2a1606;
+    --gold-text: #8c5e10;
+    --gold-container: #f8ebc8;
+    --on-gold-container: #4a3206;
+
+    /* Franja de cabecera. */
+    --band-from: #6e1fb0;
+    --band-to: #8a3fd1;
+    --on-band: #f6e7b8;
+    --on-band-muted: #ffffff;
 
     --error: #ba1a1a;
     --on-error: #ffffff;
@@ -118,33 +143,46 @@
 
     /* Cristal. En claro el velo es blanco: sobre fondo claro un velo oscuro
        ensucia en lugar de elevar. */
-    --glass-bg: rgb(255 255 255 / 0.72);
-    --glass-stroke: rgb(28 26 32 / 0.08);
-    --glass-glow: rgb(124 77 255 / 0.10);
-    --mesh-1: #ede7f6;
-    --mesh-2: #faf7fd;
+    --glass-bg: rgb(255 255 255 / 0.76);
+    --glass-stroke: rgb(30 21 40 / 0.08);
+    --glass-glow: rgb(123 39 191 / 0.12);
+    --mesh-1: #efe2fb;
+    --mesh-2: #fbf8fe;
 }
 
 .dark {
-    --surface: #141316;
-    --surface-container-lowest: #0f0e11;
-    --surface-container-low: #1d1b1f;
-    --surface-container: #211f23;
-    --surface-container-high: #2b292d;
-    --surface-container-highest: #363438;
+    --surface: #130a1e;
+    --surface-container-lowest: #0d0715;
+    --surface-container-low: #1a1028;
+    --surface-container: #1e1330;
+    --surface-container-high: #281b3d;
+    --surface-container-highest: #33244a;
 
-    --on-surface: #e6e1e6;
-    --on-surface-variant: #cbc4d0;
-    --outline: #948e99;
-    --outline-variant: #49454e;
+    --on-surface: #ede6f7;
+    --on-surface-variant: #b9aecb;
+    --outline: #8e819f;
+    --outline-variant: #3a2c50;
 
-    --primary: #d2bcfa;
-    --on-primary: #38265a;
-    --primary-container: #2d1b4e;
-    --on-primary-container: #d8c9f5;
+    --primary: #c39bf5;
+    --on-primary: #1c0b33;
+    --primary-container: #3b1263;
+    --on-primary-container: #ebddfb;
 
-    --accent: #a78bfa;
-    --on-accent: #23104a;
+    --accent: #b98af2;
+    --on-accent: #1a0b2e;
+
+    --gold: #e6b95a;
+    --gold-light: #f3d57e;
+    --gold-deep: #c98a1e;
+    --on-gold: #2a1606;
+    --gold-text: #e6b95a;
+    --gold-container: #4a3a17;
+    --on-gold-container: #f8e3a8;
+
+    --band-from: #3b1263;
+    --band-to: #5a2394;
+    --on-band: #f1d489;
+    --on-band-muted: #d8c9f0;
 
     --error: #ffb4ab;
     --on-error: #690005;
@@ -159,11 +197,11 @@
     --warning-container: #5c4300;
     --on-warning-container: #ffdf9a;
 
-    --glass-bg: rgb(45 27 78 / 0.42);
-    --glass-stroke: rgb(255 255 255 / 0.10);
-    --glass-glow: rgb(139 92 246 / 0.15);
-    --mesh-1: #2d1b4e;
-    --mesh-2: #141316;
+    --glass-bg: rgb(40 20 66 / 0.48);
+    --glass-stroke: rgb(255 255 255 / 0.09);
+    --glass-glow: rgb(185 138 242 / 0.16);
+    --mesh-1: #2a1146;
+    --mesh-2: #130a1e;
 }
 
 /* El navegador pinta sus propios controles —barras de scroll, selectores de
@@ -227,28 +265,59 @@ body::before {
 
 .glass-hover:hover {
     transform: translateY(-2px);
-    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+    border-color: color-mix(in srgb, var(--gold) 70%, transparent);
     box-shadow:
         0 1px 0 0 rgb(255 255 255 / 0.08) inset,
         0 18px 40px -14px var(--glass-glow);
 }
 
-/* Botón principal: degradado del acento al morado profundo y halo al
-   pasar por encima. */
+/* Botón principal: oro satinado. El brillo sale de tres tonos del mismo
+   oro, no de un efecto: así se ve igual en cualquier pantalla. El texto es
+   café oscuro, no blanco: blanco sobre oro no se lee (2,3:1). */
 .btn-primary {
     background-image: linear-gradient(135deg,
-        color-mix(in srgb, var(--accent) 92%, white 8%),
-        var(--primary));
-    color: var(--on-accent);
+        var(--gold-light) 0%, var(--gold) 50%, var(--gold-deep) 100%);
+    color: var(--on-gold);
     border-radius: var(--radius-md);
-    transition: box-shadow 180ms ease, transform 120ms ease;
+    box-shadow: 0 1px 0 0 rgb(255 255 255 / 0.45) inset;
+    transition: box-shadow 180ms ease, transform 120ms ease, filter 180ms ease;
 }
 
-.dark .btn-primary { color: var(--on-primary); }
-
 .btn-primary:hover {
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent),
-                0 10px 28px -10px var(--glass-glow);
+    filter: brightness(1.04);
+    box-shadow: 0 1px 0 0 rgb(255 255 255 / 0.45) inset,
+                0 0 0 2px color-mix(in srgb, var(--gold) 45%, transparent),
+                0 10px 28px -10px color-mix(in srgb, var(--gold-deep) 55%, transparent);
+}
+
+/* Franja de cabecera: violeta de la marca con texto en oro. */
+.brand-bar {
+    background-image: linear-gradient(135deg, var(--band-from), var(--band-to));
+    color: var(--on-band);
+}
+
+/* Tarjeta de lo que hace la IA: borde y halo dorados. Va después de .glass
+   a propósito: con la misma especificidad, gana la que se declara último. */
+.ia-card {
+    border-color: color-mix(in srgb, var(--gold) 75%, transparent);
+    box-shadow:
+        0 1px 0 0 rgb(255 255 255 / 0.06) inset,
+        0 14px 34px -16px color-mix(in srgb, var(--gold-deep) 50%, transparent);
+}
+
+/* Distintivo de lo que hace la IA: siempre el mismo, para que se reconozca. */
+.ia-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    border-radius: 9999px;
+    padding: 0.1rem 0.55rem;
+    font-family: var(--font-label);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    background-image: linear-gradient(135deg, var(--gold-light), var(--gold));
+    color: var(--on-gold);
 }
 
 .btn-primary:active { transform: scale(0.985); }

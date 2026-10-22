@@ -6,7 +6,7 @@
          usarán docentes de todas las edades es una barrera de accesibilidad
          real, no un detalle de estilo (plan §8). --}}
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#141316">
+    <meta name="theme-color" content="#6e1fb0">
     <title>@yield('title', 'Reportar un problema')</title>
 
     {{-- ANTES que la hoja de estilos, y como archivo propio en vez de en
@@ -24,7 +24,7 @@
 </head>
 <body class="flex min-h-full flex-col bg-transparent text-on-surface antialiased">
 
-<header class="sticky top-0 z-10 border-b border-[var(--glass-stroke)] bg-[var(--glass-bg)] backdrop-blur-xl">
+<header class="brand-bar sticky top-0 z-10 shadow-[0_8px_24px_-12px_var(--glass-glow)]">
     <div class="mx-auto flex w-full max-w-md items-center gap-3 px-5 py-3">
 
         {{-- Identificador institucional. El archivo lo sube el equipo desde
@@ -33,9 +33,9 @@
         <x-brand-mark class="shrink-0" />
 
         <div class="min-w-0 flex-1 text-center">
-            <p class="label-tech text-on-surface-variant">Soporte de aulas</p>
+            <p class="label-tech text-[var(--on-band)]">Soporte de aulas</p>
             @hasSection('step')
-                <p class="mt-0.5 truncate text-sm font-medium text-on-surface">@yield('step')</p>
+                <p class="mt-0.5 truncate text-sm font-medium text-[var(--on-band-muted)]">@yield('step')</p>
             @endif
         </div>
 
@@ -43,7 +43,7 @@
              escondido en un menú: un docente que no ve bien la pantalla por
              el sol necesita arreglarlo donde está, no ir a buscarlo. --}}
         <button type="button" data-theme-toggle
-                class="touch-target focus-ring flex shrink-0 items-center justify-center rounded-full text-on-surface-variant transition hover:bg-surface-high"
+                class="touch-target focus-ring flex shrink-0 items-center justify-center rounded-full text-[var(--on-band)] transition hover:bg-white/10"
                 aria-label="Cambiar entre modo claro y oscuro">
             <span class="material-symbols-outlined text-[22px]" aria-hidden="true">contrast</span>
         </button>

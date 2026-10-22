@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="theme-color" content="#141316">
+    <meta name="theme-color" content="#6e1fb0">
     <title>@yield('title', 'Panel') · {{ config('app.name') }}</title>
 
     {{-- theme-init va PRIMERO: decide el tema antes de pintar y evita el
@@ -32,11 +32,11 @@
 <div class="flex min-h-full">
 
     <aside class="hidden w-64 shrink-0 flex-col border-r border-[var(--glass-stroke)] bg-[var(--glass-bg)] backdrop-blur-xl md:flex">
-        <div class="flex items-center gap-3 px-5 py-5">
+        <div class="brand-bar flex items-center gap-3 px-5 py-5">
             <x-brand-mark :size="34" />
             <div class="min-w-0">
-                <p class="truncate text-sm font-semibold leading-tight text-on-surface">Incidencias en aulas</p>
-                <p class="label-tech mt-0.5 text-on-surface-variant">Soporte</p>
+                <p class="truncate text-sm font-semibold leading-tight text-[var(--on-band-muted)]">Incidencias en aulas</p>
+                <p class="label-tech mt-0.5 text-[var(--on-band)]">Soporte</p>
             </div>
         </div>
 

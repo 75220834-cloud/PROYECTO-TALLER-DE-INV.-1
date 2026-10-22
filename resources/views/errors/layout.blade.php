@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#141316">
+    <meta name="theme-color" content="#6e1fb0">
     <title>@yield('title')</title>
 
     {{-- Sin nada que consulte la base de datos: estas páginas se muestran

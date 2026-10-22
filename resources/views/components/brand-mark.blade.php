@@ -31,9 +31,9 @@
          Sirve para que la cabecera no quede coja mientras no haya logo. --}}
     <span style="height: {{ $size }}px; width: {{ $size }}px"
           {{ $attributes->merge([
-              'class' => 'flex items-center justify-center rounded-md border border-[var(--glass-stroke)] '
-                  .'bg-[linear-gradient(135deg,var(--accent),var(--primary))] '
-                  .'text-on-accent',
+              'class' => 'flex items-center justify-center rounded-md border border-white/30 '
+                  .'bg-[linear-gradient(135deg,var(--gold-light),var(--gold)_55%,var(--gold-deep))] '
+                  .'text-on-gold',
           ]) }}
           aria-hidden="true">
         <span class="material-symbols-outlined" style="font-size: {{ (int) ($size * 0.55) }}px">school</span>

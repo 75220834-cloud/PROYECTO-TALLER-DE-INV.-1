@@ -124,6 +124,12 @@ catálogo. Ver [07 · Inteligencia artificial](07-inteligencia-artificial.md).
 Si la clasificación es clara, el sistema propone la categoría y sigue. Si no lo es,
 muestra los botones.
 
+**Va arriba, con el distintivo dorado «✦ IA», y plegada.** Al principio estaba al final,
+detrás de un enlace pequeño, y en las pruebas nadie notaba que el sistema tenía IA. Ahora es
+lo primero que se ve, pero ocupa una sola tarjeta: el cuadro de texto solo se despliega al
+tocarla, así los botones de abajo siguen a la vista y quien ya reconoce su problema lo toca
+sin escribir nada.
+
 ### Camino B: elegir con botones
 
 Una lista de nueve categorías. Es el camino **principal**: funciona siempre, sin IA, sin
