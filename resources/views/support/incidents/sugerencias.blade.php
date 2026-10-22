@@ -55,9 +55,13 @@
     </div>
 
     <p class="text-xs text-outline">
-        {{ $sugerencias->semantic
-            ? 'Casos buscados por significado con la IA (Ollama).'
-            : 'La IA no está disponible: los casos se buscaron por palabras en común.' }}
+        {{-- Cómo se buscaron los casos solo se dice si hay casos: sin ninguno
+             que comparar, la IA no llegó a usarse y diría algo falso. --}}
+        @if ($sugerencias->cases->isNotEmpty())
+            {{ $sugerencias->semantic
+                ? 'Casos buscados por significado con la IA (Ollama).'
+                : 'La IA no está disponible: los casos se buscaron por palabras en común.' }}
+        @endif
         Son sugerencias: revísalas antes de aplicarlas.
     </p>
 </div>
